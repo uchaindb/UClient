@@ -1,0 +1,8 @@
+﻿<nav class="navbar navbar-default navbar-fixed-bottom tabbar visible-xs-block">
+    <ul class="nav">
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/home']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-home'></i><br /> {{ '概览' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/database']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-hdd'></i><br /> {{ '链库' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/alert']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i><br /> {{ '消息' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/user']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-user'></i><br /> {{ '个人' | translate }}</a></li>
+    </ul>
+</nav>

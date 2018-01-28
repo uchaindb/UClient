@@ -1,0 +1,45 @@
+img.portrait {
+    height: 64px;
+    width: 64px;
+    object-fit: cover;
+}
+
+    img.portrait.uploaded {
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+    }
+
+img.cover {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+img.upload-image {
+    max-height: 150px;
+    max-width: 150px;
+    object-fit: cover;
+}
+
+span.remove {
+    cursor: pointer;
+}
+
+.newinfo:after {
+    content: "";
+    position: absolute;
+    background: rgba(255,0,0,1);
+    height: .6rem;
+    width: .6rem;
+    top: 1.5rem;
+    left: .4rem;
+    text-align: center;
+    line-height: 2rem;
+    font-size: 1rem;
+    border-radius: 50%;
+}
+
+img.idsample {
+    width: 150px;
+    max-width: 100%;
+}

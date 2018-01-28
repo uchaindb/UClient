@@ -1,0 +1,36 @@
+.outlet {
+    padding-top: 50px;
+    padding-bottom: 0px;
+}
+
+.mobile-sense-outlet {
+    padding-top: 50px;
+    padding-bottom: 0px;
+}
+
+@media screen and (max-width: 767px) {
+    .outlet {
+        padding-top: 0px;
+        padding-bottom: 50px;
+    }
+
+    .mobile-sense-outlet {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+}
+
+.mobile-nav .back-arrow {
+    font-size: 23px;
+}
+
+.mobile-nav .title {
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+.mobile-nav .back-arrow-holder {
+    margin-top: -3px;
+    margin-left: 16px;
+    position: absolute;
+}

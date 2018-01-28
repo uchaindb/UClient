@@ -1,0 +1,15 @@
+﻿<div class="modal fade" id="htmlModal" tabindex="-1" role="dialog" aria-labelledby="htmlModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="htmlModalLabel">{{title}}</h4>
+            </div>
+            <div *ngIf="content" class="modal-body" [innerHtml]="content">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">{{ 'app.modal.Close' | translate }}</button>
+            </div>
+        </div>
+    </div>
+</div>

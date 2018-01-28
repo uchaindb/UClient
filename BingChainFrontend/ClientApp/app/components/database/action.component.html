@@ -1,0 +1,137 @@
+﻿<!--for schema actions-->
+<ng-container *ngFor="let action of schemaActions">
+    <div class="panel"
+         [class.panel-success]="action.Type == 0"
+         [class.panel-warning]="action.Type == 1"
+         [class.panel-danger]="action.Type == 2">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <ng-container [ngSwitch]="action.Type">
+                    <ng-template [ngSwitchCase]="0">
+                        Create
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="1">
+                        Modify
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="2">
+                        Remove
+                    </ng-template>
+                </ng-container>
+                {{action.Name}}
+                <a [routerLink]="['/database', dbid, 'chain', action.transaction.Hash]">{{action.transaction.Hash}}</a>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <ng-container [ngSwitch]="action.Type">
+                <ng-template [ngSwitchCase]="0">
+                    <!--create-->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let col of action.Columns">
+                                <td>{{col.Name}} <span *ngIf="col.PrimaryKey" class="label label-primary">PK</span></td>
+                                <td>{{col.Type == 0 ? 'string' : 'other'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-template>
+                <ng-template [ngSwitchCase]="1">
+                    <!--modify-->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--delete-->
+                            <tr *ngFor="let col of action.DropColumns" class="danger">
+                                <td>{{col}}</td>
+                                <td>(not care)</td>
+                            </tr>
+                            <!--add or modify-->
+                            <tr *ngFor="let col of action.AddOrModifyColumns" class="warning">
+                                <td><i class="text-muted">Created</i> {{col.Name}} <span *ngIf="col.PrimaryKey" class="label label-primary">PK</span></td>
+                                <td>{{col.Type == 0 ? 'string' : 'other'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-template>
+                <ng-template [ngSwitchCase]="2">
+                    <!--delete-->
+                </ng-template>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<!--for data actions-->
+<ng-container *ngFor="let table of dataActions">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Modify Data of Table {{table.tableName}}</h3>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Transaction</th>
+                        <th>Operation</th>
+                        <th *ngFor="let col of table.columns">
+                            {{col}}
+                            <span *ngIf="col == table.pkname" class="label label-primary">PK</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let action of table.actions">
+                        <tr [class.success]="action.Type == 0"
+                            [class.warning]="action.Type == 1"
+                            [class.danger]="action.Type == 2">
+                            <td><a [routerLink]="['/database', dbid, 'chain', action.transaction.Hash]">{{action.transaction.Hash | hashbeauty}}</a></td>
+                            <td>
+                                <i>
+                                    <b>
+                                        <ng-container [ngSwitch]="action.Type">
+                                            <ng-template [ngSwitchCase]="0">
+                                                Create
+                                            </ng-template>
+                                            <ng-template [ngSwitchCase]="1">
+                                                Modify
+                                            </ng-template>
+                                            <ng-template [ngSwitchCase]="2">
+                                                Remove
+                                            </ng-template>
+                                        </ng-container>
+                                    </b>
+                                </i>
+                            </td>
+                            <!--create-->
+                            <ng-container *ngIf="action.Type == 0">
+                                <td *ngFor="let col of table.columns">{{findcoldata(action.Columns, col)}}</td>
+                            </ng-container>
+
+                            <!--modify-->
+                            <ng-container *ngIf="action.Type == 1">
+                                <td *ngFor="let col of table.columns">
+                                    <i *ngIf="col != table.pkname"><ins>{{findcoldata(action.Columns, col)}}</ins></i>
+                                    <ng-container *ngIf="col == table.pkname">{{action.PrimaryKeyValue}}</ng-container>
+                                </td>
+                            </ng-container>
+
+                            <!--delete-->
+                            <ng-container *ngIf="action.Type == 2">
+                                <td [attr.colspan]="table.columns.length"><i class="text-muted">removed</i> <s>{{action.PrimaryKeyValue}}</s></td>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-container>

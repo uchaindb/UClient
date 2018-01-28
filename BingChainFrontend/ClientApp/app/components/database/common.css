@@ -1,0 +1,38 @@
+img.chaindb-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.watch {
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    -webkit-appearance: none;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+}
+
+.two.modify {
+    background-color: #0f0;
+}
+
+.minor.modify {
+    background-color: #0c0;
+}
+
+.some.modify {
+    background-color: #060;
+}
+
+.many.modify {
+    background-color: #c00;
+}
+
+.lots.modify {
+    background-color: #f00;
+}

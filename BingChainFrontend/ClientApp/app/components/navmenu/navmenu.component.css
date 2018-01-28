@@ -1,0 +1,25 @@
+.newinfo:after {
+    content: "";
+    position: absolute;
+    background: rgba(255,0,0,1);
+    height: .6rem;
+    width: .6rem;
+    top: 0.2rem;
+    left: 1.4rem;
+    text-align: center;
+    line-height: 2rem;
+    font-size: 1rem;
+    border-radius: 50%;
+}
+
+li .glyphicon {
+    margin-right: 10px;
+}
+
+/* Highlighting rules for nav menu items */
+li.link-active a,
+li.link-active a:hover,
+li.link-active a:focus {
+    background-color: #4189C7;
+    color: white;
+}

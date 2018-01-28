@@ -1,0 +1,45 @@
+{
+  "app": {
+    "dialog": {
+      "CancelLabel": "取消",
+      "OkLabel": "确定"
+    },
+    "modal": {
+      "Close": "关闭"
+    },
+    "nav": {
+      "desktop": {
+        "Brand": "优链数据库",
+        "Home": "首页",
+        "Login": "登陆",
+        "Me": "我"
+      },
+      "mobile": {
+        "Activity": "动态",
+        "Home": "首页",
+        "Me": "我"
+      }
+    },
+    "notification": {
+      "SessionEndedContent": "",
+      "SessionEndedTitle": "登陆已失效",
+      "SessionExpiredContent": "登陆已失效",
+      "SessionExpiredTitle": "请重新登录"
+    }
+  },
+  "defaults": {
+    "imageError": {
+      "EmptyFile": "不支持空文件",
+      "InvalidExtension": "不允许上传的文件类型",
+      "NoFile": "未选择文件",
+      "SizeTooLarge": "文件太大了",
+      "SizeTooSmall": "文件太小了"
+    },
+    "loading": {
+      "Load": "读取中...",
+      "Remove": "移除中...",
+      "Submit": "提交中...",
+      "Upload": "上传中..."
+    }
+  }
+}

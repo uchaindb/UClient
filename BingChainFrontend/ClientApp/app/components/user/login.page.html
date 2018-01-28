@@ -1,0 +1,88 @@
+﻿<div class="help-block"></div>
+<div class="form-horizontal">
+    <div *ngIf="wxCode" class="form-group form-inline">
+        <div class="help-block"></div>
+        <label for="displayWeixin" class="col-sm-2 control-label hidden-xs">{{ 'me.login.page.Weixin' | translate }}</label>
+        <div class="col-sm-10 hidden-xs">
+            <img class="weixin-portrait-desktop" [src]="wxPortrait || '/images/no_profile.jpg'" />
+            <div class="help-block"></div>
+            <span>{{wxName}}</span>
+        </div>
+        <div class="col-sm-10 visible-xs-block text-center">
+            <img class="weixin-portrait-mobile" [src]="wxPortrait || '/images/no_profile.jpg'" />
+            <div class="help-block"></div>
+            <p>{{wxName}}</p>
+        </div>
+        <div *ngIf="!wxBound" class="row text-center text-muted">
+            <p><small>{{ 'me.login.page.BindWeixinHint' | translate }}</small></p>
+        </div>
+    </div>
+    <div *ngIf="isRedirectingWeixin">
+        <div class="row text-center">
+            <p>{{ 'me.login.page.RedirectingWeixinHint' | translate }}</p>
+        </div>
+    </div>
+    <div *ngIf="wxBound">
+        <div class="row text-center">
+            <p>{{ 'me.login.page.WeixinLoggingInHint' | translate }}</p>
+        </div>
+    </div>
+    <ng-container *ngIf="!isRedirectingWeixin && ! wxBound">
+        <div class="form-group form-inline">
+            <label for="inputPhonenumber" class="col-sm-2 control-label hidden-xs">{{ 'me.login.page.PhoneNumber' | translate }}</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <span class="input-group-addon glyphicon glyphicon-phone"></span>
+                    <input type="tel" class="form-control" id="inputPhonenumber" [(ngModel)]="phonenumber" maxlength="11" OnlyNumber="true"
+                           (keyup.enter)="sendCode()" placeholder="{{ 'me.login.page.PhoneNumberPlaceholder' | translate }}">
+                    <a (click)="sendCode()" class="btn btn-success input-group-addon" [class.disabled]="remainSeconds > 0">
+                        <ng-container *ngIf="remainSeconds == 0">{{ 'me.login.page.SendCode' | translate }}</ng-container>
+                        <ng-container *ngIf="remainSeconds > 0">{{ 'me.login.page.SendCodeCountDown' | translate: {value: remainSeconds} }}</ng-container>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputCode" class="col-sm-2 control-label hidden-xs">{{ 'me.login.page.Code' | translate }}</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <span class="input-group-addon glyphicon glyphicon-lock"></span>
+                    <input type="text" class="form-control" id="inputCode" [(ngModel)]="code" maxlength="6" OnlyNumber="true"
+                           (keyup.enter)="login()" placeholder="{{ 'me.login.page.CodePlaceholder' | translate }}">
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!inWeixin" class="form-group">
+            <label for="inputRememeber" class="col-sm-2 control-label hidden-xs">{{ 'me.login.page.RememberMe' | translate }}</label>
+            <div class="col-sm-10 checkbox">
+                <label for="inputRememeber">
+                    <input type="checkbox" id="inputRememeber" [(ngModel)]="rememberMe">
+                    {{ 'me.login.page.RememberMeCheckBox' | translate }}
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button (click)="login()" class="btn btn-primary btn-block-xs">{{ 'me.login.page.Login' | translate }}</button>
+            </div>
+        </div>
+        <div *ngIf="false" class="form-group">
+            <label class="col-sm-2 control-label hidden-xs">{{ 'me.login.page.ProviderLogin' | translate }}</label>
+            <div class="col-sm-10">
+                <button (click)="wxAuth()" class="btn btn-success">{{ 'me.login.page.WeixinLogin' | translate }}</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-center-xs">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked [(ngModel)]="agree">
+                        <a href="#" data-toggle="modal" data-target="#htmlModal">{{ 'me.login.page.AgreementLink' | translate }}</a>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<html-modal title="{{ 'me.login.page.AgreementTitle' | translate }}" url="/pages/license-user.html"></html-modal>

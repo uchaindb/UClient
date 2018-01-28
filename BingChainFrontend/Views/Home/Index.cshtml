@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@if (ViewData["PrerenderedHtml"] != null)
+{
+    <app>@Html.Raw(ViewData["PrerenderedHtml"])</app>
+    <script>@Html.Raw(ViewData["PrerenderedGlobals"])</script>
+}
+else if (ViewBag.Prerender)
+{
+    <app asp-prerender-module="ClientApp/dist/main-server" asp-prerender-data="new { ApiBaseUrl = ViewBag.ApiBaseUrl }">载入中...</app>
+}
+else
+{
+    <app>载入中...</app>
+}
+
+<script>
+    GLOBAL_API_BASE_URL = "@ViewBag.ApiBaseUrl";
+</script>
+
+@section scripts {
+    <script src="~/dist/polyfills.js" asp-append-version="true"></script>
+    <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    <script src="~/dist/app.js" asp-append-version="true"></script>
+}

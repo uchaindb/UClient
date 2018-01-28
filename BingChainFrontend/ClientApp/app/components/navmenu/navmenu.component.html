@@ -1,0 +1,45 @@
+﻿<nav class='navbar navbar-inverse navbar-fixed-top hidden-xs'>
+    <div class='navbar-header'>
+        <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
+            <span class='sr-only'>Toggle navigation</span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+        </button>
+        <a class='navbar-brand' [routerLink]="['/home']">{{ '优链数据库' | translate }}</a>
+    </div>
+    <div class='navbar-collapse collapse'>
+        <ul class='nav navbar-nav pull-right'>
+            <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
+                <a [routerLink]="['/home']">
+                    <i class='glyphicon glyphicon-home'></i>
+                    {{ '概览' | translate }}
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
+                <a [routerLink]="['/database']">
+                    <i class='glyphicon glyphicon-hdd'></i>
+                    {{ '链库' | translate }}
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
+                <a [routerLink]="['/alert']">
+                    <i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i>
+                    {{ '消息' | translate }}
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
+                <a [routerLink]="['/user']">
+                    <i class='glyphicon glyphicon-user'></i>
+                    {{ '个人' | translate }}
+                </a>
+            </li>
+            <!--<li *ngIf="!isUserLoggedIn" [routerLinkActive]="['link-active']">
+                <a [routerLink]="['/login']">
+                    <i class='glyphicon glyphicon-log-in'></i>
+                    {{ 'app.nav.desktop.Login' | translate }}
+                </a>
+            </li>-->
+        </ul>
+    </div>
+</nav>

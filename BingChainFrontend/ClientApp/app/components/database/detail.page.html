@@ -1,0 +1,36 @@
+﻿<div class="panel panel-default">
+    <div class="panel-heading">
+        <button type="button" class="close"><span class="glyphicon glyphicon-star-empty"></span></button>
+        <h3 class="panel-title">基本信息</h3>
+    </div>
+    <div class="panel-body">
+        <ng-container *ngIf="db && lastBlock">
+            <p>name：<span class="text-success">{{db.name}}</span></p>
+            <p>desc：<span class="text-success">{{db.description}}</span></p>
+            <p>地址：<span class="text-success">{{db.address}}</span></p>
+            <p>高度：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
+            <p>最后区块：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
+        </ng-container>
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3 class="panel-title">数据表</h3>
+    </div>
+    <ul *ngIf="db && tables" class="list-group">
+        <a *ngFor="let table of tables" [routerLink]="['/database', db.id, 'table', table.Name]" class="list-group-item">{{table.Name}}</a>
+    </ul>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">监控</h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <span class="glyphicon glyphicon-star"></span>
+            基本信息
+        </li>
+    </ul>
+</div>

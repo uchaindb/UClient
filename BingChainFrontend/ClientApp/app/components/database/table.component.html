@@ -1,0 +1,33 @@
+﻿<table *ngIf="table" class="table">
+    <thead>
+        <tr>
+            <th *ngFor="let col of table.columns" [class.danger]="col.name==highlightColumn">
+                <a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']" title="{{col.history}} changes">
+                    {{col.name}}
+                </a>
+                <span *ngIf="col == table.pkname" class="label label-primary">PK</span>
+                <button type="button" class="watch"><span class="glyphicon glyphicon-star-empty"></span></button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of table.rows">
+            <td *ngFor="let cell of row"
+                [class.active]="cell.history == 2"
+                [class.success]="cell.history > 2 && cell.history <= 5"
+                [class.info]="cell.history > 5 && cell.history <= 10"
+                [class.warning]="cell.history > 10 && cell.history <= 100"
+                [class.danger]="cell.history > 100">
+                <a [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]" title="{{cell.history}} changes">
+                    <ng-container *ngIf="cell.data">
+                        {{cell.data}}
+                    </ng-container>
+                    <ng-container *ngIf="!cell.data">
+                        <i class="text-muted">&lt;empty&gt;</i>
+                    </ng-container>
+                </a>
+                <button type="button" class="watch"><span class="glyphicon glyphicon-star-empty"></span></button>
+            </td>
+        </tr>
+    </tbody>
+</table>

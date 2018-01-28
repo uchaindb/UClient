@@ -1,0 +1,20 @@
+<ng2-toasty></ng2-toasty>
+<nav-menu [medot]="medot" [isUserLoggedIn]="isUserLoggedIn"></nav-menu>
+<ng-container *ngIf="!disableNavigationBar && !inWeixin">
+    <nav class="mobile-nav navbar navbar-default navbar-fixed-top visible-xs-block">
+        <div class="row">
+            <a *ngIf="canBack" href="javascript:void(0)" (click)="back()" class="navbar-brand back-arrow-holder">
+                <div>
+                    <i class="glyphicon glyphicon-chevron-left back-arrow"></i>
+                </div>
+            </a>
+            <div class="text-center title">
+                {{title}}
+            </div>
+        </div>
+    </nav>
+</ng-container>
+<div [class.container]="enableContainer" [class.outlet]="disableNavigationBar || inWeixin" [class.mobile-sense-outlet]="!disableNavigationBar && !inWeixin">
+    <router-outlet></router-outlet>
+</div>
+<mobile-nav-menu *ngIf="mobileNavBarVisibility" [medot]="medot"></mobile-nav-menu>

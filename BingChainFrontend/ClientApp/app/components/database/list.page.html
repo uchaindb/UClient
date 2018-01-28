@@ -1,0 +1,18 @@
+﻿<div class="list-group">
+    <a *ngFor="let item of dblist" [routerLink]="['/database', item.id]" class="list-group-item">
+        <!--<button type="button" class="close"><span>&times;</span></button>-->
+        <div class="media-left">
+            <img class="media-object chaindb-image" [src]="item.image">
+        </div>
+        <div class="media-body">
+            <h4 class="list-group-item-heading">{{item.name}}</h4>
+            <p class="list-group-item-text text-muted">{{item.address}}</p>
+        </div>
+    </a>
+    <a [routerLink]="['/database/add']" class="list-group-item">
+        <h4>
+            <span class="glyphicon glyphicon-plus"></span>
+            添加链库
+        </h4>
+    </a>
+</div>

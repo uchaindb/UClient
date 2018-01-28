@@ -1,0 +1,81 @@
+﻿<div *ngIf="block" class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Block Summary</h3>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td><strong>Hash</strong></td>
+                <td><a [routerLink]="['/database', db.id, 'chain', block.Hash]">{{block.Hash | hashbeauty}}</a></td>
+            </tr>
+            <tr>
+                <td><strong>Time</strong></td>
+                <td>{{block.Time | date}}</td>
+            </tr>
+            <tr>
+                <td><strong>Block Height</strong></td>
+                <td>
+                    <a class="btn btn-primary btn-xs" [routerLink]="['/database', db.id, 'chain', block.Height - 1]">&lt; Prev</a>
+                    <a [routerLink]="['/database', db.id, 'chain', block.Height]">{{block.Height}}</a>
+                    <a class="btn btn-primary btn-xs" [routerLink]="['/database', db.id, 'chain', block.Height + 1]">Next &gt;</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-heading">
+        <h3 class="panel-title">Transactions</h3>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr *ngFor="let tran of block.Transactions">
+                <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
+                <td>{{tran.Type == 1 ? 'Schema Transaction' : 'Data Transaction'}}({{tran.Actions?.length}} Actions)</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-heading">
+        <h3 class="panel-title">Actions</h3>
+    </div>
+    <div class="panel-body">
+        <database-action [dbid]="db.id" [transactions]="block.Transactions"></database-action>
+    </div>
+</div>
+<div *ngIf="transaction" class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Transaction Summary</h3>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td><strong>Hash</strong></td>
+                <td><a [routerLink]="['/database', db.id, 'chain', transaction.Hash]">{{transaction.Hash | hashbeauty}}</a></td>
+            </tr>
+            <tr>
+                <td><strong>Time</strong></td>
+                <td>(not fill)</td>
+            </tr>
+            <tr>
+                <td><strong>Type</strong></td>
+                <td>{{transaction.Type == 1 ? 'Schema Transaction' : 'Data Transaction'}}</td>
+            </tr>
+            <tr>
+                <td><strong>Block</strong></td>
+                <td><a [routerLink]="['/database', db.id, 'chain', 'BDCF3E245']">(not fill)</a></td>
+            </tr>
+            <tr>
+                <td><strong>Initiator</strong></td>
+                <td><a [routerLink]="['/database', db.id, 'chain', transaction.Initiator]">{{transaction.Initiator | hashbeauty}}</a></td>
+            </tr>
+            <tr>
+                <td><strong>Size</strong></td>
+                <td>not fill</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-heading">
+        <h3 class="panel-title">Actions</h3>
+    </div>
+    <div class="panel-body">
+        <database-action [dbid]="db.id" [transactions]="[transaction]"></database-action>
+    </div>
+</div>

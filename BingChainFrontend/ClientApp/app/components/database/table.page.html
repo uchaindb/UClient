@@ -1,0 +1,33 @@
+﻿<div class="panel panel-success">
+    <div class="panel-heading">
+        <button type="button" class="close"><span class="glyphicon glyphicon-star-empty"></span></button>
+        <h3 class="panel-title">{{tid}} 表信息</h3>
+    </div>
+    <!--<div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">表结构表数据</h3>
+            </div>
+            <ul class="list-group">
+                <a [routerLink]="['/database', dbid, 'table', 'Table1']" class="list-group-item">Table1</a>
+                <a [routerLink]="['/database', dbid, 'table', 'Table2']" class="list-group-item">Table2</a>
+            </ul>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">监控</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="glyphicon glyphicon-star"></span>
+                    基本信息
+                </li>
+            </ul>
+        </div>
+    </div>-->
+    <div class="table-responsive">
+        <database-table [table]="tableData"></database-table>
+    </div>
+</div>
+
