@@ -1,6 +1,11 @@
 ﻿<div class="panel panel-default">
     <div class="panel-heading">
-        <button type="button" class="close"><span class="glyphicon glyphicon-star-empty"></span></button>
+        <button type="button" class="close" (click)="toggleMonitor()"
+                title="monitor fork of block chain">
+            <span class="glyphicon"
+                  [class.glyphicon-star-empty]="!monitor"
+                  [class.glyphicon-star]="monitor"></span>
+        </button>
         <h3 class="panel-title">基本信息</h3>
     </div>
     <div class="panel-body">
@@ -28,9 +33,30 @@
         <h3 class="panel-title">监控</h3>
     </div>
     <ul class="list-group">
-        <li class="list-group-item">
-            <span class="glyphicon glyphicon-star"></span>
-            基本信息
+        <li *ngFor="let alert of alertConfigs" class="list-group-item">
+            <ng-container [ngSwitch]="alert.type">
+                <ng-template [ngSwitchCase]="'chain-fork'">
+                    <span class="glyphicon glyphicon-random"></span>
+                    &nbsp;监控 <b>链库 <mark>{{alert.dbname}}</mark> 的 <abbr title="explain of fork">分叉</abbr></b>
+                </ng-template>
+                <ng-template [ngSwitchCase]="'table-schema'">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                    &nbsp;监控 <b>链库 <mark>{{alert.dbname}}</mark> 中表 <mark>{{alert.tableName}}</mark> 的 <abbr title="explain of schema">结构</abbr></b>
+                </ng-template>
+                <ng-template [ngSwitchCase]="'table-data-modify'">
+                    <span class="glyphicon glyphicon-list"></span>
+                    &nbsp;监控 <b>链库 <mark>{{alert.dbname}}</mark> 中表 <mark>{{alert.tableName}}</mark> 的 <abbr title="explain of data modify">数据修改</abbr></b>
+                </ng-template>
+                <ng-template [ngSwitchCase]="'column-data-modify'">
+                    <span class="glyphicon glyphicon-option-vertical"></span>
+                    &nbsp;监控 <b>链库 <mark>{{alert.dbname}}</mark> 中表 <mark>{{alert.tableName}}</mark> 的列 <mark>{{alert.columnName}}</mark> 的<abbr title="explain of data modify">数据修改</abbr></b>
+                </ng-template>
+                <ng-template [ngSwitchCase]="'cell-data-modify'">
+                    <span class="glyphicon glyphicon-unchecked"></span>
+                    &nbsp;监控 <b>链库 <mark>{{alert.dbname}}</mark> 中表 <mark>{{alert.tableName}}</mark> 的列 <mark>{{alert.columnName}}</mark> 中主键值为 <mark>{{alert.primaryKeyValue}}</mark> 的<abbr title="explain of data modify">数据修改</abbr></b>
+                </ng-template>
+            </ng-container>
+            <button type="button" (click)="remove(alert)" class="pull-right btn btn-primary btn-xs">delete</button>
         </li>
     </ul>
 </div>

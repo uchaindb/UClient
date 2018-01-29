@@ -5,8 +5,13 @@
                 <a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']" title="{{col.history}} changes">
                     {{col.name}}
                 </a>
-                <span *ngIf="col == table.pkname" class="label label-primary">PK</span>
-                <button type="button" class="watch"><span class="glyphicon glyphicon-star-empty"></span></button>
+                <span *ngIf="col.name == table.pkname" class="label label-primary">PK</span>
+                <button type="button" class="watch" (click)="toggleMonitor(alertColumnData, col.name)"
+                        title="monitor column">
+                    <span class="glyphicon"
+                          [class.glyphicon-star-empty]="!monitorColumn[col.name]"
+                          [class.glyphicon-star]="monitorColumn[col.name]"></span>
+                </button>
             </th>
         </tr>
     </thead>
@@ -26,7 +31,12 @@
                         <i class="text-muted">&lt;empty&gt;</i>
                     </ng-container>
                 </a>
-                <button type="button" class="watch"><span class="glyphicon glyphicon-star-empty"></span></button>
+                <button type="button" class="watch" (click)="toggleMonitor(alertCellData, cell.name, cell.pkval)"
+                        title="monitor column">
+                    <span class="glyphicon"
+                          [class.glyphicon-star-empty]="!monitorCell[cell.name + '-|-' + cell.pkval]"
+                          [class.glyphicon-star]="monitorCell[cell.name + '-|-' + cell.pkval]"></span>
+                </button>
             </td>
         </tr>
     </tbody>

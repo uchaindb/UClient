@@ -8,6 +8,7 @@ import { Router } from "@angular/router";
 import { Pager } from "../models/pager.model";
 import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
+import { AlertConfiguration } from '../models/alert.model';
 
 export type ChainDbRpcMethod =
     "Status" |
@@ -24,6 +25,7 @@ export class ChainDbService extends EndpointFactory {
     //get baseUrl() { return this.configurations.baseUrl + this._baseUrl; }
 
     public static readonly DBKEY_CHAIN_DB_DATA = "chain_db";
+    public static readonly DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS = "alert_config";
 
     constructor(
         http: Http,
@@ -60,6 +62,32 @@ export class ChainDbService extends EndpointFactory {
             },
         ];
         return Observable.of(dblist);
+    }
+
+    getAlertConfigList(dbid: string): Observable<Array<AlertConfiguration>> {
+        var alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
+        var dblist = alertList.filter(_ => _.dbid == dbid);
+
+        return Observable.of(dblist);
+    }
+
+    addAlertConfig(config: AlertConfiguration): void {
+        var alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
+        alertList.push(config);
+        this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
+    }
+
+    removeAlertConfig(config: AlertConfiguration): void {
+        var alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
+        var idx = alertList
+            .findIndex(_ => _.type == config.type
+                && _.dbid == config.dbid
+                && _.tableName == config.tableName
+                && _.columnName == config.columnName
+                && _.primaryKeyValue == config.primaryKeyValue
+            );
+        alertList.splice(idx, 1);
+        this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
     }
 
     addChainDb(db: ChainDb): Observable<any> {
