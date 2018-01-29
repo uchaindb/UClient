@@ -1,13 +1,16 @@
 ﻿<div class="panel panel-default">
     <div class="panel-heading">Alerts</div>
     <div class="list-group">
-        <a *ngFor="let item of [1,2,3]" [routerLink]="['/alert', item]" class="list-group-item">
+        <a *ngFor="let message of messages" [routerLink]="['/alert', message.id]" class="list-group-item">
             <div class="media-left">
                 <span class="media-object glyphicon glyphicon-bell" style="font-size: 48px;"></span>
             </div>
             <div class="media-body">
-                <h4 class="list-group-item-heading">系统消息</h4>
-                <p class="list-group-item-text">xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒</p>
+                <h4 class="list-group-item-heading">
+                    <ng-container *ngIf="message.read">{{message.sender}}</ng-container>
+                    <b *ngIf="!message.read">{{message.sender}} <span class="text-success">【新】</span></b>
+                </h4>
+                <p class="list-group-item-text">{{message.summary}}</p>
             </div>
         </a>
     </div>

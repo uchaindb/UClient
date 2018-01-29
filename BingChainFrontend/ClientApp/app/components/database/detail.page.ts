@@ -4,6 +4,7 @@ import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { AlertConfiguration } from '../../models/alert.model';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'database-detail',
@@ -24,6 +25,7 @@ export class DatabaseDetailPage implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
+        private notifyService: NotificationService,
     ) { }
 
     ngOnInit() {
@@ -78,5 +80,9 @@ export class DatabaseDetailPage implements OnInit {
         this.dataService.removeAlertConfig(alert);
         this.alertService.showMessage('alert removed', '', MessageSeverity.success);
         this.refreshAlerts();
+    }
+
+    notify(alert: AlertConfiguration) {
+        this.notifyService.createNotification("something", alert);
     }
 }

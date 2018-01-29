@@ -1,8 +1,30 @@
-﻿<div class="panel panel-primary">
+﻿<ol class="breadcrumb hidden-xs">
+    <li><a [routerLink]="['/alert']">消息</a></li>
+    <li class="active">{{message.sender}}</li>
+</ol>
+
+<div class="panel panel-primary">
     <div class="panel-heading">
-        <b>系统消息</b>
+        <h3 class="panel-title">
+            <span class="glyphicon glyphicon-bell"></span>
+            {{message.sender}}
+        </h3>
     </div>
     <div class="panel-body">
-        <p>xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒xxx发生变化提醒</p>
+        <p>{{message.summary}}</p>
+    </div>
+    <div class="panel-footer">
+        &nbsp;
+        <div class="pull-right">
+            <button type="button" class="btn btn-warning btn-xs" (click)="dismiss()">dismiss</button>
+        </div>
+    </div>
+</div>
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <b>alert config</b>
+    </div>
+    <div class="panel-body">
+        <p>{{message.origin | json}}</p>
     </div>
 </div>

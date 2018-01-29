@@ -7,3 +7,11 @@ export type AlertConfiguration = {
     primaryKeyValue?: string,
     //lastTransaction?: string,
 };
+
+export type InboxNotification = {
+    id: string,
+    sender: string,
+    summary?: string,
+    read?: boolean,
+    origin?: AlertConfiguration,
+};
