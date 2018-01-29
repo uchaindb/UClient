@@ -11,6 +11,7 @@ import { ChainDb, Transaction, Block, HistoryEntry, RowDef, ColumnDef, TableData
 export class DatabaseCellPage implements OnInit {
     db: ChainDb;
     column: string;
+    pkval: string;
 
     tableData: TableData;
     transactions: Array<Transaction>;
@@ -30,12 +31,12 @@ export class DatabaseCellPage implements OnInit {
             .subscribe((params: ParamMap) => {
                 let dbid = params.get('dbid');
                 let tid = params.get('tid');
-                let pkval = params.get('pk');
+                this.pkval = params.get('pk');
                 this.column = params.get('col');
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
-                        this.dataService.getQueryCell(this.db, tid, pkval, this.column)
+                        this.dataService.getQueryCell(this.db, tid, this.pkval, this.column)
                             .subscribe(_ => {
                                 this.tableData = _.data;
                                 this.transactions = _.transactions;

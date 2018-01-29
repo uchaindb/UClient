@@ -46,6 +46,7 @@ import { HashBeautyPipe } from "./pipe/hashbeauty.pipe";
 import { AnalyticService } from "./services/analytic.service";
 import { ChainDbService } from './services/chain-db.service';
 import { DatabaseActionComponent } from './components/database/action.component';
+import { DatabaseNavComponent } from './components/database/nav.component';
 
 @NgModule({
     declarations: [
@@ -64,6 +65,7 @@ import { DatabaseActionComponent } from './components/database/action.component'
         DatabaseChainPage,
         DatabaseCellPage,
         DatabaseTableComponent,
+        DatabaseNavComponent,
         AboutPage,
         FeedbackPage,
         HtmlModalComponent,

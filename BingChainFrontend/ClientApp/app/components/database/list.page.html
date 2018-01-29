@@ -1,4 +1,5 @@
-﻿<div class="list-group">
+﻿<database-nav current="列表"></database-nav>
+<div class="list-group">
     <a *ngFor="let item of dblist" [routerLink]="['/database', item.id]" class="list-group-item">
         <!--<button type="button" class="close"><span>&times;</span></button>-->
         <div class="media-left">
