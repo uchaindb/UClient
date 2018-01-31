@@ -11,9 +11,9 @@
     <div class='navbar-collapse collapse'>
         <ul class='nav navbar-nav pull-right'>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
-                <a [routerLink]="['/home']">
-                    <i class='glyphicon glyphicon-home'></i>
-                    {{ '概览' | translate }}
+                <a [routerLink]="['/discover']">
+                    <i class='glyphicon glyphicon-globe'></i>
+                    {{ '发现' | translate }}
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">

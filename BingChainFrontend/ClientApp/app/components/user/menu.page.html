@@ -37,6 +37,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">{{ 'me.menu.list.other.Title' | translate }}</div>
                 <div class="list-group">
+                    <a [routerLink]="['/user', 'keys' ]" class="list-group-item">
+                        <i class="glyphicon glyphicon-lock"></i> Private Key Manage
+                    </a>
                     <a [routerLink]="['/app', 'about' ]" class="list-group-item">
                         <i class="glyphicon glyphicon-info-sign"></i> About
                     </a>

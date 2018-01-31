@@ -9,9 +9,9 @@ type MenuItem = { name: string, router: string, icon: string, show: boolean, new
 @Component({
     selector: 'me-menu-page',
     templateUrl: './menu.page.html',
-    styleUrls: ['./me.css']
+    styleUrls: ['./common.css']
 })
-export class MeMenuPage implements OnInit {
+export class UserMenuPage implements OnInit {
 
     nickName: string;
     portrait: string;

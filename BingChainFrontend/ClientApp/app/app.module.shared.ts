@@ -9,9 +9,9 @@ import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { MobileNavMenuComponent } from "./components/navmenu/mobile-navmenu.component";
 import { AlertListPage } from "./components/alert/list.page";
 import { AlertDetailPage } from "./components/alert/detail.page";
-import { MeMenuPage } from "./components/user/menu.page";
+import { UserMenuPage } from "./components/user/menu.page";
 import { LoginPage } from "./components/user/login.page";
-import { HomePage } from "./components/app/home.page";
+import { DiscoverPage } from "./components/app/discover.page";
 import { DatabaseListPage } from "./components/database/list.page";
 import { DatabaseAddPage } from "./components/database/add.page";
 import { DatabaseDetailPage } from "./components/database/detail.page";
@@ -47,6 +47,7 @@ import { AnalyticService } from "./services/analytic.service";
 import { ChainDbService } from './services/chain-db.service';
 import { DatabaseActionComponent } from './components/database/action.component';
 import { DatabaseNavComponent } from './components/database/nav.component';
+import { KeyManagePage } from './components/user/key.page';
 
 @NgModule({
     declarations: [
@@ -55,8 +56,8 @@ import { DatabaseNavComponent } from './components/database/nav.component';
         MobileNavMenuComponent,
         AlertListPage,
         AlertDetailPage,
-        HomePage,
-        MeMenuPage,
+        DiscoverPage,
+        UserMenuPage,
         LoginPage,
         DatabaseListPage,
         DatabaseAddPage,
@@ -68,6 +69,7 @@ import { DatabaseNavComponent } from './components/database/nav.component';
         DatabaseNavComponent,
         AboutPage,
         FeedbackPage,
+        KeyManagePage,
         HtmlModalComponent,
         DatabaseActionComponent,
         OnlyNumberDirective,
@@ -79,8 +81,8 @@ import { DatabaseNavComponent } from './components/database/nav.component';
         HttpModule,
         FormsModule,
         RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', component: HomePage, canActivate: [AuthGuard], data: { title: "Latest", } },
+            { path: '', redirectTo: 'database', pathMatch: 'full' },
+            { path: 'discover', component: DiscoverPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'app/about', component: AboutPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'app/feedback', component: FeedbackPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database', component: DatabaseListPage, canActivate: [AuthGuard], data: { title: "Latest", } },
@@ -91,10 +93,11 @@ import { DatabaseNavComponent } from './components/database/nav.component';
             { path: 'database/:dbid/chain/:id', component: DatabaseChainPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'alert', component: AlertListPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'alert/:id', component: AlertDetailPage, canActivate: [AuthGuard], data: { title: "Latest", } },
-            { path: 'user', component: MeMenuPage, canActivate: [AuthGuard], data: { title: "Me", backlink: false } },
+            { path: 'user', component: UserMenuPage, canActivate: [AuthGuard], data: { title: "Me", backlink: false } },
+            { path: 'user/keys', component: KeyManagePage, canActivate: [AuthGuard], data: { title: "Me", backlink: false } },
             { path: 'login', component: LoginPage, data: { title: "Login" } },
 
-            { path: '**', redirectTo: 'home' }
+            { path: '**', redirectTo: '' }
         ]),
         ToastyModule.forRoot(),
         BrowserAnimationsModule,
