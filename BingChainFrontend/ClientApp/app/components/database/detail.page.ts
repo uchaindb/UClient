@@ -81,8 +81,4 @@ export class DatabaseDetailPage implements OnInit {
         this.alertService.showMessage('alert removed', '', MessageSeverity.success);
         this.refreshAlerts();
     }
-
-    notify(alert: AlertConfiguration) {
-        this.notifyService.createNotification("something", alert);
-    }
 }

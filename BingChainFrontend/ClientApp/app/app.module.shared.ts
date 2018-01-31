@@ -48,6 +48,7 @@ import { ChainDbService } from './services/chain-db.service';
 import { DatabaseActionComponent } from './components/database/action.component';
 import { DatabaseNavComponent } from './components/database/nav.component';
 import { KeyManagePage } from './components/user/key.page';
+import { DatabaseAlertListComponent } from './components/database/alert-list.component';
 
 @NgModule({
     declarations: [
@@ -72,6 +73,7 @@ import { KeyManagePage } from './components/user/key.page';
         KeyManagePage,
         HtmlModalComponent,
         DatabaseActionComponent,
+        DatabaseAlertListComponent,
         OnlyNumberDirective,
         NewlinePipe,
         HashBeautyPipe,

@@ -24,7 +24,5 @@
     <div class="panel-heading">
         <b>alert config</b>
     </div>
-    <div class="panel-body">
-        <p>{{message.origin | json}}</p>
-    </div>
+    <database-alert-list [configs]="[message.origin]" [showDelete]="false"></database-alert-list>
 </div>
