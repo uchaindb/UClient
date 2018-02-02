@@ -23,6 +23,11 @@
 
 <div class="panel panel-success">
     <div class="panel-heading">
+        <button type="button" class="close" title="add new table"
+                [routerLink]="['/database', db.id, 'create']"
+                [queryParams]="{type: 'schema', action: 'create'}" >
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
         <h3 class="panel-title">数据表</h3>
     </div>
     <ul *ngIf="db && tables" class="list-group">

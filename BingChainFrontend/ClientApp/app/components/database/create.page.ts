@@ -19,6 +19,7 @@ export class DatabaseCreatePage implements OnInit {
     db: ChainDb;
 
     tables: Array<any>;
+    loaded = false;
     schemaActions: Array<any> = [];
     dataActions: Array<any> = [];
     //schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ name: "Id", type: "string" }]) }];
@@ -27,6 +28,7 @@ export class DatabaseCreatePage implements OnInit {
 
     codeMode = false;
     code: string;
+    highlightColumn: string;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -97,6 +99,20 @@ export class DatabaseCreatePage implements OnInit {
             },
             err => isDevMode() && console.error(err)
             );
+        this.route.queryParamMap
+            .subscribe((params: ParamMap) => {
+                let type = params.get('type') as TransactionType;
+                let action = params.get('action');
+                let name = params.get('name');
+                let pkval = params.get('pkval');
+                let col = params.get('col');
+                this.highlightColumn = col;
+                this.selectedType = type;
+                this.appendAction({ type: action, tableName: name, pkval: pkval });
+                if (type == "schema" && action == "modify" && col) {
+                    this.schemaActions[0].dropColumns = new LocalDataSource([{ name: col }]);
+                }
+            });
     }
 
     prepareData() {
@@ -104,26 +120,27 @@ export class DatabaseCreatePage implements OnInit {
             this.tables
                 .reduce((obj, cur) => { obj[cur.Name] = cur.Headers; return obj; }, {})
             ;
+        this.loaded = true;
     }
 
-    appendAction() {
+    appendAction(defs) {
         if (this.selectedType == "data") {
             if (this.dataActions.length >= 10)
                 this.alertService.showMessage("最多10个动作");
             else
-                this.dataActions.push({
+                this.dataActions.push(Object.assign({
                     columns: {},
-                });
+                }, defs || {}));
         }
         else {
             if (this.schemaActions.length >= 10)
                 this.alertService.showMessage("最多10个动作");
             else
-                this.schemaActions.push({
+                this.schemaActions.push(Object.assign({
                     columns: new LocalDataSource(),
                     modifyColumns: new LocalDataSource(),
                     dropColumns: new LocalDataSource()
-                });
+                }, defs || {}));
         }
     }
 

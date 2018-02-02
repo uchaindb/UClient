@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="list-group">
+            <div *ngIf="loaded" class="list-group">
                 <!--schema transaction-->
                 <ng-container *ngIf="selectedType=='schema'">
                     <div class="list-group-item" *ngFor="let action of schemaActions; let idx = index">
@@ -142,10 +142,14 @@
                             <!--column for update/insert action-->
                             <ng-container *ngIf="action.type=='insert' || action.type=='update'">
                                 <div class="well">
-                                    <div class="form-group form-group-sm form-group-compact" *ngFor="let col of dataActionColumns[action.tableName]">
+                                    <div class="form-group form-group-sm form-group-compact"
+                                         [class.has-success]="col==highlightColumn && idx==0"
+                                         [class.has-feedback]="col==highlightColumn && idx==0"
+                                         *ngFor="let col of dataActionColumns[action.tableName]">
                                         <label class="col-sm-2 control-label">{{col}}</label>
                                         <div class="col-sm-10">
                                             <input [(ngModel)]="action.columns[col]" type="text" class="form-control">
+                                            <span *ngIf="col==highlightColumn && idx==0" class="glyphicon glyphicon-hand-left form-control-feedback" aria-hidden="true"></span>
                                         </div>
                                     </div>
                                 </div>

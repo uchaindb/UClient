@@ -13,7 +13,26 @@
                   [class.glyphicon-star-empty]="!monitorSchema"
                   [class.glyphicon-star]="monitorSchema"></span>
         </button>
-        <h3 class="panel-title">{{tid}} 表信息</h3>
+        <h3 class="panel-title">
+            {{tid}} 表信息
+            <span class="btn-group btn-group-xs" role="group">
+                <button type="button" class="btn btn-danger" title="delete table"
+                        [routerLink]="['/database', db.id, 'create']"
+                        [queryParams]="{type: 'schema', action: 'drop', name: tid}">
+                    <span class="glyphicon glyphicon-minus"></span> 删除表格
+                </button>
+                <button type="button" class="btn btn-primary" title="add new column"
+                        [routerLink]="['/database', db.id, 'create']"
+                        [queryParams]="{type: 'schema', action: 'modify', name: tid}">
+                    <span class="glyphicon glyphicon-edit"></span> 修改表格
+                </button>
+                <button type="button" class="btn btn-success" title="add new column"
+                        [routerLink]="['/database', db.id, 'create']"
+                        [queryParams]="{type: 'data', action: 'insert', name: tid}">
+                    <span class="glyphicon glyphicon-plus"></span> 添加数据
+                </button>
+            </span>
+        </h3>
     </div>
     <div class="table-responsive">
         <database-table [table]="tableData"></database-table>

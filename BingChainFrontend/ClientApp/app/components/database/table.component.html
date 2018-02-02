@@ -12,6 +12,11 @@
                           [class.glyphicon-star-empty]="!monitorColumn[col.name]"
                           [class.glyphicon-star]="monitorColumn[col.name]"></span>
                 </button>
+                <button type="button" class="watch" title="edit"
+                        [routerLink]="['/database', table.dbid, 'create']"
+                        [queryParams]="{type: 'schema', action: 'modify', name: table.tableName, col: col.name}">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
             </th>
         </tr>
     </thead>
@@ -36,6 +41,16 @@
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorCell[cell.name + '-|-' + cell.pkval]"
                           [class.glyphicon-star]="monitorCell[cell.name + '-|-' + cell.pkval]"></span>
+                </button>
+                <button *ngIf="cell.name != table.pkname" type="button" class="watch" title="edit"
+                        [routerLink]="['/database', table.dbid, 'create']"
+                        [queryParams]="{type: 'data', action: 'update', name: table.tableName, pkval: cell.pkval, col: cell.name}">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
+                <button *ngIf="cell.name == table.pkname" type="button" class="watch" title="delete"
+                        [routerLink]="['/database', table.dbid, 'create']"
+                        [queryParams]="{type: 'data', action: 'delete', name: table.tableName, pkval: cell.pkval}">
+                    <span class="glyphicon glyphicon-trash"></span>
                 </button>
             </td>
         </tr>
