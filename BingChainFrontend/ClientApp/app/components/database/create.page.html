@@ -1,0 +1,180 @@
+﻿<database-nav [dbid]="db?.id" [dbname]="db?.name" current="创建事务"></database-nav>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <button *ngIf="!codeMode" type="button" (click)="gotoCode()" class="btn btn-primary btn-xs pull-right">转到代码模式</button>
+        <button *ngIf="codeMode" type="button" (click)="gotoGui()" class="btn btn-primary btn-xs pull-right">转到交互编辑</button>
+        <h3 class="panel-title">create</h3>
+    </div>
+    <div *ngIf="codeMode" class="panel-body">
+        <textarea class="form-control" rows="24">{{codeObject | json}}</textarea>
+    </div>
+    <div *ngIf="!codeMode" class="panel-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="inputTransactionType" class="col-sm-2 control-label">Type</label>
+                <div class="col-sm-10">
+                    <select id="inputTransactionType" [(ngModel)]="selectedType" class="form-control">
+                        <option value="schema">Schema Transaction</option>
+                        <option value="data">Data Transaction</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="list-group">
+                <!--schema transaction-->
+                <ng-container *ngIf="selectedType=='schema'">
+                    <div class="list-group-item" *ngFor="let action of schemaActions; let idx = index">
+                        <span class="text-muted"><small>Action {{idx + 1}}</small></span>
+
+                        <button type="button" class="close" (click)="removeAction(schemaActions, idx)" title="remove">
+                            <small><span class="glyphicon glyphicon-remove"></span></small>
+                        </button>
+                        <div class="form-group">
+                            <label for="inputActionType" class="col-sm-2 control-label">Type</label>
+                            <div class="col-sm-10">
+                                <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
+                                    <option value="create">Create</option>
+                                    <option value="update">Update</option>
+                                    <option value="drop">Drop</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--common for update/drop action-->
+                        <ng-container *ngIf="action.type=='drop' || action.type=='update'">
+                            <div class="form-group">
+                                <label for="selectSchemaTableName" class="col-sm-2 control-label">Table Name</label>
+                                <div class="col-sm-10">
+                                    <select id="selectSchemaTableName" [(ngModel)]="action.tableName" class="form-control">
+                                        <option *ngFor="let table of tables" [value]="table.Name">{{table.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!--create action-->
+                        <ng-container *ngIf="action.type=='create'">
+                            <div class="form-group">
+                                <label for="inputSchemaTableName" class="col-sm-2 control-label">Table Name</label>
+                                <div class="col-sm-10">
+                                    <input [(ngModel)]="action.tableName" type="text" class="form-control" placeholder="Table Name" id="inputSchemaTableName">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Columns</label>
+                                <div class="col-sm-10">
+                                    <ng2-smart-table [settings]="createSchemaActionDef" [source]="action.columns"></ng2-smart-table>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!--update action-->
+                        <ng-container *ngIf="action.type=='update'">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Add Or Modify Columns</label>
+                                <div class="col-sm-10">
+                                    <ng2-smart-table [settings]="updateModifySchemaActionDef" [source]="action.modifyColumns"></ng2-smart-table>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Drop Columns</label>
+                                <div class="col-sm-10">
+                                    <ng2-smart-table [settings]="updateDropSchemaActionDef" [source]="action.dropColumns"></ng2-smart-table>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!--drop action-->
+                        <!--<ng-container *ngIf="action.type=='drop'">
+                        </ng-container>-->
+                    </div>
+                </ng-container>
+
+                <!--data transaction-->
+                <ng-container *ngIf="selectedType=='data'">
+                    <div class="list-group-item" *ngFor="let action of dataActions; let idx = index">
+                        <span class="text-muted"><small>Action {{idx + 1}}</small></span>
+
+                        <button type="button" class="close" (click)="removeAction(dataActions, idx)" title="remove">
+                            <small><span class="glyphicon glyphicon-remove"></span></small>
+                        </button>
+                        <div class="form-group">
+                            <label for="inputActionType" class="col-sm-2 control-label">Type</label>
+                            <div class="col-sm-10">
+                                <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
+                                    <option value="insert">Insert</option>
+                                    <option value="modify">Modify</option>
+                                    <option value="delete">Delete</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--common for all action-->
+                        <div class="alert alert-warning" *ngIf="!action.type">请先选择操作类型</div>
+                        <ng-container *ngIf="action.type">
+                            <div class="form-group">
+                                <label for="selectDataTableName" class="col-sm-2 control-label">Table Name</label>
+                                <div class="col-sm-10">
+                                    <select id="selectDataTableName" [(ngModel)]="action.tableName" class="form-control">
+                                        <option *ngFor="let table of tables" [value]="table.Name">{{table.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning" *ngIf="!action.tableName">请先选择操作表格</div>
+                        </ng-container>
+
+                        <ng-container *ngIf="action.tableName">
+                            <!--insert action-->
+                            <ng-container *ngIf="action.type=='insert'">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Columns</label>
+                                    <div class="col-sm-10">
+                                        <ng2-smart-table [settings]="insertDataActionDef[action.tableName]" [source]="action.insertColumns"></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <!--modify action-->
+                            <ng-container *ngIf="action.type=='modify'">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Modify Columns</label>
+                                    <div class="col-sm-10">
+                                        <ng2-smart-table [settings]="modifyDataActionDef[action.tableName]" [source]="action.modifyColumns"></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <!--delete action-->
+                            <ng-container *ngIf="action.type=='delete'">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">delete Columns</label>
+                                    <div class="col-sm-10">
+                                        <ng2-smart-table [settings]="deleteDataActionDef" [source]="action.deleteColumns"></ng2-smart-table>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+
+                <button type="button" class="list-group-item" (click)="appendAction()"><span class="glyphicon glyphicon-plus"></span> 添加动作</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer text-right">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="inputPrivateKey">private Key</label>
+                <select id="inputPrivateKey" class="form-control">
+                    <optgroup label="private key">
+                        <option>privkey1</option>
+                        <option>privkey2</option>
+                    </optgroup>
+                    <optgroup label="other">
+                        <option>temporary import</option>
+                        <option>manage...</option>
+                    </optgroup>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="submit()">发起事务</button>
+        </form>
+    </div>
+</div>
+

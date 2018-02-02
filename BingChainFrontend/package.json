@@ -66,6 +66,7 @@
     "karma-chrome-launcher": "2.1.1",
     "karma-cli": "1.0.1",
     "karma-jasmine": "1.1.0",
-    "karma-webpack": "2.0.3"
+    "karma-webpack": "2.0.3",
+    "ng2-smart-table": "^1.2.2"
   }
 }

@@ -42,3 +42,7 @@ img.chaindb-image {
         display: inline-block;
     }
 }
+
+:host /deep/ ng2-smart-table{
+    font-size: 14px !important;
+}

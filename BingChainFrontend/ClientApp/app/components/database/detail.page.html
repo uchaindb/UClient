@@ -16,6 +16,7 @@
             <p>地址：<span class="text-success">{{db.address}}</span></p>
             <p>高度：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
             <p>最后区块：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
+            <p><a [routerLink]="['/database', db.id, 'create']" class="btn btn-success">发起事务</a></p>
         </ng-container>
     </div>
 </div>

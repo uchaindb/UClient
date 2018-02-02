@@ -49,6 +49,9 @@ import { DatabaseActionComponent } from './components/database/action.component'
 import { DatabaseNavComponent } from './components/database/nav.component';
 import { KeyManagePage } from './components/user/key.page';
 import { DatabaseAlertListComponent } from './components/database/alert-list.component';
+import { DatabaseCreatePage } from './components/database/create.page';
+
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 @NgModule({
     declarations: [
@@ -66,6 +69,7 @@ import { DatabaseAlertListComponent } from './components/database/alert-list.com
         DatabaseTablePage,
         DatabaseChainPage,
         DatabaseCellPage,
+        DatabaseCreatePage,
         DatabaseTableComponent,
         DatabaseNavComponent,
         AboutPage,
@@ -89,6 +93,7 @@ import { DatabaseAlertListComponent } from './components/database/alert-list.com
             { path: 'app/feedback', component: FeedbackPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database', component: DatabaseListPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database/add', component: DatabaseAddPage, canActivate: [AuthGuard], data: { title: "Latest", } },
+            { path: 'database/:dbid/create', component: DatabaseCreatePage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database/:dbid', component: DatabaseDetailPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database/:dbid/table/:tid', component: DatabaseTablePage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database/:dbid/table/:tid/cell/:pk/:col', component: DatabaseCellPage, canActivate: [AuthGuard], data: { title: "Cell", } },
@@ -115,6 +120,7 @@ import { DatabaseAlertListComponent } from './components/database/alert-list.com
             }
         }),
         LightboxModule,
+        Ng2SmartTableModule,
     ],
     providers: [
         NotificationService,
