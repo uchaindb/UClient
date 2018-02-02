@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, Input, isDevMode } from '@angular/core';
-import { ChainDb, Block } from '../../models/chain-db.model';
+import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
@@ -19,13 +19,14 @@ export class DatabaseCreatePage implements OnInit {
     db: ChainDb;
 
     tables: Array<any>;
-    schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ id: "Id", type: "string" }]) }];
+    schemaActions: Array<any> = [];
     dataActions: Array<any> = [];
+    //schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ name: "Id", type: "string" }]) }];
+    //dataActions: Array<any> = [{ type: "insert", tableName: "Donation", columns: { Id: "hello" }, }];
     selectedType: TransactionType = "schema";
 
     codeMode = false;
     code: string;
-    codeObject: any;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -33,26 +34,18 @@ export class DatabaseCreatePage implements OnInit {
     };
 
 
-    insertDataActionDef;
-    modifyDataActionDef;
-    deleteDataActionDef = Object.assign({
-        columns: {
-            pkval: {
-                title: 'PK Value'
-            },
-        },
-    }, this.baseActionDef);
+    dataActionColumns = {};
     updateDropSchemaActionDef = Object.assign({
         columns: {
-            id: {
-                title: 'ID'
+            name: {
+                title: 'Name'
             },
         },
     }, this.baseActionDef);
     updateModifySchemaActionDef = Object.assign({
         columns: {
-            id: {
-                title: 'ID'
+            name: {
+                title: 'Name'
             },
             type: {
                 title: 'Type',
@@ -66,8 +59,8 @@ export class DatabaseCreatePage implements OnInit {
     }, this.baseActionDef);
     createSchemaActionDef = Object.assign({
         columns: {
-            id: {
-                title: 'ID'
+            name: {
+                title: 'Name'
             },
             type: {
                 title: 'Type',
@@ -107,33 +100,19 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     prepareData() {
-
-        //console.info(this.tables);
-        this.insertDataActionDef =
+        this.dataActionColumns =
             this.tables
-                .map(_ =>
-                    Object.assign({
-                        name: _.Name,
-                        columns: _.Headers.map(c => ({ title: c }))
-                            .reduce((obj, cur) => { obj[cur.title] = cur; return obj; }, {}),
-                    }, this.baseActionDef))
-                .reduce((obj, cur) => { obj[cur.name] = cur; return obj; }, {})
+                .reduce((obj, cur) => { obj[cur.Name] = cur.Headers; return obj; }, {})
             ;
-
-        //console.info(this.insertDataActionDef);
-        this.modifyDataActionDef = Object.assign({}, this.insertDataActionDef);
     }
 
     appendAction() {
-        //console.info(this.schemaActions, this.dataActions, this.selectedType);
         if (this.selectedType == "data") {
             if (this.dataActions.length >= 10)
                 this.alertService.showMessage("最多10个动作");
             else
                 this.dataActions.push({
-                    insertColumns: new LocalDataSource(),
-                    modifyColumns: new LocalDataSource(),
-                    deleteColumns: new LocalDataSource(),
+                    columns: {},
                 });
         }
         else {
@@ -155,22 +134,60 @@ export class DatabaseCreatePage implements OnInit {
         console.info("data", da, this.dataActions);
     }
 
-    getRequestObject(type: TransactionType) {
+
+    getRequestObject(type: TransactionType): Array<SchemaAction> | Array<DataAction> {
         if (type == "schema") {
+            let getSchemaType = (type: string): SchemaActionEnum =>
+                type == "create" ? "CreateSchemaAction"
+                    : type == "modify" ? "ModifySchemaAction"
+                        : "DropSchemaAction";
+
+            let mapSchemaColumnDefinition = (arr): Array<SchemaColumnDefinition> => {
+                if (!arr) return null;
+                let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: c.type, Name: c.name, PrimaryKey: c.ispk }));
+                if (ret.length == 0) return null;
+                return ret;
+            };
+
+            let mapStringArray = (arr): Array<string> => {
+                if (!arr) return null;
+                let ret = arr.map(c => c.name);
+                if (ret.length == 0) return null;
+                return ret;
+            };
             var sa = this.schemaActions
-                .map(_ => ({
-                    type: _.type,
-                    tableName: _.tableName,
-                    columns: _.columns.data,
+                .map<SchemaAction>(_ => ({
+                    Type: getSchemaType(_.type),
+                    Data: {
+                        Name: _.tableName,
+                        Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
+                        AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
+                        DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
+                    }
                 }));
 
             return sa;
         } else {
+            let getDataType = (type: string): DataActionEnum =>
+                type == "insert" ? "InsertDataAction"
+                    : type == "update" ? "UpdateDataAction"
+                        : "DeleteDataAction";
+
+            let mapColumnData = (obj): Array<ColumnData> => {
+                if (!obj) return null;
+                let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
+                if (ret.length == 0) return null;
+                return ret;
+            };
+
             var da = this.dataActions
-                .map(_ => ({
-                    type: _.type,
-                    tableName: _.tableName,
-                    columns: _.columns.data,
+                .map<DataAction>(_ => ({
+                    Type: getDataType(_.type),
+                    Data: {
+                        SchemaName: _.tableName,
+                        Columns: mapColumnData(_.columns),
+                        PrimaryKeyValue: _.pkval,
+                    }
                 }));
 
             return da;
@@ -182,19 +199,33 @@ export class DatabaseCreatePage implements OnInit {
         actions.splice(idx, 1);
     }
 
+    duplicateAction(actions: Array<any>, idx) {
+        console.log(actions, actions.slice(idx, idx + 1)[0]);
+        let action = Object.assign({}, actions.slice(idx, idx + 1)[0]);
+        actions.splice(actions.length, 0, action);
+        console.log(actions);
+    }
+
+
     gotoCode() {
-        //this.alertService.showDialog("转到代码模式后无法将代码模式的编辑内容转回普通编辑模式，确定？", DialogType.confirm, _ => {
-            this.code = JSON.stringify(this.getRequestObject(this.selectedType));
-            this.codeObject = this.getRequestObject(this.selectedType);
+        this.alertService.showDialog("转到代码模式后无法将代码模式的编辑内容转回普通编辑模式，确定？", DialogType.confirm, _ => {
+            this.generateCode();
             this.codeMode = true;
-        //});
+        });
     }
 
     gotoGui() {
-        //this.alertService.showDialog("代码模式的编辑内容无法转回普通编辑模式，确定？", DialogType.confirm, _ => {
-            this.code = JSON.stringify(this.getRequestObject(this.selectedType));
-            this.codeObject = this.getRequestObject(this.selectedType);
+        this.alertService.showDialog("代码模式的编辑内容无法转回普通编辑模式，确定？", DialogType.confirm, _ => {
             this.codeMode = false;
-        //});
+        });
+    }
+
+    generateCode() {
+        let replacer = (key, value) => {
+            if (value === null) return undefined;
+            if (value == "") return undefined;
+            return value;
+        }
+        this.code = JSON.stringify(this.getRequestObject(this.selectedType), replacer, 2);
     }
 }

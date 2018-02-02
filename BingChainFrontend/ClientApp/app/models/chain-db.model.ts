@@ -138,3 +138,31 @@ export type RowDef = Array<CellDef>;
 export type TableData = { rows: Array<RowDef>, columns: Array<ColumnDef>, pkname: string, tableName: string, dbid: string }
 export type QueryTableResponse = { data: TableData }
 export type QueryCellResponse = { data: TableData, transactions: Array<Transaction> }
+
+export type DataActionEnum = "InsertDataAction" | "UpdateDataAction" | "DeleteDataAction";
+export type ColumnData = { Name: string, Data: string }
+export type DataAction = {
+    Data: {
+        PrimaryKeyValue?: string,
+        SchemaName: string,
+        Columns?: Array<ColumnData>
+    },
+    Type: DataActionEnum
+}
+
+export enum SchemaColumnType {
+    String,
+    Number,
+    Blob,
+}
+export type SchemaActionEnum = "CreateSchemaAction" | "ModifySchemaAction" | "DropSchemaAction";
+export type SchemaColumnDefinition = { Name: string, Type: SchemaColumnType, PrimaryKey: boolean }
+export type SchemaAction = {
+    Data: {
+        Name: string,
+        Columns?: Array<SchemaColumnDefinition>
+        AddOrModifyColumns?: Array<SchemaColumnDefinition>
+        DropColumns?: Array<string>
+    },
+    Type: SchemaActionEnum
+}

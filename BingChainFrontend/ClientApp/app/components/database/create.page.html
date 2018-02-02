@@ -6,9 +6,9 @@
         <h3 class="panel-title">create</h3>
     </div>
     <div *ngIf="codeMode" class="panel-body">
-        <textarea class="form-control" rows="24">{{codeObject | json}}</textarea>
+        <textarea class="form-control" rows="24">{{code}}</textarea>
     </div>
-    <div *ngIf="!codeMode" class="panel-body">
+    <div *ngIf="!codeMode" class="panel-body panel-container">
         <div class="form-horizontal">
             <div class="form-group">
                 <label for="inputTransactionType" class="col-sm-2 control-label">Type</label>
@@ -24,23 +24,27 @@
                 <!--schema transaction-->
                 <ng-container *ngIf="selectedType=='schema'">
                     <div class="list-group-item" *ngFor="let action of schemaActions; let idx = index">
-                        <span class="text-muted"><small>Action {{idx + 1}}</small></span>
+                        <small>
+                            <span class="text-muted">Action {{idx + 1}}</span>
+                        </small>
+                        <small class="pull-right">
+                            <a href="javascript:void(0)" (click)="removeAction(schemaActions, idx)"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+                            |
+                            <a href="javascript:void(0)" (click)="duplicateAction(schemaActions, idx)"><span class="glyphicon glyphicon-copy"></span> 复制</a>
+                        </small>
 
-                        <button type="button" class="close" (click)="removeAction(schemaActions, idx)" title="remove">
-                            <small><span class="glyphicon glyphicon-remove"></span></small>
-                        </button>
                         <div class="form-group">
                             <label for="inputActionType" class="col-sm-2 control-label">Type</label>
                             <div class="col-sm-10">
                                 <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
                                     <option value="create">Create</option>
-                                    <option value="update">Update</option>
+                                    <option value="modify">Modify</option>
                                     <option value="drop">Drop</option>
                                 </select>
                             </div>
                         </div>
                         <!--common for update/drop action-->
-                        <ng-container *ngIf="action.type=='drop' || action.type=='update'">
+                        <ng-container *ngIf="action.type=='drop' || action.type=='modify'">
                             <div class="form-group">
                                 <label for="selectSchemaTableName" class="col-sm-2 control-label">Table Name</label>
                                 <div class="col-sm-10">
@@ -67,7 +71,7 @@
                             </div>
                         </ng-container>
                         <!--update action-->
-                        <ng-container *ngIf="action.type=='update'">
+                        <ng-container *ngIf="action.type=='modify'">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Add Or Modify Columns</label>
                                 <div class="col-sm-10">
@@ -90,17 +94,21 @@
                 <!--data transaction-->
                 <ng-container *ngIf="selectedType=='data'">
                     <div class="list-group-item" *ngFor="let action of dataActions; let idx = index">
-                        <span class="text-muted"><small>Action {{idx + 1}}</small></span>
+                        <small>
+                            <span class="text-muted">Action {{idx + 1}}</span>
+                        </small>
+                        <small class="pull-right">
+                            <a href="javascript:void(0)" (click)="removeAction(dataActions, idx)"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+                            |
+                            <a href="javascript:void(0)" (click)="duplicateAction(dataActions, idx)"><span class="glyphicon glyphicon-copy"></span> 复制</a>
+                        </small>
 
-                        <button type="button" class="close" (click)="removeAction(dataActions, idx)" title="remove">
-                            <small><span class="glyphicon glyphicon-remove"></span></small>
-                        </button>
                         <div class="form-group">
                             <label for="inputActionType" class="col-sm-2 control-label">Type</label>
                             <div class="col-sm-10">
                                 <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
                                     <option value="insert">Insert</option>
-                                    <option value="modify">Modify</option>
+                                    <option value="update">Update</option>
                                     <option value="delete">Delete</option>
                                 </select>
                             </div>
@@ -121,32 +129,24 @@
                         </ng-container>
 
                         <ng-container *ngIf="action.tableName">
-                            <!--insert action-->
-                            <ng-container *ngIf="action.type=='insert'">
+                            <!--pk value for update/delete action-->
+                            <ng-container *ngIf="action.type=='update' || action.type=='delete'">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">Columns</label>
+                                    <label class="col-sm-2 control-label">PK Value</label>
                                     <div class="col-sm-10">
-                                        <ng2-smart-table [settings]="insertDataActionDef[action.tableName]" [source]="action.insertColumns"></ng2-smart-table>
+                                        <input [(ngModel)]="action.pkval" type="text" class="form-control">
                                     </div>
                                 </div>
                             </ng-container>
 
-                            <!--modify action-->
-                            <ng-container *ngIf="action.type=='modify'">
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Modify Columns</label>
-                                    <div class="col-sm-10">
-                                        <ng2-smart-table [settings]="modifyDataActionDef[action.tableName]" [source]="action.modifyColumns"></ng2-smart-table>
-                                    </div>
-                                </div>
-                            </ng-container>
-
-                            <!--delete action-->
-                            <ng-container *ngIf="action.type=='delete'">
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">delete Columns</label>
-                                    <div class="col-sm-10">
-                                        <ng2-smart-table [settings]="deleteDataActionDef" [source]="action.deleteColumns"></ng2-smart-table>
+                            <!--column for update/insert action-->
+                            <ng-container *ngIf="action.type=='insert' || action.type=='update'">
+                                <div class="well">
+                                    <div class="form-group form-group-sm form-group-compact" *ngFor="let col of dataActionColumns[action.tableName]">
+                                        <label class="col-sm-2 control-label">{{col}}</label>
+                                        <div class="col-sm-10">
+                                            <input [(ngModel)]="action.columns[col]" type="text" class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </ng-container>
