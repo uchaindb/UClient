@@ -145,10 +145,13 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     submit() {
-        var sa = this.getRequestObject("schema");
-        var da = this.getRequestObject("data");
-        console.info("schema", sa, this.schemaActions);
-        console.info("data", da, this.dataActions);
+        //var sa = this.getRequestObject("schema");
+        //var da = this.getRequestObject("data");
+        //console.info("schema", sa, this.schemaActions);
+        //console.info("data", da, this.dataActions);
+
+        this.generateCode();
+        let c = this.code;
     }
 
 
@@ -175,12 +178,10 @@ export class DatabaseCreatePage implements OnInit {
             var sa = this.schemaActions
                 .map<SchemaAction>(_ => ({
                     Type: getSchemaType(_.type),
-                    Data: {
-                        Name: _.tableName,
-                        Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
-                        AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
-                        DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
-                    }
+                    Name: _.tableName,
+                    Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
+                    AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
+                    DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
                 }));
 
             return sa;
@@ -200,11 +201,9 @@ export class DatabaseCreatePage implements OnInit {
             var da = this.dataActions
                 .map<DataAction>(_ => ({
                     Type: getDataType(_.type),
-                    Data: {
-                        SchemaName: _.tableName,
-                        Columns: mapColumnData(_.columns),
-                        PrimaryKeyValue: _.pkval,
-                    }
+                    SchemaName: _.tableName,
+                    Columns: mapColumnData(_.columns),
+                    PrimaryKeyValue: _.pkval,
                 }));
 
             return da;
@@ -244,5 +243,12 @@ export class DatabaseCreatePage implements OnInit {
             return value;
         }
         this.code = JSON.stringify(this.getRequestObject(this.selectedType), replacer, 2);
+    }
+
+    onPrivateKeyChange(value) {
+        console.log(value);
+        if (value == "import") {
+
+        }
     }
 }

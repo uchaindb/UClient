@@ -163,22 +163,23 @@
         </div>
     </div>
     <div class="panel-footer text-right">
-        <form class="form-inline">
+        <div class="form-inline">
             <div class="form-group">
                 <label for="inputPrivateKey">private Key</label>
-                <select id="inputPrivateKey" class="form-control">
+                <select id="inputPrivateKey" class="form-control" (change)="onPrivateKeyChange($event.target.value)" [(ngModel)]="selectedPrivateKey">
                     <optgroup label="private key">
                         <option>privkey1</option>
                         <option>privkey2</option>
                     </optgroup>
                     <optgroup label="other">
-                        <option>temporary import</option>
-                        <option>manage...</option>
+                        <option value="import">temporary import</option>
+                        <option value="manage">manage...</option>
                     </optgroup>
                 </select>
             </div>
+            <input *ngIf="selectedPrivateKey == 'import'" [(ngModel)]="inputPrivateKey" type="text" class="form-control">
             <button type="button" class="btn btn-primary" (click)="submit()">发起事务</button>
-        </form>
+        </div>
     </div>
 </div>
 

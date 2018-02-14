@@ -6,7 +6,7 @@ import { EndpointFactory } from "./endpoint-factory.service";
 import { Http, Headers, Response, RequestOptions } from "@angular/http";
 import { Router } from "@angular/router";
 import { Pager } from "../models/pager.model";
-import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse } from '../models/chain-db.model';
+import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
 
@@ -203,6 +203,12 @@ export class ChainDbService extends EndpointFactory {
                     transactions: transactions,
                 }
             });
+    }
+
+    createDataTransaction(db: ChainDb, privateKey: string, actions: Array<DataAction>): Observable<any> {
+        var initiator;
+        var signature;
+        return this.rpcCall(db.address, "CreateDataTransaction", [initiator, signature, actions]);
     }
 
     readonly errorCodes = {

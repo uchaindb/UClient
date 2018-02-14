@@ -142,12 +142,10 @@ export type QueryCellResponse = { data: TableData, transactions: Array<Transacti
 export type DataActionEnum = "InsertDataAction" | "UpdateDataAction" | "DeleteDataAction";
 export type ColumnData = { Name: string, Data: string }
 export type DataAction = {
-    Data: {
-        PrimaryKeyValue?: string,
-        SchemaName: string,
-        Columns?: Array<ColumnData>
-    },
-    Type: DataActionEnum
+    Type: DataActionEnum,
+    PrimaryKeyValue?: string,
+    SchemaName: string,
+    Columns?: Array<ColumnData>,
 }
 
 export enum SchemaColumnType {
@@ -158,11 +156,9 @@ export enum SchemaColumnType {
 export type SchemaActionEnum = "CreateSchemaAction" | "ModifySchemaAction" | "DropSchemaAction";
 export type SchemaColumnDefinition = { Name: string, Type: SchemaColumnType, PrimaryKey: boolean }
 export type SchemaAction = {
-    Data: {
-        Name: string,
-        Columns?: Array<SchemaColumnDefinition>
-        AddOrModifyColumns?: Array<SchemaColumnDefinition>
-        DropColumns?: Array<string>
-    },
-    Type: SchemaActionEnum
+    Type: SchemaActionEnum,
+    Name: string,
+    Columns?: Array<SchemaColumnDefinition>,
+    AddOrModifyColumns?: Array<SchemaColumnDefinition>,
+    DropColumns?: Array<string>,
 }
