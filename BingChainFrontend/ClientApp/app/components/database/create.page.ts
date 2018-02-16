@@ -30,6 +30,8 @@ export class DatabaseCreatePage implements OnInit {
     codeMode = false;
     code: string;
     highlightColumn: string;
+    selectedPrivateKey = "import";
+    inputPrivateKey: string;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -86,6 +88,7 @@ export class DatabaseCreatePage implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.inputPrivateKey = this.cryptoService.generateRandomPrivateKey();
         this.route.paramMap
             .subscribe((params: ParamMap) => {
                 let dbid = params.get('dbid');
@@ -147,70 +150,89 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     submit() {
-        //var sa = this.getRequestObject("schema");
-        //var da = this.getRequestObject("data");
+        //var sa = this.getRequestObject("schema") as Array<SchemaAction>;
+        //var da = this.getRequestObject("data") as Array<DataAction>;
+        var sa = this.getSchemaActions();
+        var da = this.getDataActions();
         //console.info("schema", sa, this.schemaActions);
         //console.info("data", da, this.dataActions);
 
         this.generateCode();
         let c = this.code;
-    }
+        let privKey = this.inputPrivateKey;
+        let pubKey = this.cryptoService.getPublicKey(privKey);
+        let address = this.cryptoService.getAddress(pubKey);
+        //console.log("privKey: ", privKey);
+        //console.log("pubKey: ", pubKey);
+        //console.log("initiator: ", address);
 
+        if (this.selectedType == "data") {
+            this.dataService.createDataTransaction(this.db, privKey, da)
+                .subscribe(_ => console.log(_));
+        }
+    }
 
     getRequestObject(type: TransactionType): Array<SchemaAction> | Array<DataAction> {
         if (type == "schema") {
-            let getSchemaType = (type: string): SchemaActionEnum =>
-                type == "create" ? "CreateSchemaAction"
-                    : type == "modify" ? "ModifySchemaAction"
-                        : "DropSchemaAction";
-
-            let mapSchemaColumnDefinition = (arr): Array<SchemaColumnDefinition> => {
-                if (!arr) return null;
-                let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: c.type, Name: c.name, PrimaryKey: c.ispk }));
-                if (ret.length == 0) return null;
-                return ret;
-            };
-
-            let mapStringArray = (arr): Array<string> => {
-                if (!arr) return null;
-                let ret = arr.map(c => c.name);
-                if (ret.length == 0) return null;
-                return ret;
-            };
-            var sa = this.schemaActions
-                .map<SchemaAction>(_ => ({
-                    Type: getSchemaType(_.type),
-                    Name: _.tableName,
-                    Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
-                    AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
-                    DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
-                }));
-
-            return sa;
+            return this.getSchemaActions();
         } else {
-            let getDataType = (type: string): DataActionEnum =>
-                type == "insert" ? "InsertDataAction"
-                    : type == "update" ? "UpdateDataAction"
-                        : "DeleteDataAction";
-
-            let mapColumnData = (obj): Array<ColumnData> => {
-                if (!obj) return null;
-                let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
-                if (ret.length == 0) return null;
-                return ret;
-            };
-
-            var da = this.dataActions
-                .map<DataAction>(_ => ({
-                    Type: getDataType(_.type),
-                    SchemaName: _.tableName,
-                    Columns: mapColumnData(_.columns),
-                    PrimaryKeyValue: _.pkval,
-                }));
-
-            return da;
+            return this.getDataActions();
         }
+    }
 
+    getSchemaActions(): Array<SchemaAction> {
+        let getSchemaType = (type: string): SchemaActionEnum =>
+            type == "create" ? "CreateSchemaAction"
+                : type == "modify" ? "ModifySchemaAction"
+                    : "DropSchemaAction";
+
+        let mapSchemaColumnDefinition = (arr): Array<SchemaColumnDefinition> => {
+            if (!arr) return null;
+            let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: c.type, Name: c.name, PrimaryKey: c.ispk }));
+            if (ret.length == 0) return null;
+            return ret;
+        };
+
+        let mapStringArray = (arr): Array<string> => {
+            if (!arr) return null;
+            let ret = arr.map(c => c.name);
+            if (ret.length == 0) return null;
+            return ret;
+        };
+        var sa = this.schemaActions
+            .map<SchemaAction>(_ => ({
+                Type: getSchemaType(_.type),
+                Name: _.tableName,
+                Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
+                AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
+                DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
+            }));
+
+        return sa;
+    }
+
+    getDataActions(): Array<DataAction> {
+        let getDataType = (type: string): DataActionEnum =>
+            type == "insert" ? "InsertDataAction"
+                : type == "update" ? "UpdateDataAction"
+                    : "DeleteDataAction";
+
+        let mapColumnData = (obj): Array<ColumnData> => {
+            if (!obj) return null;
+            let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
+            if (ret.length == 0) return null;
+            return ret;
+        };
+
+        var da = this.dataActions
+            .map<DataAction>(_ => ({
+                Type: getDataType(_.type),
+                SchemaName: _.tableName,
+                Columns: mapColumnData(_.columns),
+                PrimaryKeyValue: _.pkval,
+            }));
+
+        return da;
     }
 
     removeAction(actions: Array<any>, idx) {
