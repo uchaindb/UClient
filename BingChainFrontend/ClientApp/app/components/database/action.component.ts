@@ -42,7 +42,7 @@ export class DatabaseActionComponent implements OnInit {
     generateActions(transactions: Array<Transaction>) {
         transactions.forEach(t => t.Actions.forEach(a => a.transaction = t));
         let dacts = transactions
-            .filter(_ => _.Type == 2)
+            .filter(_ => _.Type == "DataTransaction")
             .map(_ => _.Actions)
             .reduce((a, b) => a.concat(b), []);
 
@@ -86,7 +86,7 @@ export class DatabaseActionComponent implements OnInit {
         }, 1000);
 
         this.schemaActions = transactions
-            .filter(_ => _.Type == 1)
+            .filter(_ => _.Type == "SchemaTransaction")
             .map(_ => _.Actions)
             .reduce((a, b) => a.concat(b), []);
     }

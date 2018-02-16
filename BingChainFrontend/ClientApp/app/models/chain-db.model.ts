@@ -92,12 +92,14 @@ export class Block extends HashBase {
 
 }
 
+export type TransactionTypeEnum = "SchemaTransaction" | "DataTransaction" | "LockTransaction";
+
 export class Transaction extends HashBase {
     constructor(obj: Transaction = {} as Transaction) {
         let {
             Hash = null,
             Initiator = null,
-            Type = -1,
+            Type = null,
             Signature = null,
             Actions = [],
         } = obj;
@@ -110,7 +112,7 @@ export class Transaction extends HashBase {
     }
 
     public Initiator?: string;
-    public Type?: number;
+    public Type?: TransactionTypeEnum;
     public Signature?: string;
     public Actions?: Array<any>;
 
