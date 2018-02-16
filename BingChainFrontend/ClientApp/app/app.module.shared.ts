@@ -45,6 +45,7 @@ import { NewlinePipe } from "./pipe/newline.pipe";
 import { HashBeautyPipe } from "./pipe/hashbeauty.pipe";
 import { AnalyticService } from "./services/analytic.service";
 import { ChainDbService } from './services/chain-db.service';
+import { CryptographyService } from './services/cryptography.service';
 import { DatabaseActionComponent } from './components/database/action.component';
 import { DatabaseNavComponent } from './components/database/nav.component';
 import { KeyManagePage } from './components/user/key.page';
@@ -136,6 +137,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         AuthGuard,
         AppTranslationService,
         ChainDbService,
+        CryptographyService,
     ],
 })
 export class AppModuleShared {

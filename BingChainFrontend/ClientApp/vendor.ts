@@ -18,3 +18,5 @@ import 'angular2-lightbox/lightbox.css';
 import 'angular2-lightbox';
 import 'alertify.js';
 import 'alertify.js/dist/css/alertify.css';
+import 'elliptic';
+import 'sha.js';

@@ -7,6 +7,7 @@ import { AlertConfiguration } from '../../models/alert.model';
 import { NotificationService } from '../../services/notification.service';
 import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
+import { CryptographyService } from '../../services/cryptography.service';
 
 export type TransactionType = "schema" | "data";
 
@@ -81,6 +82,7 @@ export class DatabaseCreatePage implements OnInit {
         private router: Router,
         private alertService: AlertService,
         private notifyService: NotificationService,
+        private cryptoService: CryptographyService,
     ) { }
 
     ngOnInit() {
