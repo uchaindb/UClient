@@ -9,7 +9,7 @@ import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
 
-export type TransactionType = "schema" | "data";
+export type TransactionType = "schema" | "data" | "lock";
 
 @Component({
     selector: 'database-create',
@@ -23,6 +23,7 @@ export class DatabaseCreatePage implements OnInit {
     loaded = false;
     schemaActions: Array<any> = [];
     dataActions: Array<any> = [];
+    lockTargets: Array<any> = [];
     //schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ name: "Id", type: "string" }]) }];
     //dataActions: Array<any> = [{ type: "insert", tableName: "Donation", columns: { Id: "hello" }, }];
     selectedType: TransactionType = "schema";
@@ -32,6 +33,7 @@ export class DatabaseCreatePage implements OnInit {
     highlightColumn: string;
     selectedPrivateKey = "import";
     inputPrivateKey: string;
+    lockScripts: string;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -106,14 +108,15 @@ export class DatabaseCreatePage implements OnInit {
             );
         this.route.queryParamMap
             .subscribe((params: ParamMap) => {
-                let type = params.get('type') as TransactionType;
+                let type = params.get('type') as TransactionType;// || this.selectedType;
                 let action = params.get('action');
+                let target = params.get('target');
                 let name = params.get('name');
                 let pkval = params.get('pkval');
                 let col = params.get('col');
                 this.highlightColumn = col;
                 this.selectedType = type;
-                this.appendAction({ type: action, tableName: name, pkval: pkval });
+                this.appendAction({ type: type == "lock" ? target : action, tableName: name, pkval: pkval, col: col });
                 if (type == "schema" && action == "modify" && col) {
                     this.schemaActions[0].dropColumns = new LocalDataSource([{ name: col }]);
                 }
@@ -137,7 +140,7 @@ export class DatabaseCreatePage implements OnInit {
                     columns: {},
                 }, defs || {}));
         }
-        else {
+        else if (this.selectedType == "schema") {
             if (this.schemaActions.length >= 10)
                 this.alertService.showMessage("最多10个动作");
             else
@@ -145,6 +148,12 @@ export class DatabaseCreatePage implements OnInit {
                     columns: new LocalDataSource(),
                     modifyColumns: new LocalDataSource(),
                     dropColumns: new LocalDataSource()
+                }, defs || {}));
+        } else {
+            if (this.lockTargets.length >= 10)
+                this.alertService.showMessage("最多10个对象");
+            else
+                this.lockTargets.push(Object.assign({
                 }, defs || {}));
         }
     }
@@ -168,7 +177,10 @@ export class DatabaseCreatePage implements OnInit {
 
         if (this.selectedType == "data") {
             this.dataService.createDataTransaction(this.db, privKey, da)
-                .subscribe(_ => console.log(_));
+                .subscribe(_ => {
+                    this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
+                    this.router.navigate(['database', this.db.id, 'create']);
+                });
         }
     }
 
@@ -273,6 +285,14 @@ export class DatabaseCreatePage implements OnInit {
         console.log(value);
         if (value == "import") {
 
+        }
+    }
+
+    example(type: 'single' | 'multiple') {
+        if (type == 'single') {
+            this.lockScripts = "<USER_ADDRESS>\nOP_CheckSignature";
+        } else if (type == 'multiple') {
+            this.lockScripts = "<USER1_ADDRESS>\n<USER2_ADDRESS>\n...\n<USERn_ADDRESS>\n<n>\nOP_CheckOneOfMultiSignature";
         }
     }
 }

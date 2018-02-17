@@ -25,10 +25,19 @@
     <div class="panel-heading">
         <button type="button" class="close" title="add new table"
                 [routerLink]="['/database', db.id, 'create']"
-                [queryParams]="{type: 'schema', action: 'create'}" >
+                [queryParams]="{type: 'schema', action: 'create'}">
             <span class="glyphicon glyphicon-plus"></span>
         </button>
-        <h3 class="panel-title">数据表</h3>
+        <h3 class="panel-title">
+            数据表
+            <span class="btn-group btn-group-xs" role="group">
+                <button type="button" class="btn btn-warning" title="lock database"
+                        [routerLink]="['/database', db.id, 'create']"
+                        [queryParams]="{type: 'lock', target: 'database'}">
+                    <span class="glyphicon glyphicon-lock"></span> 锁定数据库
+                </button>
+            </span>
+        </h3>
     </div>
     <ul *ngIf="db && tables" class="list-group">
         <a *ngFor="let table of tables" [routerLink]="['/database', db.id, 'table', table.Name]" class="list-group-item">{{table.Name}}</a>

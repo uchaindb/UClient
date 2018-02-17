@@ -31,6 +31,11 @@
                         [queryParams]="{type: 'data', action: 'insert', name: tid}">
                     <span class="glyphicon glyphicon-plus"></span> 添加数据
                 </button>
+                <button type="button" class="btn btn-warning" title="lock database"
+                        [routerLink]="['/database', db.id, 'create']"
+                        [queryParams]="{type: 'lock', target: 'schema', name: tid}">
+                    <span class="glyphicon glyphicon-lock"></span> 锁定数据表
+                </button>
             </span>
         </h3>
     </div>
