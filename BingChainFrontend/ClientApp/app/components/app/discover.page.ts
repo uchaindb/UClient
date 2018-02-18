@@ -1,4 +1,8 @@
 ﻿import { Component, OnInit, Input } from '@angular/core';
+import { UiTextService } from '../../services/uitext.service';
+
+export type ArticleType = { title: string, url: string, author: string, date: string };
+export type InfoTabType = "guide" | "faq" | "db" | "case";
 
 @Component({
     selector: 'discover-page',
@@ -7,26 +11,23 @@
 })
 export class DiscoverPage implements OnInit {
 
-    articleList: Array<{ title: string, source: string, time: string, tags?: Array<string> }>;
+    originList: { [index: string]: Array<ArticleType> };
+    articleList: Array<ArticleType>;
+    selectedList: InfoTabType = "guide";
 
-    constructor() {
-        this.articleList = [
-            {
-                title: "​将区块链技术映射到实体经济？「UChainDb」想成为下一代区块链底层",
-                source: "Uchaindb",
-                time: "10 min ago",
-                tags: ["New"],
-            },
-            {
-                title: "布局区块链底层技术，「UChainDb」认为未来区块链底层公司不超过三家",
-                source: "Uchaindb",
-                time: "14 min ago",
-                tags: ["FAQ"],
-            },
-        ];
+    constructor(
+        private uitextService: UiTextService,
+    ) {
+        this.uitextService.getArticleList()
+            .subscribe(_ => this.setArticle(this.selectedList, _));
     }
 
     ngOnInit() {
     }
 
+    setArticle(tab: InfoTabType, list?: { [index: string]: Array<ArticleType> }) {
+        if (list != null) this.originList = list;
+
+        this.articleList = this.originList[tab];
+    }
 }

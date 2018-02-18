@@ -21,6 +21,7 @@ import { DatabaseCellPage } from "./components/database/cell.page";
 import { DatabaseTableComponent } from "./components/database/table.component";
 import { AboutPage } from './components/app/about.page';
 import { FeedbackPage } from './components/app/feedback.page';
+import { ArticlePage } from './components/app/article.page';
 
 import { NotificationService } from "./services/notification.service";
 import { OnlyNumberDirective } from "./directives/only-number.directive";
@@ -62,6 +63,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         AlertListPage,
         AlertDetailPage,
         DiscoverPage,
+        ArticlePage,
         UserMenuPage,
         LoginPage,
         DatabaseListPage,
@@ -90,6 +92,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         RouterModule.forRoot([
             { path: '', redirectTo: 'database', pathMatch: 'full' },
             { path: 'discover', component: DiscoverPage, canActivate: [AuthGuard], data: { title: "Latest", } },
+            { path: 'discover/:url', component: ArticlePage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'app/about', component: AboutPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'app/feedback', component: FeedbackPage, canActivate: [AuthGuard], data: { title: "Latest", } },
             { path: 'database', component: DatabaseListPage, canActivate: [AuthGuard], data: { title: "Latest", } },

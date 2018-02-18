@@ -22,8 +22,8 @@ export type ChainDbRpcMethod =
     ;
 @Injectable()
 export class ChainDbService extends EndpointFactory {
-    //private readonly _baseUrl: string = "/api/client/activities";
-    //get baseUrl() { return this.configurations.baseUrl + this._baseUrl; }
+    private readonly _baseUrl: string = "";
+    get baseUrl() { return this.configurations.baseUrl + this._baseUrl; }
 
     public static readonly DBKEY_CHAIN_DB_DATA = "chain_db";
     public static readonly DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS = "alert_config";
@@ -50,7 +50,7 @@ export class ChainDbService extends EndpointFactory {
         var dblist: Array<ChainDb> = [
             {
                 id: "1",
-                name: "灯火计划捐赠数据",
+                name: "备份灯火计划捐赠数据",
                 description: "由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。",
                 address: "http://localhost:7847/api/rpc",
                 image: "https://placeimg.com/200/200/any",
@@ -63,7 +63,11 @@ export class ChainDbService extends EndpointFactory {
                 image: "https://placeimg.com/100/100/any",
             },
         ];
-        return Observable.of(dblist);
+        let endpointUrl = `${this.baseUrl}/database.json`;
+
+        return this.http.get(endpointUrl)
+            .map((response: Response) => response.json())
+            .catch(error => Observable.of(dblist));
     }
 
     getAlertConfigList(dbid: string): Observable<Array<AlertConfiguration>> {
