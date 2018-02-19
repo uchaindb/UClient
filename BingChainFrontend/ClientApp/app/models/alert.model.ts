@@ -1,7 +1,7 @@
 ﻿export type AlertType = "chain-fork" | "table-schema" | "table-data-modify" | "column-data-modify" | "cell-data-modify";
 export type AlertData = {
-    lastBlockId?:string,
-    lastBlockHeight?:string,
+    lastBlockId?: string,
+    lastBlockHeight?: number,
     lastTransactionId?: string,
 }
 export type AlertConfiguration = {

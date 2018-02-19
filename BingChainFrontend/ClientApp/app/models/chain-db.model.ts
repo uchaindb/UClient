@@ -164,3 +164,152 @@ export type SchemaAction = {
     AddOrModifyColumns?: Array<SchemaColumnDefinition>,
     DropColumns?: Array<string>,
 }
+
+
+
+export  type UInt256 = string;
+export class RpcRequest { }
+export class RpcResponse { }
+
+export interface CreateDataTransactionRpcRequest extends RpcRequest {
+    // TODO: should be strong typed
+    Initiator?: string;
+    Signature?: string;
+    Actions?: DataAction[];
+    }
+
+export interface CreateSchemaTransactionRpcRequest extends RpcRequest {
+    // TODO: should be strong typed
+    Initiator?: string;
+    Signature?: string;
+    Actions?: SchemaAction[];
+    }
+
+export interface ConnectRpcResponse extends RpcResponse {
+    NodeId: string;
+}
+export interface StatusRpcResponse extends RpcResponse {
+    Height: number;
+    Tail: Block;
+}
+
+export interface BlocksRpcRequest extends RpcRequest {
+    // TODO: should be strong typed
+    BlockLocatorHashes: string[];
+    }
+
+export interface BlocksRpcResponse extends RpcResponse {
+    Blocks: Block[];
+}
+
+//export interface StatesRpcResponse extends RpcResponse {
+//    States: State[];
+//}
+
+//export interface ListContractRpcResponse extends RpcResponse {
+//    // TODO: should be strong typed
+//    Contracts: string[];
+//}
+
+//export interface VerifyContractRpcRequest extends RpcRequest {
+//    ContractCode: string;
+//    }
+
+//export interface VerifyContractRpcResponse extends RpcResponse {
+//    Schema: JsonSchema;
+//}
+
+//export interface CreateContractRpcRequest extends RpcRequest {
+//    ContractCode: string;
+//    // TODO: should be strong typed
+//    Initiator: string;
+//    Signature: string;
+//    Parameters: string[];
+//    }
+
+//export interface CreateContractRpcResponse extends RpcResponse {
+//    ContractId: UInt256;
+//}
+
+//export interface CreateTransactionRpcRequest extends RpcRequest {
+//    ContractId: UInt256;
+//    Method: string;
+//    // TODO: should be strong typed
+//    Initiator: string;
+//    Signature: string;
+//    Parameters: string[];
+
+//    }
+
+export interface CreateTransactionRpcResponse extends RpcResponse {
+    TransactionId: UInt256;
+}
+
+//export interface GetTransactionSchemaRpcResponse extends RpcResponse {
+//    Schemas: JsonSchema[];
+//}
+
+//export interface GetTransactionSchemaRpcRequest extends RpcRequest {
+//    ContractId: UInt256;
+//    }
+
+export interface QueryDataRpcRequest extends RpcRequest {
+    TableName: string;
+    Start: number;
+    Count: number;
+    //Headers: string[];
+    //Query: string[];
+
+    }
+
+export interface QueryDataRpcResponse extends RpcResponse {
+    PrimaryKeyName: string;
+    Headers: string[];
+    Data: string[];
+    HeaderHistories: HistoryEntry[];
+    DataHistories: HistoryEntry[];
+
+    }
+
+export interface HistoryEntry {
+    TransactionHash: UInt256;
+    HistoryLength: number;
+}
+
+export interface QueryDataResponseRow {
+    Cells: string[];
+}
+
+export interface ListTablesRpcResponse extends RpcResponse {
+    Tables: ListTableSchema[];
+}
+
+export interface ListTableSchema {
+    Name: string;
+    Headers: string[];
+}
+
+export interface QueryChainRpcRequest extends RpcRequest {
+    Hash: string;
+    Height: number | null;
+    }
+
+export interface QueryChainRpcResponse extends RpcResponse {
+    Block?: Block;
+    Transaction?: Transaction;
+}
+
+export interface QueryCellRpcRequest extends RpcRequest {
+    TableName: string;
+    PrimaryKeyValue: string;
+    ColumnName: string;
+    }
+
+export interface QueryCellRpcResponse extends RpcResponse {
+    Transactions: UInt256[];
+
+    PrimaryKeyName: string;
+    Headers: string[];
+    Row: string[];
+    RowHistories: HistoryEntry[];
+}

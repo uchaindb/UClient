@@ -6,7 +6,7 @@ import { EndpointFactory } from "./endpoint-factory.service";
 import { Http, Headers, Response, RequestOptions } from "@angular/http";
 import { Router } from "@angular/router";
 import { Pager } from "../models/pager.model";
-import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction } from '../models/chain-db.model';
+import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTransactionRpcResponse } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
 import { CryptographyService } from './cryptography.service';
@@ -98,7 +98,7 @@ export class ChainDbService extends EndpointFactory {
         this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
     }
 
-    refreshAlerts(): Observable<any> {
+    refreshAlerts(): Observable<boolean> {
         let alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
         let obsList = alertList
             //.filter(_ => _.type == "chain-fork")
@@ -166,15 +166,15 @@ export class ChainDbService extends EndpointFactory {
             .concatAll();
     }
 
-    addChainDb(db: ChainDb): Observable<any> {
+    addChainDb(db: ChainDb): Observable<boolean> {
         var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
         dblist.push(db);
         this.localStoreManager.savePermanentData(dblist, ChainDbService.DBKEY_CHAIN_DB_DATA);
 
-        return Observable.of(null);
+        return Observable.of(true);
     }
 
-    getChainDbStatus(db: ChainDb): Observable<any> {
+    getChainDbStatus(db: ChainDb): Observable<StatusRpcResponse> {
         return this.rpcCall(db.address, "Status", []);
     }
 
@@ -183,19 +183,19 @@ export class ChainDbService extends EndpointFactory {
         return Observable.of(dblist.find(_ => _.id == dbid));
     }
 
-    getChainDbTableNames(db: ChainDb): Observable<any> {
+    getChainDbTableNames(db: ChainDb): Observable<ListTablesRpcResponse> {
         return this.rpcCall(db.address, "ListTables", []);
     }
 
     getChainDbTable(db: ChainDb, tableName: string): Observable<QueryTableResponse> {
         return this.rpcCall(db.address, "QueryData", [tableName, 0, 100]).
-            map(_ => {
-                let dataHist = _.DataHistories as Array<HistoryEntry>;
-                let colHist = _.HeaderHistories as Array<HistoryEntry>;
+            map((_: QueryDataRpcResponse) => {
+                let dataHist = _.DataHistories;
+                let colHist = _.HeaderHistories;
                 let pkname = _.PrimaryKeyName;
 
                 let columns: Array<ColumnDef> = [];
-                let headers: Array<any> = _.Headers;
+                let headers = _.Headers;
                 let pkidx = headers.findIndex(_ => _ == pkname);
                 let colCount = headers.length;
                 for (let i = 0; i < colCount; i++) {
@@ -238,17 +238,17 @@ export class ChainDbService extends EndpointFactory {
             });
     }
 
-    getQueryChain(db: ChainDb, mixId: string): Observable<any> {
+    getQueryChain(db: ChainDb, mixId: string): Observable<QueryChainRpcResponse> {
         return this.rpcCall(db.address, "QueryChain", [mixId]);
     }
 
     getQueryCell(db: ChainDb, tableName: string, primaryKeyValue: string, columnName: string): Observable<QueryCellResponse> {
         return this.rpcCall(db.address, "QueryCell", [tableName, primaryKeyValue, columnName])
-            .map(_ => {
+            .map((_: QueryCellRpcResponse) => {
                 let row: RowDef = [];
-                let headers: Array<any> = _.Headers;
-                let data: Array<any> = _.Row;
-                let datahist: Array<HistoryEntry> = _.RowHistories;
+                let headers = _.Headers;
+                let data = _.Row;
+                let datahist = _.RowHistories;
                 let pkname = _.PrimaryKeyName;
                 let pkidx = headers.findIndex(_ => _ == pkname);
                 let pkval = data[pkidx];
@@ -281,7 +281,7 @@ export class ChainDbService extends EndpointFactory {
             });
     }
 
-    createDataTransaction(db: ChainDb, privateKey: string, actions: Array<DataAction>): Observable<any> {
+    createDataTransaction(db: ChainDb, privateKey: string, actions: Array<DataAction>): Observable<CreateTransactionRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = this.cryptoService.getAddress(pubKey);
         //let baseContent = `${initiator}|${Actions?.Select(_ => _.ToString()) ?? new string[] { })}";
