@@ -10,6 +10,7 @@ import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transacti
 import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
 import { CryptographyService } from './cryptography.service';
+import { NotificationService } from './notification.service';
 
 export type ChainDbRpcMethod =
     "Status" |
@@ -34,6 +35,7 @@ export class ChainDbService extends EndpointFactory {
         injector: Injector,
         private localStoreManager: LocalStoreManager,
         private cryptoService: CryptographyService,
+        private notificationService: NotificationService,
     ) {
         super(http, configurations, injector);
     }
@@ -94,6 +96,74 @@ export class ChainDbService extends EndpointFactory {
             );
         alertList.splice(idx, 1);
         this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
+    }
+
+    refreshAlerts(): Observable<any> {
+        let alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
+        let obsList = alertList
+            //.filter(_ => _.type == "chain-fork")
+            .map(_ => this.generateAlertNotification(_));
+        //for (let i = 0; i < alertList.length; i++) {
+        //    let alert = alertList[i];
+
+        //    this.generateAlertNotification(alert);
+        //}
+
+        //console.log("obs list", obsList);
+        return Observable.forkJoin(obsList)
+            .map(_ => {
+                console.log("write back", _);
+                this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
+                return true;
+            });
+
+    }
+
+    private generateAlertNotification(alert: AlertConfiguration): Observable<any> {
+        return this.getChainDb(alert.dbid)
+            .map(db => {
+                let result: Observable<any> = Observable.of({});
+
+                if (alert.type == "chain-fork") {
+                    // detect change if data exist
+                    if (alert.data && alert.data.lastBlockId) {
+                        result = result.concat(
+                            this.getQueryChain(db, alert.data.lastBlockId)
+                                .map(resp => {
+                                    //console.log("detecting change", resp, alert.data);
+                                    if (!(resp.Block && resp.Block.Hash == alert.data.lastBlockId && resp.Block.Height == alert.data.lastBlockHeight)) {
+                                        this.notificationService.createNotification(`database [${db.id}]${db.name} fork detected`, alert);
+                                    }
+                                }));
+                    }
+
+                    // update data using fresh server data
+                    result = result.concat(this.getChainDbStatus(db)
+                        .map(sts => {
+                            alert.data = { lastBlockHeight: sts.Tail.Height, lastBlockId: sts.Tail.Hash };
+                            //console.log("update data", sts);
+                        }));
+                } else if (alert.type == "table-schema") {
+                    // detect change if data exist
+                    if (alert.data && alert.data.lastTransactionId) {
+                    }
+                } else if (alert.type == "table-data-modify") {
+                    // detect change if data exist
+                    if (alert.data && alert.data.lastTransactionId) {
+                    }
+                } else if (alert.type == "column-data-modify") {
+                    // detect change if data exist
+                    if (alert.data && alert.data.lastTransactionId) {
+                    }
+                } else if (alert.type == "cell-data-modify") {
+                    // detect change if data exist
+                    if (alert.data && alert.data.lastTransactionId) {
+                    }
+                }
+
+                return result;
+            })
+            .concatAll();
     }
 
     addChainDb(db: ChainDb): Observable<any> {

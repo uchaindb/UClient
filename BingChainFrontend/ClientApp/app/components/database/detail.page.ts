@@ -81,4 +81,12 @@ export class DatabaseDetailPage implements OnInit {
         this.alertService.showMessage('alert removed', '', MessageSeverity.success);
         this.refreshAlerts();
     }
+
+    refreshAlertNotification() {
+        this.dataService.refreshAlerts()
+            .subscribe(_ => {
+                console.log("refreshed",_);
+                this.alertService.showMessage('alert notification refreshed', '', MessageSeverity.success);
+            });
+    }
 }
