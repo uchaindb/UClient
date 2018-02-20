@@ -167,7 +167,7 @@ export type SchemaAction = {
 
 
 
-export  type UInt256 = string;
+export type UInt256 = string;
 export class RpcRequest { }
 export class RpcResponse { }
 
@@ -176,14 +176,14 @@ export interface CreateDataTransactionRpcRequest extends RpcRequest {
     Initiator?: string;
     Signature?: string;
     Actions?: DataAction[];
-    }
+}
 
 export interface CreateSchemaTransactionRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     Initiator?: string;
     Signature?: string;
     Actions?: SchemaAction[];
-    }
+}
 
 export interface ConnectRpcResponse extends RpcResponse {
     NodeId: string;
@@ -196,7 +196,7 @@ export interface StatusRpcResponse extends RpcResponse {
 export interface BlocksRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     BlockLocatorHashes: string[];
-    }
+}
 
 export interface BlocksRpcResponse extends RpcResponse {
     Blocks: Block[];
@@ -260,7 +260,7 @@ export interface QueryDataRpcRequest extends RpcRequest {
     //Headers: string[];
     //Query: string[];
 
-    }
+}
 
 export interface QueryDataRpcResponse extends RpcResponse {
     PrimaryKeyName: string;
@@ -269,7 +269,7 @@ export interface QueryDataRpcResponse extends RpcResponse {
     HeaderHistories: HistoryEntry[];
     DataHistories: HistoryEntry[];
 
-    }
+}
 
 export interface HistoryEntry {
     TransactionHash: UInt256;
@@ -287,12 +287,13 @@ export interface ListTablesRpcResponse extends RpcResponse {
 export interface ListTableSchema {
     Name: string;
     Headers: string[];
+    History: HistoryEntry;
 }
 
 export interface QueryChainRpcRequest extends RpcRequest {
     Hash: string;
     Height: number | null;
-    }
+}
 
 export interface QueryChainRpcResponse extends RpcResponse {
     Block?: Block;
@@ -303,7 +304,8 @@ export interface QueryCellRpcRequest extends RpcRequest {
     TableName: string;
     PrimaryKeyValue: string;
     ColumnName: string;
-    }
+    Columns: string[];
+}
 
 export interface QueryCellRpcResponse extends RpcResponse {
     Transactions: UInt256[];

@@ -36,7 +36,7 @@ export class DatabaseCellPage implements OnInit {
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
-                        this.dataService.getQueryCell(this.db, tid, this.pkval, this.column)
+                        this.dataService.getQueryCell(this.db, tid, this.pkval, this.column, null)
                             .subscribe(_ => {
                                 this.tableData = _.data;
                                 this.transactions = _.transactions;

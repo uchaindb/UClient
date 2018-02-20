@@ -1,14 +1,14 @@
 ﻿<database-nav [dbid]="db.id" [dbname]="db.name" [current]="tableData?.tableName"></database-nav>
 <div class="panel panel-success">
     <div class="panel-heading">
-        <button type="button" class="close" (click)="toggleMonitor(alertTableData)"
+        <button *ngIf="false" type="button" class="close" (click)="toggleMonitor(alertTableData)"
                 title="monitor 表信息">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorData"
                   [class.glyphicon-star]="monitorData"></span>
         </button>
         <button type="button" class="close" (click)="toggleMonitor(alertTableSchema)"
-                title="monitor 表结构">
+                title="monitor 表结构 and 信息">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorSchema"
                   [class.glyphicon-star]="monitorSchema"></span>

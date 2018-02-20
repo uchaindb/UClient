@@ -6,7 +6,7 @@ import { EndpointFactory } from "./endpoint-factory.service";
 import { Http, Headers, Response, RequestOptions } from "@angular/http";
 import { Router } from "@angular/router";
 import { Pager } from "../models/pager.model";
-import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTransactionRpcResponse } from '../models/chain-db.model';
+import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTransactionRpcResponse, ListTableSchema } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
 import { CryptographyService } from './cryptography.service';
@@ -144,21 +144,51 @@ export class ChainDbService extends EndpointFactory {
                             //console.log("update data", sts);
                         }));
                 } else if (alert.type == "table-schema") {
+                    let query = this.getChainDbTableNames(db)
+                        .map((resp: ListTablesRpcResponse) => resp.Tables.filter(_ => _.Name == alert.tableName)[0]);
                     // detect change if data exist
                     if (alert.data && alert.data.lastTransactionId) {
+                        query = query
+                            .map(table => {
+                                if (table.History.TransactionHash != alert.data.lastTransactionId) {
+                                    this.notificationService.createNotification(`table [${alert.tableName}] schema changed from transaction [${alert.data.lastTransactionId}] to [${table.History.TransactionHash}]`, alert);
+                                }
+                                //console.log("generate noti.. from data", table);
+                                return table;
+                            });
                     }
+
+                    // update data using fresh server data
+                    query = query.map(table => {
+                        //console.log("update data", table);
+                        alert.data = { lastTransactionId: table.History.TransactionHash };
+                        return table;
+                    })
+                    result = result.concat(query);
                 } else if (alert.type == "table-data-modify") {
-                    // detect change if data exist
-                    if (alert.data && alert.data.lastTransactionId) {
-                    }
+                    // TODO: consider once again how this function implemented
                 } else if (alert.type == "column-data-modify") {
-                    // detect change if data exist
-                    if (alert.data && alert.data.lastTransactionId) {
-                    }
+                    // TODO: consider once again if this type is needed
                 } else if (alert.type == "cell-data-modify") {
+                    let query = this.getQueryCell(db, alert.tableName, alert.primaryKeyValue, alert.columnName, [alert.columnName])
+                        .map(_ => _.transactions.slice(-1)[0].Hash);
                     // detect change if data exist
                     if (alert.data && alert.data.lastTransactionId) {
+                        query = query
+                            .map(hash => {
+                                if (hash != alert.data.lastTransactionId) {
+                                    this.notificationService.createNotification(`cell [${alert.primaryKeyValue}-${alert.columnName}] of table [${alert.tableName}] has changed from transaction [${alert.data.lastTransactionId}] to [${hash}]`, alert);
+                                }
+                                return hash;
+                            });
                     }
+
+                    // update data using fresh server data
+                    query = query.map(hash => {
+                        alert.data = { lastTransactionId: hash };
+                        return hash;
+                    })
+                    result = result.concat(query);
                 }
 
                 return result;
@@ -242,8 +272,9 @@ export class ChainDbService extends EndpointFactory {
         return this.rpcCall(db.address, "QueryChain", [mixId]);
     }
 
-    getQueryCell(db: ChainDb, tableName: string, primaryKeyValue: string, columnName: string): Observable<QueryCellResponse> {
-        return this.rpcCall(db.address, "QueryCell", [tableName, primaryKeyValue, columnName])
+    getQueryCell(db: ChainDb, tableName: string, primaryKeyValue: string, columnName: string, columns: string[]): Observable<QueryCellResponse> {
+        columns = columns || [];
+        return this.rpcCall(db.address, "QueryCell", [tableName, primaryKeyValue, columnName, ...columns])
             .map((_: QueryCellRpcResponse) => {
                 let row: RowDef = [];
                 let headers = _.Headers;

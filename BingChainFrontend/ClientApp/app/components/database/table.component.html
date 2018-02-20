@@ -6,7 +6,7 @@
                     {{col.name}}
                 </a>
                 <span *ngIf="col.name == table.pkname" class="label label-primary">PK</span>
-                <button type="button" class="watch" (click)="toggleMonitor(alertColumnData, col.name)"
+                <button *ngIf="false" type="button" class="watch" (click)="toggleMonitor(alertColumnData, col.name)"
                         title="monitor column">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorColumn[col.name]"
