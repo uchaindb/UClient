@@ -1,0 +1,26 @@
+{
+  "name": "uchaindb.uclient",
+  "displayName": "UClient",
+  "version": "1.0.0",
+  "description": "Universal Client for UChainDb",
+  "main": "index.js",
+  "scripts": {
+    "copy": "rm -rf www && cp -r ../src/wwwroot www",
+    "splash": "splashicon-generator",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Icer Liang",
+  "license": "MIT",
+  "dependencies": {
+    "cordova-browser": "^5.0.3",
+    "cordova-plugin-whitelist": "^1.3.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "browser"
+    ]
+  }
+}
