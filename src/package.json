@@ -1,10 +1,23 @@
 {
-  "version": "1.0.0",
-  "name": "asp.net",
-  "private": true,
+  "name": "UClient",
+  "version": "0.0.1",
+  "description": "universal client for uchaindb",
+  "author": {
+    "name": "Icer Liang",
+    "email": "liangshuang@uchaindb.com",
+    "url": "https://www.uchaindb.com/about"
+  },
+  "license": "MIT",
+  "homepage": "https://www.uchaindb.com",
+  "bin": {
+    "webpack": "./node_modules/webpack/bin/webpack.js",
+    "webpack-dev-server": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js"
+  },
   "scripts": {
     "extract": "ngx-translate-extract --input ./ClientApp --output ./ClientApp/assets/locale/zh.json --sort --clean --format namespaced-json --format-indentation \"  \" --marker gT",
-    "test": "karma start ClientApp/test/karma.conf.js"
+    "test": "karma start ClientApp/test/karma.conf.js",
+    "serve": "webpack-dev-server --progress --bail --open --hot --content-base wwwroot/ --history-api-fallback",
+    "build": "webpack --env.prod"
   },
   "dependencies": {
     "@angular/animations": "4.1.2",
@@ -69,6 +82,7 @@
     "karma-jasmine": "1.1.0",
     "karma-webpack": "2.0.3",
     "ng2-smart-table": "^1.2.2",
-    "sha.js": "^2.4.10"
+    "sha.js": "^2.4.10",
+    "webpack-dev-server": "^2.11.1"
   }
 }
