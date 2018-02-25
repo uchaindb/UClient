@@ -140,76 +140,9 @@ export class AppComponent implements OnInit {
 
         this.isUserLoggedIn = this.authService.isLoggedIn;
 
-        //setTimeout(() => {
-        //    if (this.isUserLoggedIn) {
-        //        this.alertService.resetStickyMessage();
-
-        //        //if (!this.authService.isSessionExpired)
-        //        //    this.alertService.showMessage("Login", `Welcome back!`, MessageSeverity.default);
-        //        //else
-        //        //    this.alertService.showStickyMessage("Session Expired", "Your Session has expired. Please log in again", MessageSeverity.warn);
-        //        //
-        //        if (this.authService.isSessionExpired) {
-        //            this.authService.refreshLogin().subscribe(
-        //                _ => isDevMode() && console.log("refreshed login"),
-        //                err => {
-        //                    this.alertService.showStickyMessage(this.translations.sessionExpiredTitle, this.translations.sessionExpiredContent, MessageSeverity.warn);
-        //                });
-        //        }
-        //    }
-        //}, 1000);
-
-        //this.authService.reLoginDelegate = () => this.shouldShowLoginModal = true;
-
         this.authService.getLoginStatusEvent().subscribe(isLoggedIn => {
             this.isUserLoggedIn = isLoggedIn;
-
-            setTimeout(() => {
-                if (!this.isUserLoggedIn) {
-                    this.alertService.showMessage(this.translations.sessionEndedTitle, this.translations.sessionEndedContent, MessageSeverity.default);
-                }
-            }, 500);
         });
-
-        //if (this.authService.isLoggedIn) {
-        //    this.meService
-        //        .getProfile();
-        //    this.meService.ProfileUpdated
-        //        .subscribe(res => {
-        //            isDevMode() && console.log("app updated profile");
-        //            this.tagCustomer(res);
-        //            this.medot = res.reservedProject != null;
-        //        });
-        //}
-    }
-
-    //taggedRealNameStatus: string;
-    //taggedVolunteerStatus: string;
-    //taggedLoggedIn: string;
-    taggedLevel: string;
-    tagCustomer(profile: any) {
-        var level = "登录用户";
-        level = (profile.realNameVerificationStatus == "Verified" ? "实名认证" : level);
-        level = (profile.volunteerStatus == "Volunteer" ? "点灯人" : level);
-        if (this.taggedLevel != level) {
-            this.taggedLevel = level;
-            this.analyticService.tagCustomer("用户级别", this.taggedLevel);
-        }
-
-        //var realNameStatus = (profile.realNameVerificationStatus == "Verified" ? "已实名认证" : null)
-        //if (this.taggedRealNameStatus != realNameStatus) {
-        //    this.taggedRealNameStatus = realNameStatus;
-        //    this.analyticService.tagCustomer("实名认证", this.taggedRealNameStatus);
-        //}
-        //var volunteerStatus = (profile.volunteerStatus == "Volunteer" ? "已成为点灯人" : null)
-        //if (this.taggedVolunteerStatus != volunteerStatus) {
-        //    this.taggedVolunteerStatus = volunteerStatus;
-        //    this.analyticService.tagCustomer("点灯人", this.taggedVolunteerStatus);
-        //}
-        //if (this.taggedLoggedIn == null) {
-        //    this.taggedLoggedIn = "已登录用户";
-        //    this.analyticService.tagCustomer("登录用户", this.taggedLoggedIn);
-        //}
     }
 
     // get from https://stackoverflow.com/a/38652281/2558077
@@ -274,10 +207,6 @@ export class AppComponent implements OnInit {
         }
     }
 
-
-
-
-
     showToast(message: AlertMessage, isSticky: boolean) {
         if (message == null) {
             for (let id of this.stickyToasties.slice(0)) {
@@ -292,7 +221,6 @@ export class AppComponent implements OnInit {
             msg: message.detail,
             timeout: isSticky ? 0 : 4000
         };
-
 
         if (isSticky) {
             toastOptions.onAdd = (toast: ToastData) => this.stickyToasties.push(toast.id);
@@ -319,47 +247,4 @@ export class AppComponent implements OnInit {
             case MessageSeverity.wait: this.toastyService.wait(toastOptions); break;
         }
     }
-
-    //@ViewChildren('loginModal,loginControl')
-    //modalLoginControls: QueryList<any>;
-
-    //loginModal: ModalDirective;
-    //loginControl: LoginComponent;
-
-    //ngAfterViewInit() {
-
-    //    this.modalLoginControls.changes.subscribe((controls: QueryList<any>) => {
-    //        controls.forEach(control => {
-    //            if (control) {
-    //                if (control instanceof LoginComponent) {
-    //                    this.loginControl = control;
-    //                    this.loginControl.modalClosedCallback = () => this.loginModal.hide();
-    //                }
-    //                else {
-    //                    this.loginModal = control;
-    //                    this.loginModal.show();
-    //                }
-    //            }
-    //        });
-    //    });
-    //}
-
-    //onLoginModalShown() {
-    //    this.alertService.showStickyMessage("Session Expired", "Your Session has expired. Please log in again", MessageSeverity.info);
-    //}
-
-
-    //onLoginModalHidden() {
-    //    this.alertService.resetStickyMessage();
-    //    this.loginControl.reset();
-    //    this.shouldShowLoginModal = false;
-
-    //    if (this.authService.isSessionExpired)
-    //        this.alertService.showStickyMessage("Session Expired", "Your Session has expired. Please log in again to renew your session", MessageSeverity.warn);
-    //}
-
-
-    //onLoginModalHide() {
-    //    this.alertService.resetStickyMessage();
-    //}
 }
