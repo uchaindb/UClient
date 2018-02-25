@@ -1,22 +1,13 @@
-﻿<database-nav current="添加"></database-nav>
+﻿<database-nav current="{{ 'db.add.Title' | translate }}"></database-nav>
 <div class="help-block"></div>
 <div class="input-group input-group-sm">
     <span class="input-group-addon glyphicon glyphicon-search"></span>
-    <input type="text" class="form-control" placeholder="search...">
+    <input type="text" class="form-control" placeholder="{{ 'db.add.SearchPlaceholder' | translate }}">
 </div>
-<!--<a href="#" class="list-group-item">
-    <div class="media-left">
-        <img class="media-object" src="https://placeimg.com/48/48/any">
-    </div>
-    <div class="media-body">
-        <h4 class="list-group-item-heading">灯火计划捐赠数据</h4>
-        <p class="list-group-item-text">由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。</p>
-    </div>
-</a>-->
 
 <hr />
 <div class="panel panel-default">
-    <div class="panel-heading">Recommend</div>
+    <div class="panel-heading">{{ 'db.add.RecommendTitle' | translate }}</div>
     <div class="list-group">
         <button type="button" *ngFor="let item of recommendList" (click)="select(item)" class="list-group-item">
             <div class="media-left">

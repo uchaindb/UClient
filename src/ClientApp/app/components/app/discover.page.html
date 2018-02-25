@@ -2,16 +2,16 @@
 <div class="text-center-xs">
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-success" (click)="setArticle('guide')">
-            <span class="glyphicon glyphicon-apple"></span> 入门指南
+            <span class="glyphicon glyphicon-apple"></span> {{ 'discover.list.GuideTabButtonText' | translate }}
         </button>
         <button type="button" class="btn btn-primary" (click)="setArticle('faq')">
-            <span class="glyphicon glyphicon-question-sign"></span> 常见问答
+            <span class="glyphicon glyphicon-question-sign"></span> {{ 'discover.list.FaqTabButtonText' | translate }}
         </button>
         <!--<button type="button" class="btn btn-danger" (click)="setArticle('db')">
-            <span class="glyphicon glyphicon-hdd"></span> 发现链库
+            <span class="glyphicon glyphicon-hdd"></span> {{ 'discover.list.DbTabButtonText' | translate }}
         </button>-->
         <button type="button" class="btn btn-warning" (click)="setArticle('case')">
-            <span class="glyphicon glyphicon-stats"></span> 案例研究
+            <span class="glyphicon glyphicon-stats"></span> {{ 'discover.list.CaseTabButtonText' | translate }}
         </button>
     </div>
 </div>

@@ -1,41 +1,41 @@
 ﻿<ul class="list-group">
     <li *ngFor="let alert of configs" class="list-group-item">
-        <button *ngIf="showDelete" type="button" (click)="remove(alert)" class="pull-right btn btn-primary btn-xs">delete</button>
+        <button *ngIf="showDelete" type="button" (click)="remove(alert)" class="pull-right btn btn-primary btn-xs">{{ 'db.alert.RemoveButtonText' | translate }}</button>
         <button type="button" (click)="notify(alert)" class="pull-right btn btn-danger btn-xs">notify</button>
         <ng-container [ngSwitch]="alert.type">
             <ng-template [ngSwitchCase]="'chain-fork'">
                 <span class="glyphicon glyphicon-random"></span>
-                &nbsp;监控 <b>链库的<abbr title="explain of fork">分叉</abbr></b>
+                &nbsp;<span innerHtml="{{ 'db.alert.detail.ChainFork' | translate }}"></span>
             </ng-template>
             <ng-template [ngSwitchCase]="'table-schema'">
                 <span class="glyphicon glyphicon-list-alt"></span>
-                &nbsp;监控 <b>表的<abbr title="explain of schema">结构修改</abbr></b>
+                &nbsp;<span innerHtml="{{ 'db.alert.detail.TableSchema' | translate }}"></span>
             </ng-template>
             <ng-template [ngSwitchCase]="'table-data-modify'">
                 <span class="glyphicon glyphicon-list"></span>
-                &nbsp;监控 <b>表的<abbr title="explain of data modify">数据修改</abbr></b>
+                &nbsp;<span innerHtml="{{ 'db.alert.detail.TableDataModify' | translate }}"></span>
             </ng-template>
             <ng-template [ngSwitchCase]="'column-data-modify'">
                 <span class="glyphicon glyphicon-option-vertical"></span>
-                &nbsp;监控 <b>数据列的<abbr title="explain of data modify">数据修改</abbr></b>
+                &nbsp;<span innerHtml="{{ 'db.alert.detail.ColumnDataModify' | translate }}"></span>
             </ng-template>
             <ng-template [ngSwitchCase]="'cell-data-modify'">
                 <span class="glyphicon glyphicon-unchecked"></span>
-                &nbsp;监控 <b>单元格的<abbr title="explain of data modify">数据修改</abbr></b>
+                &nbsp;<span innerHtml="{{ 'db.alert.detail.CellDataModify' | translate }}"></span>
             </ng-template>
         </ng-container>
         <ul class="alert-detail-list">
             <li *ngIf="alert.dbname && showDb">
-                链库: <mark>{{alert.dbname}}</mark>
+                {{ 'db.alert.detail.DatabaseName' | translate }} <mark>{{alert.dbname}}</mark>
             </li>
             <li *ngIf="alert.tableName">
-                表: <mark>{{alert.tableName}}</mark>
+                {{ 'db.alert.detail.TableName' | translate }} <mark>{{alert.tableName}}</mark>
             </li>
             <li *ngIf="alert.columnName">
-                列: <mark>{{alert.columnName}}</mark>
+                {{ 'db.alert.detail.ColumnName' | translate }} <mark>{{alert.columnName}}</mark>
             </li>
             <li *ngIf="alert.primaryKeyValue">
-                主键值: <mark>{{alert.primaryKeyValue}}</mark>
+                {{ 'db.alert.detail.PrimaryKeyValue' | translate }} <mark>{{alert.primaryKeyValue}}</mark>
             </li>
         </ul>
     </li>

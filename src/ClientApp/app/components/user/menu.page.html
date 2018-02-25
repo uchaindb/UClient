@@ -1,54 +1,21 @@
 ﻿<div class="container">
-    <!--<div class="panel panel-default">
-        <div class="panel-heading">{{ 'me.menu.page.heading' | translate }}</div>
-        <div class="panel-body media">
-            <div class="media-left">
-                <a routerLink="Profile">
-                    <img class="portrait media-object" [src]="portrait || '/images/no_profile.jpg'" alt="portrait">
-                </a>
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading">
-                    {{nickName}}
-                    <a *ngIf="verificationStatus != 'Verified'" routerLink="RealName" class="btn btn-warning btn-xs">{{ 'me.menu.page.RealNameVerificationLink' | translate }}</a>
-                    <span *ngIf="verificationStatus == 'Verified'" class="label label-primary">{{ 'me.menu.page.RealNameVerified' | translate }}</span>
-                    <span *ngIf="volunteerStatus == 'Volunteer'" class="label label-success">{{ 'me.menu.page.Volunteer' | translate }}</span>
-                </h4>
-                <ng-container *ngIf="detail && detail.money == 0">{{ 'me.menu.page.PersonalDetailWithoutWallet' | translate:detail }}</ng-container>
-                <ng-container *ngIf="detail && detail.money != 0">{{ 'me.menu.page.PersonalDetail' | translate:detail }}</ng-container>
-            </div>
-        </div>
-    </div>-->
     <div class="row">
-        <div *ngFor="let item of list" [class]="layoutclass">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{item.category}}</div>
-                <div class="list-group">
-                    <ng-container *ngFor="let link of item.items">
-                        <a href="javascript:void(0);" *ngIf="link.show" (click)="menuClick(link)" class="list-group-item" [class.newinfo]="link.newinfo">
-                            <i class="glyphicon glyphicon-{{link.icon}}"></i>
-                            {{link.name}}
-                        </a>
-                    </ng-container>
-                </div>
-            </div>
-        </div>
         <div [class]="layoutclass">
             <div class="panel panel-default">
-                <div class="panel-heading">{{ 'me.menu.list.other.Title' | translate }}</div>
+                <div class="panel-heading">{{ 'me.menu.list.OtherTitle' | translate }}</div>
                 <div class="list-group">
                     <a [routerLink]="['/user', 'keys' ]" class="list-group-item">
-                        <i class="glyphicon glyphicon-lock"></i> Private Key Manage
+                        <i class="glyphicon glyphicon-lock"></i> {{ 'me.menu.list.PrivateKeyManager' | translate }}
                     </a>
                     <a [routerLink]="['/app', 'about' ]" class="list-group-item">
-                        <i class="glyphicon glyphicon-info-sign"></i> About
+                        <i class="glyphicon glyphicon-info-sign"></i> {{ 'me.menu.list.About' | translate }}
                     </a>
                     <a [routerLink]="['/app', 'feedback' ]" class="list-group-item">
-                        <i class="glyphicon glyphicon-send"></i> Contact/Feedback
+                        <i class="glyphicon glyphicon-send"></i> {{ 'me.menu.list.Feedback' | translate }}
                     </a>
                     <!--<button (click)="logout()" class="list-group-item list-group-item-danger">
                         <i class="glyphicon glyphicon-log-out"></i>
-                        {{ 'me.menu.list.other.Logout' | translate }}
+                        {{ 'me.menu.list.Logout' | translate }}
                     </button>-->
                 </div>
             </div>

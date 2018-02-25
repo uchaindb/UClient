@@ -8,13 +8,13 @@
             <h3 class="panel-title">
                 <ng-container [ngSwitch]="action.Type">
                     <ng-template [ngSwitchCase]="'CreateSchemaAction'">
-                        Create
+                        {{ 'db.chain.schemaAction.CreateName' | translate }}
                     </ng-template>
                     <ng-template [ngSwitchCase]="'ModifySchemaAction'">
-                        Modify
+                        {{ 'db.chain.schemaAction.ModifyName' | translate }}
                     </ng-template>
                     <ng-template [ngSwitchCase]="'DropSchemaAction'">
-                        Remove
+                        {{ 'db.chain.schemaAction.DropName' | translate }}
                     </ng-template>
                 </ng-container>
                 {{action.Name}}
@@ -28,13 +28,13 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Type</th>
+                                <th>{{ 'db.chain.schemaAction.CreateColumnName' | translate }}</th>
+                                <th>{{ 'db.chain.schemaAction.CreateColumnType' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let col of action.Columns">
-                                <td>{{col.Name}} <span *ngIf="col.PrimaryKey" class="label label-primary">PK</span></td>
+                                <td>{{col.Name}} <span *ngIf="col.PrimaryKey" class="label label-primary">{{ 'db.chain.schemaAction.PkSuffix' | translate }}</span></td>
                                 <td>{{col.Type == 0 ? 'string' : 'other'}}</td>
                             </tr>
                         </tbody>
@@ -45,19 +45,22 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Type</th>
+                                <th>{{ 'db.chain.schemaAction.ModifyColumnName' | translate }}</th>
+                                <th>{{ 'db.chain.schemaAction.ModifyColumnType' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!--delete-->
                             <tr *ngFor="let col of action.DropColumns" class="danger">
                                 <td>{{col}}</td>
-                                <td>(not care)</td>
+                                <td>{{ 'db.chain.schemaAction.DropRowTypeEmptyText' | translate }}</td>
                             </tr>
                             <!--add or modify-->
                             <tr *ngFor="let col of action.AddOrModifyColumns" class="warning">
-                                <td><i class="text-muted">Created</i> {{col.Name}} <span *ngIf="col.PrimaryKey" class="label label-primary">PK</span></td>
+                                <td>
+                                    <i class="text-muted">{{ 'db.chain.schemaAction.NewRowNameText' | translate }}</i> {{col.Name}}
+                                    <span *ngIf="col.PrimaryKey" class="label label-primary">{{ 'db.chain.schemaAction.PkSuffix' | translate }}</span>
+                                </td>
                                 <td>{{col.Type == 0 ? 'string' : 'other'}}</td>
                             </tr>
                         </tbody>
@@ -74,17 +77,17 @@
 <ng-container *ngFor="let table of dataActions">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Modify Data of Table {{table.tableName}}</h3>
+            <h3 class="panel-title">{{ 'db.chain.dataAction.ActionTitle' | translate: {name: table.tableName} }}</h3>
         </div>
         <div class="panel-body table-responsive">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Transaction</th>
-                        <th>Operation</th>
+                        <th>{{ 'db.chain.dataAction.TransactionColumnName' | translate }}</th>
+                        <th>{{ 'db.chain.dataAction.OperationColumnName' | translate }}</th>
                         <th *ngFor="let col of table.columns">
                             {{col}}
-                            <span *ngIf="col == table.pkname" class="label label-primary">PK</span>
+                            <span *ngIf="col == table.pkname" class="label label-primary">{{ 'db.chain.dataAction.PkSuffix' | translate }}</span>
                         </th>
                     </tr>
                 </thead>
@@ -99,13 +102,13 @@
                                     <b>
                                         <ng-container [ngSwitch]="action.Type">
                                             <ng-template [ngSwitchCase]="'InsertDataAction'">
-                                                Create
+                                                {{ 'db.chain.dataAction.InsertName' | translate }}
                                             </ng-template>
                                             <ng-template [ngSwitchCase]="'UpdateDataAction'">
-                                                Modify
+                                                {{ 'db.chain.dataAction.UpdateName' | translate }}
                                             </ng-template>
                                             <ng-template [ngSwitchCase]="'DeleteDataAction'">
-                                                Remove
+                                                {{ 'db.chain.dataAction.DeleteName' | translate }}
                                             </ng-template>
                                         </ng-container>
                                     </b>
@@ -126,7 +129,10 @@
 
                             <!--delete-->
                             <ng-container *ngIf="action.Type == 'DeleteDataAction'">
-                                <td [attr.colspan]="table.columns.length"><i class="text-muted">removed</i> <s>{{action.PrimaryKeyValue}}</s></td>
+                                <td [attr.colspan]="table.columns.length">
+                                    <i class="text-muted">{{ 'db.chain.dataAction.DeletedCellPrefix' | translate }}</i>
+                                    <s>{{action.PrimaryKeyValue}}</s>
+                                </td>
                             </ng-container>
                         </tr>
                     </ng-container>

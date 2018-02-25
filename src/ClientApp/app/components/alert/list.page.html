@@ -1,5 +1,5 @@
 ﻿<div class="panel panel-default">
-    <div class="panel-heading">Alerts</div>
+    <div class="panel-heading">{{ 'alert.list.ListPanelText' | translate }}</div>
     <div class="list-group">
         <a *ngFor="let message of messages" [routerLink]="['/alert', message.id]" class="list-group-item">
             <div class="media-left">
@@ -8,7 +8,7 @@
             <div class="media-body">
                 <h4 class="list-group-item-heading">
                     <ng-container *ngIf="message.read">{{message.sender}}</ng-container>
-                    <b *ngIf="!message.read">{{message.sender}} <span class="text-success">【新】</span></b>
+                    <b *ngIf="!message.read">{{message.sender}} <span class="text-success">{{ 'alert.list.NewItemSuffixText' | translate }}</span></b>
                 </h4>
                 <p class="list-group-item-text">{{message.summary}}</p>
             </div>

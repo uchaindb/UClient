@@ -2,22 +2,23 @@
     <thead>
         <tr>
             <th *ngFor="let col of table.columns" [class.danger]="col.name==highlightColumn">
-                <a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']" title="{{col.history}} changes">
+                <a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']"
+                   title="{{ 'db.table.ColumnHistoryTooltip' | translate: {number: col.history} }}">
                     {{col.name}}
                 </a>
-                <span *ngIf="col.name == table.pkname" class="label label-primary">PK</span>
+                <span *ngIf="col.name == table.pkname" class="label label-primary">{{ 'db.table.PkSuffix' | translate }}</span>
                 <button *ngIf="false" type="button" class="watch" (click)="toggleMonitor(alertColumnData, col.name)"
-                        title="monitor column">
+                        title="{{ 'db.table.ColumnMonitorTooltip' | translate }}">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorColumn[col.name]"
                           [class.glyphicon-star]="monitorColumn[col.name]"></span>
                 </button>
-                <button type="button" class="watch" title="edit"
+                <button type="button" class="watch" title="{{ 'db.table.ColumnEditTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'schema', action: 'modify', name: table.tableName, col: col.name}">
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
-                <button type="button" class="watch" title="lock"
+                <button type="button" class="watch" title="{{ 'db.table.ColumnLockTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'lock', target: 'column', name: table.tableName, col: col.name}">
                     <span class="glyphicon glyphicon-lock"></span>
@@ -33,36 +34,37 @@
                 [class.info]="cell.history > 5 && cell.history <= 10"
                 [class.warning]="cell.history > 10 && cell.history <= 100"
                 [class.danger]="cell.history > 100">
-                <a [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]" title="{{cell.history}} changes">
+                <a [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]"
+                   title="{{ 'db.table.CellHistoryTooltip' | translate: {number: cell.history} }}">
                     <ng-container *ngIf="cell.data">
                         {{cell.data}}
                     </ng-container>
                     <ng-container *ngIf="!cell.data">
-                        <i class="text-muted">&lt;empty&gt;</i>
+                        <i class="text-muted">{{ 'db.table.EmptyCellText' | translate }}</i>
                     </ng-container>
                 </a>
                 <button type="button" class="watch" (click)="toggleMonitor(alertCellData, cell.name, cell.pkval)"
-                        title="monitor column">
+                        title="{{ 'db.table.CellMonitorTooltip' | translate }}">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorCell[cell.name + '-|-' + cell.pkval]"
                           [class.glyphicon-star]="monitorCell[cell.name + '-|-' + cell.pkval]"></span>
                 </button>
-                <button *ngIf="cell.name != table.pkname" type="button" class="watch" title="edit"
+                <button *ngIf="cell.name != table.pkname" type="button" class="watch" title="{{ 'db.table.CellEditTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'data', action: 'update', name: table.tableName, pkval: cell.pkval, col: cell.name}">
                     <span class="glyphicon glyphicon-edit"></span>
                 </button>
-                <button *ngIf="cell.name == table.pkname" type="button" class="watch" title="delete"
+                <button *ngIf="cell.name == table.pkname" type="button" class="watch" title="{{ 'db.table.CellDeleteTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'data', action: 'delete', name: table.tableName, pkval: cell.pkval}">
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
-                <button *ngIf="cell.name == table.pkname" type="button" class="watch" title="lock"
+                <button *ngIf="cell.name == table.pkname" type="button" class="watch" title="{{ 'db.table.CellLockPkTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'lock', target: 'row', name: table.tableName, pkval: cell.pkval}">
                     <span class="glyphicon glyphicon-lock"></span>
                 </button>
-                <button *ngIf="cell.name != table.pkname" type="button" class="watch" title="lock"
+                <button *ngIf="cell.name != table.pkname" type="button" class="watch" title="{{ 'db.table.CellLockTooltip' | translate }}"
                         [routerLink]="['/database', table.dbid, 'create']"
                         [queryParams]="{type: 'lock', target: 'cell', name: table.tableName, pkval: cell.pkval, col: cell.name}">
                     <span class="glyphicon glyphicon-lock"></span>

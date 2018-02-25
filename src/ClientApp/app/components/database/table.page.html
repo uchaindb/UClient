@@ -2,39 +2,39 @@
 <div class="panel panel-success">
     <div class="panel-heading">
         <button *ngIf="false" type="button" class="close" (click)="toggleMonitor(alertTableData)"
-                title="monitor 表信息">
+                title="{{ 'db.table.MonitorTableDataTooltip' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorData"
                   [class.glyphicon-star]="monitorData"></span>
         </button>
         <button type="button" class="close" (click)="toggleMonitor(alertTableSchema)"
-                title="monitor 表结构 and 信息">
+                title="{{ 'db.table.MonitorTableSchemaTooltip' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorSchema"
                   [class.glyphicon-star]="monitorSchema"></span>
         </button>
         <h3 class="panel-title">
-            {{tid}} 表信息
+            {{ 'db.table.TableTitle' | translate: {name: tid} }}
             <span class="btn-group btn-group-xs" role="group">
-                <button type="button" class="btn btn-danger" title="delete table"
+                <button type="button" class="btn btn-danger" 
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'schema', action: 'drop', name: tid}">
-                    <span class="glyphicon glyphicon-minus"></span> 删除表格
+                    <span class="glyphicon glyphicon-minus"></span> {{ 'db.table.DeleteTableButtonText' | translate }}
                 </button>
-                <button type="button" class="btn btn-primary" title="add new column"
+                <button type="button" class="btn btn-primary" 
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'schema', action: 'modify', name: tid}">
-                    <span class="glyphicon glyphicon-edit"></span> 修改表格
+                    <span class="glyphicon glyphicon-edit"></span> {{ 'db.table.ModifyTableButtonText' | translate }}
                 </button>
-                <button type="button" class="btn btn-success" title="add new column"
+                <button type="button" class="btn btn-success"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'data', action: 'insert', name: tid}">
-                    <span class="glyphicon glyphicon-plus"></span> 添加数据
+                    <span class="glyphicon glyphicon-plus"></span> {{ 'db.table.InsertDataButtonText' | translate }}
                 </button>
-                <button type="button" class="btn btn-warning" title="lock database"
+                <button type="button" class="btn btn-warning"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'lock', target: 'schema', name: tid}">
-                    <span class="glyphicon glyphicon-lock"></span> 锁定数据表
+                    <span class="glyphicon glyphicon-lock"></span> {{ 'db.table.LockTableButtonText' | translate }}
                 </button>
             </span>
         </h3>

@@ -7,16 +7,16 @@
                   [class.glyphicon-star-empty]="!monitor"
                   [class.glyphicon-star]="monitor"></span>
         </button>
-        <h3 class="panel-title">基本信息</h3>
+        <h3 class="panel-title">{{ 'db.detail.BasicInfoTitle' | translate }}</h3>
     </div>
     <div class="panel-body">
         <ng-container *ngIf="db && lastBlock">
-            <p>name：<span class="text-success">{{db.name}}</span></p>
-            <p>desc：<span class="text-success">{{db.description}}</span></p>
-            <p>地址：<span class="text-success">{{db.address}}</span></p>
-            <p>高度：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
-            <p>最后区块：<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
-            <p><a [routerLink]="['/database', db.id, 'create']" class="btn btn-success">发起事务</a>
+            <p><span class="text-success">{{db.name}}</span></p>
+            <p><span class="text-success">{{db.description}}</span></p>
+            <p>{{ 'db.detail.Address' | translate }}<span class="text-success">{{db.address}}</span></p>
+            <p>{{ 'db.detail.Height' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
+            <p>{{ 'db.detail.LastBlock' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
+            <p><a [routerLink]="['/database', db.id, 'create']" class="btn btn-success">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
             <button type="button" (click)="refreshAlertNotification()" class="btn btn-primary">Refresh</button></p>
         </ng-container>
     </div>
@@ -30,12 +30,12 @@
             <span class="glyphicon glyphicon-plus"></span>
         </button>
         <h3 class="panel-title">
-            数据表
+            {{ 'db.detail.TablesTitle' | translate }}
             <span class="btn-group btn-group-xs" role="group">
                 <button type="button" class="btn btn-warning" title="lock database"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'lock', target: 'database'}">
-                    <span class="glyphicon glyphicon-lock"></span> 锁定数据库
+                    <span class="glyphicon glyphicon-lock"></span> {{ 'db.detail.LockDatabase' | translate }}
                 </button>
             </span>
         </h3>
@@ -47,7 +47,7 @@
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">监控</h3>
+        <h3 class="panel-title">{{ 'db.detail.AlertListTitle' | translate }}</h3>
     </div>
     <database-alert-list [configs]="alertConfigs" [showDb]="false" (onDelete)="remove($event)"></database-alert-list>
 </div>

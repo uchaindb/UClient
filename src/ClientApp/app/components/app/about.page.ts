@@ -11,20 +11,12 @@ import { AppTranslationService, LoadingMessage } from "../../services/app-transl
 })
 export class AboutPage implements OnInit {
 
-    busyConfig: IBusyConfig = {};
-    postProjectReport: string;
-    loadingMessage: LoadingMessage;
-    translations: { saved?: string } = {};
-    executingProjectId: string;
 
     constructor(
         private alertService: AlertService,
         private router: Router,
         private translationService: AppTranslationService,
     ) {
-        this.loadingMessage = this.translationService.loadingMessage;
-        let gT = (key: string) => translationService.getTranslation(key);
-        this.translations.saved = gT("me.postProjectReport.notification.Saved");
     }
 
     ngOnInit() {

@@ -1,5 +1,19 @@
 {
+  "alert": {
+    "detail": {
+      "ConfigSectionTitle": "对应警报配置",
+      "DismissButtonText": "删除该消息"
+    },
+    "list": {
+      "ListPanelText": "消息列表",
+      "NewItemSuffixText": "【新】"
+    },
+    "nav": {
+      "HomeLinkText": "消息"
+    }
+  },
   "app": {
+    "BrandTitle": "优链数据库",
     "dialog": {
       "CancelLabel": "取消",
       "OkLabel": "确定"
@@ -9,15 +23,17 @@
     },
     "nav": {
       "desktop": {
-        "Brand": "优链数据库",
-        "Home": "首页",
-        "Login": "登陆",
-        "Me": "我"
+        "AlertTitle": "消息",
+        "DatabaseTitle": "链库",
+        "DiscoverTitle": "发现",
+        "LoginTitle": "登陆",
+        "PersonalTitle": "个人"
       },
       "mobile": {
-        "Activity": "动态",
-        "Home": "首页",
-        "Me": "我"
+        "AlertTitle": "消息",
+        "DatabaseTitle": "链库",
+        "DiscoverTitle": "发现",
+        "PersonalTitle": "个人"
       }
     },
     "notification": {
@@ -25,6 +41,216 @@
       "SessionEndedTitle": "登陆已失效",
       "SessionExpiredContent": "登陆已失效",
       "SessionExpiredTitle": "请重新登录"
+    },
+    "share": {
+      "DefaultDescription": "",
+      "DefaultTitle": ""
+    },
+    "title": {
+      "Default": "优链数据库",
+      "Discover": "发现",
+      "Login": "登陆",
+      "alert": {
+        "Detail": "消息内容",
+        "List": "消息列表"
+      },
+      "db": {
+        "Cell": "单元格详情",
+        "Chain": "链上详情",
+        "Connect": "添加链库",
+        "Create": "创建事务",
+        "Detail": "链库详情",
+        "List": "链库列表",
+        "Table": "数据表详情"
+      },
+      "me": {
+        "About": "关于",
+        "Feedback": "联系我们",
+        "Keys": "私钥管理",
+        "Menu": "个人中心"
+      }
+    }
+  },
+  "db": {
+    "add": {
+      "RecommendTitle": "推荐",
+      "SearchPlaceholder": "搜索...",
+      "Title": "添加链库"
+    },
+    "alert": {
+      "RemoveButtonText": "取消监控",
+      "detail": {
+        "CellDataModify": "监控 <b>单元格的<abbr title='数据修改详解'>数据修改</abbr></b>",
+        "ChainFork": "监控 <b>链库的<abbr title='分叉详解'>分叉</abbr></b>",
+        "ColumnDataModify": "监控 <b>数据列<abbr title='数据修改详解'>数据修改</abbr></b>",
+        "ColumnName": "列:",
+        "DatabaseName": "链库:",
+        "PrimaryKeyValue": "主键值:",
+        "TableDataModify": "监控 <b>数据表<abbr title='数据修改详解'>数据修改</abbr></b>",
+        "TableName": "表:",
+        "TableSchema": "监控 <b>数据表<abbr title='数据修改详解'>结构修改及数据修改</abbr></b>"
+      }
+    },
+    "cell": {
+      "ActionsTitle": "相关动作",
+      "DataDetailTitle": "相关数据",
+      "DataRelatedTransactionsTitle": "相关事务",
+      "DataTransactionName": "数据事务",
+      "SchemaTransactionName": "结构事务",
+      "TransactionSuffix": "（包含{{length}}项动作）"
+    },
+    "chain": {
+      "block": {
+        "ActionsTitle": "相关动作",
+        "DataTransactionName": "数据事务",
+        "Hash": "哈希(Hash)",
+        "Height": "块高度",
+        "Next": "下一块 >",
+        "Previous": "< 前一块",
+        "SchemaTransactionName": "结构事务",
+        "SummaryTitle": "块信息",
+        "Time": "时间",
+        "TransactionSuffix": "（包含{{length}}项动作）",
+        "TransactionsTitle": "相关事务"
+      },
+      "dataAction": {
+        "ActionTitle": "对表[{{name}}]的数据修改",
+        "DeleteName": "删除",
+        "DeletedCellPrefix": "删除",
+        "InsertName": "插入",
+        "OperationColumnName": "类型",
+        "PkSuffix": "主键",
+        "TransactionColumnName": "事务",
+        "UpdateName": "更新"
+      },
+      "schemaAction": {
+        "CreateColumnName": "列名",
+        "CreateColumnType": "数据类型",
+        "CreateName": "创建",
+        "DropName": "删除",
+        "DropRowTypeEmptyText": "<空>",
+        "ModifyColumnName": "列名",
+        "ModifyColumnType": "数据类型",
+        "ModifyName": "修改",
+        "NewRowNameText": "创建",
+        "PkSuffix": "主键"
+      },
+      "transaction": {
+        "ActionsTitle": "相关动作",
+        "Block": "所在区块",
+        "DataTransactionName": "数据事务",
+        "Hash": "哈希(Hash)",
+        "Initiator": "发起者",
+        "SchemaTransactionName": "结构事务",
+        "SummaryTitle": "事务信息",
+        "Time": "时间",
+        "Type": "类型"
+      }
+    },
+    "create": {
+      "DataTransaction": "数据事务",
+      "GotoCode": "转至代码模式",
+      "GotoGui": "转至编辑器模式",
+      "LockTransaction": "锁定事务",
+      "PageTitle": "创建事务",
+      "SchemaTransaction": "结构事务",
+      "SubmitTransaction": "提交事务",
+      "TransactionType": "事务类型",
+      "data": {
+        "AppendButtonText": "添加动作",
+        "DeleteAction": "删除动作",
+        "DeleteButtonText": "删除",
+        "DuplicateButtonText": "复制",
+        "IndexTitle": "动作 {{number}}",
+        "InsertAction": "插入动作",
+        "NoActionTypeWarning": "请先选择类型",
+        "NoTableNameWarning": "请先选择操作的数据表",
+        "PkValueLabel": "主键值",
+        "TableNameLabel": "数据表名",
+        "TypeLabel": "动作类型",
+        "UpdateAction": "更新动作"
+      },
+      "key": {
+        "ImportOption": "导入...",
+        "ManageOption": "管理...",
+        "OtherKeyGroup": "其他",
+        "PrivatekeyLabel": "选择私钥",
+        "StoredPrivateKeyGroup": "存储的私钥"
+      },
+      "lock": {
+        "AppendButtonText": "添加对象",
+        "ColumnNameLabel": "列名",
+        "DatabaseType": "数据库",
+        "DeleteButtonText": "删除",
+        "DuplicateButtonText": "复制",
+        "IndexTitle": "锁定对象 {{number}}",
+        "LockScriptsLabel": "锁定脚本",
+        "LockTargetLabel": "锁定对象",
+        "MultipleUserLockExample": "多用户锁定脚本",
+        "PkValueLabel": "主键值",
+        "SingleUserLockExample": "单用户锁定脚本",
+        "TableCellDataType": "数据单元",
+        "TableColumnDataType": "数据列",
+        "TableNameLabel": "数据表名",
+        "TableRowDataType": "数据列",
+        "TableSchemaType": "数据表结构"
+      },
+      "schema": {
+        "AddOrModifyColumns": "添加或修改列",
+        "AppendButtonText": "添加动作",
+        "ColumnsLabel": "数据列",
+        "CreateAction": "创建动作",
+        "DeleteButtonText": "删除",
+        "DropAction": "删除动作",
+        "DropColumns": "删除列",
+        "DuplicateButtonText": "复制",
+        "IndexTitle": "动作 {{number}}",
+        "ModifyAction": "修改动作",
+        "TableNameLabel": "数据表名",
+        "TableNamePlaceholder": "填写数据表名...",
+        "TypeLabel": "动作类型"
+      }
+    },
+    "detail": {
+      "Address": "远端地址：",
+      "AlertListTitle": "报警列表",
+      "BasicInfoTitle": "基本信息",
+      "CreateTransactionButton": "创建事务",
+      "Height": "区块高度：",
+      "LastBlock": "最后区块：",
+      "LockDatabase": "锁定数据库",
+      "TablesTitle": "数据表"
+    },
+    "list": {
+      "ConnectDatabase": "添加链库"
+    },
+    "nav": {
+      "ChainBlock": "区块： {{hash}}",
+      "ChainTransaction": "事务： {{hash}}",
+      "CreatePage": "新建事务",
+      "HomeTitle": "链库",
+      "List": "列表"
+    },
+    "table": {
+      "CellDeleteTooltip": "发起删除事务",
+      "CellEditTooltip": "发起修改事务",
+      "CellHistoryTooltip": "该数据单元已发生{{number}}次修改",
+      "CellLockPkTooltip": "发起锁定数据行事务",
+      "CellLockTooltip": "发起锁定数据单元事务",
+      "CellMonitorTooltip": "监控该单元格变化",
+      "ColumnEditTooltip": "发起修改该列结构事务",
+      "ColumnHistoryTooltip": "该数据列已发生{{number}}次修改",
+      "ColumnLockTooltip": "发起锁定该列事务",
+      "ColumnMonitorTooltip": "监控该数据列变化",
+      "DeleteTableButtonText": "删除数据表",
+      "EmptyCellText": "<空>",
+      "InsertDataButtonText": "插入数据",
+      "LockTableButtonText": "锁定数据表",
+      "ModifyTableButtonText": "修改数据表",
+      "MonitorTableDataTooltip": "监控数据表数据变化",
+      "MonitorTableSchemaTooltip": "监控数据表结构及数据变化",
+      "PkSuffix": "主键",
+      "TableTitle": "表[{{name}}] 数据信息"
     }
   },
   "defaults": {
@@ -40,6 +266,82 @@
       "Remove": "移除中...",
       "Submit": "提交中...",
       "Upload": "上传中..."
+    }
+  },
+  "discover": {
+    "list": {
+      "CaseTabButtonText": "案例研究",
+      "DbTabButtonText": "发现链库",
+      "FaqTabButtonText": "常见问答",
+      "GuideTabButtonText": "入门指南"
+    }
+  },
+  "me": {
+    "key": {
+      "CreateButtonText": "创建",
+      "DeleteButtonText": "删除",
+      "ExportButtonText": "导出",
+      "ImportButtonText": "导入"
+    },
+    "login": {
+      "error": {
+        "AccountDisabled": "",
+        "AccountNotAllowToLogin": "",
+        "AccountSuspended": "",
+        "ExceedCodeIntervalLimit": "",
+        "ExceedCodeNumberLimit": "",
+        "FailedToGenerateCode": "",
+        "FailedToInitializeAccount": "",
+        "FailedToSendCode": "",
+        "GeneralError": "",
+        "IncorrectAccountPasswordCombination": "",
+        "IncorrectPhoneNumberCodeCombination": "",
+        "OutdatedCode": "",
+        "PhoneNumberIsNotValid": "",
+        "RefreshTokenNotValid": ""
+      },
+      "notification": {
+        "LoggingIn": "",
+        "LoginMessage": "",
+        "LoginTitle": "",
+        "RepeatLastOperationMessage": "",
+        "RepeatLastOperationTitle": "",
+        "SendCodeMessage": "",
+        "SendCodeTitle": "",
+        "SessionRestoreMessage": "",
+        "SessionRestoreTitle": "",
+        "UnableToLoginMessage": "",
+        "UnableToLoginTitle": "",
+        "UnableToSendCodeMessage": "",
+        "UnableToSendCodeTitle": ""
+      },
+      "page": {
+        "AgreementLink": "",
+        "BindWeixinHint": "",
+        "Code": "",
+        "CodePlaceholder": "",
+        "Login": "",
+        "PhoneNumber": "",
+        "PhoneNumberPlaceholder": "",
+        "ProviderLogin": "",
+        "RedirectingWeixinHint": "",
+        "RememberMe": "",
+        "RememberMeCheckBox": "",
+        "SendCode": "",
+        "SendCodeCountDown": "",
+        "Weixin": "",
+        "WeixinLoggingInHint": "",
+        "WeixinLogin": ""
+      }
+    },
+    "menu": {
+      "list": {
+        "About": "关于优链",
+        "Feedback": "联系我们",
+        "Logout": "解除登录",
+        "OtherTitle": "其他",
+        "PrivateKeyManager": "私钥管理"
+      }
     }
   }
 }

@@ -6,38 +6,38 @@
             <span class='icon-bar'></span>
             <span class='icon-bar'></span>
         </button>
-        <a class='navbar-brand' [routerLink]="['/home']">{{ '优链数据库' | translate }}</a>
+        <a class='navbar-brand' [routerLink]="['/home']">{{ 'app.BrandTitle' | translate }}</a>
     </div>
     <div class='navbar-collapse collapse'>
         <ul class='nav navbar-nav pull-right'>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/discover']">
                     <i class='glyphicon glyphicon-globe'></i>
-                    {{ '发现' | translate }}
+                    {{ 'app.nav.desktop.DiscoverTitle' | translate }}
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/database']">
                     <i class='glyphicon glyphicon-hdd'></i>
-                    {{ '链库' | translate }}
+                    {{ 'app.nav.desktop.DatabaseTitle' | translate }}
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/alert']">
                     <i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i>
-                    {{ '消息' | translate }}
+                    {{ 'app.nav.desktop.AlertTitle' | translate }}
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/user']">
                     <i class='glyphicon glyphicon-user'></i>
-                    {{ '个人' | translate }}
+                    {{ 'app.nav.desktop.PersonalTitle' | translate }}
                 </a>
             </li>
             <!--<li *ngIf="!isUserLoggedIn" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/login']">
                     <i class='glyphicon glyphicon-log-in'></i>
-                    {{ 'app.nav.desktop.Login' | translate }}
+                    {{ 'app.nav.desktop.LoginTitle' | translate }}
                 </a>
             </li>-->
         </ul>

@@ -1,4 +1,4 @@
-﻿<database-nav current="列表"></database-nav>
+﻿<database-nav current="{{ 'db.nav.List' | translate }}"></database-nav>
 <div class="list-group">
     <a *ngFor="let item of dblist" [routerLink]="['/database', item.id]" class="list-group-item">
         <!--<button type="button" class="close"><span>&times;</span></button>-->
@@ -13,7 +13,7 @@
     <a [routerLink]="['/database/add']" class="list-group-item">
         <h4>
             <span class="glyphicon glyphicon-plus"></span>
-            添加链库
+            {{ 'db.list.ConnectDatabase' | translate }}
         </h4>
     </a>
 </div>

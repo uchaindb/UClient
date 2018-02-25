@@ -1,5 +1,5 @@
 ﻿<ol class="breadcrumb">
-    <li><a [routerLink]="['/database']">链库</a></li>
+    <li><a [routerLink]="['/database']">{{ 'db.nav.HomeTitle' | translate }}</a></li>
     <li *ngIf="dbid && dbname"><a [routerLink]="['/database', dbid]">{{dbname}}</a></li>
     <li *ngIf="tableName"><a [routerLink]="['/database', dbid, 'table', tableName]">{{tableName}}</a></li>
     <li *ngIf="current" class="active">{{current}}</li>

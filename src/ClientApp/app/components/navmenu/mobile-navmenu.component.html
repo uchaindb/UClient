@@ -1,8 +1,8 @@
 ﻿<nav class="navbar navbar-default navbar-fixed-bottom tabbar visible-xs-block">
     <ul class="nav">
-        <li [routerLinkActive]="['active']"><a [routerLink]="['/discover']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-globe'></i><br /> {{ '发现' | translate }}</a></li>
-        <li [routerLinkActive]="['active']"><a [routerLink]="['/database']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-hdd'></i><br /> {{ '链库' | translate }}</a></li>
-        <li [routerLinkActive]="['active']"><a [routerLink]="['/alert']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i><br /> {{ '消息' | translate }}</a></li>
-        <li [routerLinkActive]="['active']"><a [routerLink]="['/user']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-user'></i><br /> {{ '个人' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/discover']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-globe'></i><br /> {{ 'app.nav.mobile.DiscoverTitle' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/database']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-hdd'></i><br /> {{ 'app.nav.mobile.DatabaseTitle' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/alert']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i><br /> {{ 'app.nav.mobile.AlertTitle' | translate }}</a></li>
+        <li [routerLinkActive]="['active']"><a [routerLink]="['/user']" class="col-xs-3 text-center"><i class='glyphicon glyphicon-user'></i><br /> {{ 'app.nav.mobile.PersonalTitle' | translate }}</a></li>
     </ul>
 </nav>

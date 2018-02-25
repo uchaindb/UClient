@@ -1,9 +1,9 @@
-﻿<database-nav [dbid]="db?.id" [dbname]="db?.name" current="创建事务"></database-nav>
+﻿<database-nav [dbid]="db?.id" [dbname]="db?.name" current="{{ 'db.nav.CreatePage' | translate }}"></database-nav>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <button *ngIf="!codeMode" type="button" (click)="gotoCode()" class="btn btn-primary btn-xs pull-right">转到代码模式</button>
-        <button *ngIf="codeMode" type="button" (click)="gotoGui()" class="btn btn-primary btn-xs pull-right">转到交互编辑</button>
-        <h3 class="panel-title">create</h3>
+        <button *ngIf="!codeMode" type="button" (click)="gotoCode()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoCode' | translate }}</button>
+        <button *ngIf="codeMode" type="button" (click)="gotoGui()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoGui' | translate }}</button>
+        <h3 class="panel-title">{{ 'db.create.PageTitle' | translate }}</h3>
     </div>
     <div *ngIf="codeMode" class="panel-body">
         <textarea class="form-control" rows="24">{{code}}</textarea>
@@ -11,12 +11,12 @@
     <div *ngIf="!codeMode" class="panel-body panel-container">
         <div class="form-horizontal">
             <div class="form-group">
-                <label for="inputTransactionType" class="col-sm-2 control-label">Type</label>
+                <label for="inputTransactionType" class="col-sm-2 control-label">{{ 'db.create.TransactionType' | translate }}</label>
                 <div class="col-sm-10">
                     <select id="inputTransactionType" [(ngModel)]="selectedType" class="form-control">
-                        <option value="schema">Schema Transaction</option>
-                        <option value="data">Data Transaction</option>
-                        <option value="lock">Lock Transaction</option>
+                        <option value="schema">{{ 'db.create.SchemaTransaction' | translate }}</option>
+                        <option value="data">{{ 'db.create.DataTransaction' | translate }}</option>
+                        <option value="lock">{{ 'db.create.LockTransaction' | translate }}</option>
                     </select>
                 </div>
             </div>
@@ -26,28 +26,34 @@
                 <ng-container *ngIf="selectedType=='schema'">
                     <div class="list-group-item" *ngFor="let action of schemaActions; let idx = index">
                         <small>
-                            <span class="text-muted">Action {{idx + 1}}</span>
+                            <span class="text-muted">{{ 'db.create.schema.IndexTitle' | translate: {number: idx + 1} }}</span>
                         </small>
                         <small class="pull-right">
-                            <a href="javascript:void(0)" (click)="removeAction(schemaActions, idx)"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+                            <a href="javascript:void(0)" (click)="removeAction(schemaActions, idx)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                {{ 'db.create.schema.DeleteButtonText' | translate }}
+                            </a>
                             |
-                            <a href="javascript:void(0)" (click)="duplicateAction(schemaActions, idx)"><span class="glyphicon glyphicon-copy"></span> 复制</a>
+                            <a href="javascript:void(0)" (click)="duplicateAction(schemaActions, idx)">
+                                <span class="glyphicon glyphicon-copy"></span>
+                                {{ 'db.create.schema.DuplicateButtonText' | translate }}
+                            </a>
                         </small>
 
                         <div class="form-group">
-                            <label for="inputActionType" class="col-sm-2 control-label">Type</label>
+                            <label for="inputActionType" class="col-sm-2 control-label">{{ 'db.create.schema.TypeLabel' | translate }}</label>
                             <div class="col-sm-10">
                                 <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
-                                    <option value="create">Create</option>
-                                    <option value="modify">Modify</option>
-                                    <option value="drop">Drop</option>
+                                    <option value="create">{{ 'db.create.schema.CreateAction' | translate }}</option>
+                                    <option value="modify">{{ 'db.create.schema.ModifyAction' | translate }}</option>
+                                    <option value="drop">{{ 'db.create.schema.DropAction' | translate }}</option>
                                 </select>
                             </div>
                         </div>
                         <!--common for update/drop action-->
                         <ng-container *ngIf="action.type=='drop' || action.type=='modify'">
                             <div class="form-group">
-                                <label for="selectSchemaTableName" class="col-sm-2 control-label">Table Name</label>
+                                <label for="selectSchemaTableName" class="col-sm-2 control-label">{{ 'db.create.schema.TableNameLabel' | translate }}</label>
                                 <div class="col-sm-10">
                                     <select id="selectSchemaTableName" [(ngModel)]="action.tableName" class="form-control">
                                         <option *ngFor="let table of tables" [value]="table.Name">{{table.Name}}</option>
@@ -58,14 +64,15 @@
                         <!--create action-->
                         <ng-container *ngIf="action.type=='create'">
                             <div class="form-group">
-                                <label for="inputSchemaTableName" class="col-sm-2 control-label">Table Name</label>
+                                <label for="inputSchemaTableName" class="col-sm-2 control-label">{{ 'db.create.schema.TableNameLabel' | translate }}</label>
                                 <div class="col-sm-10">
-                                    <input [(ngModel)]="action.tableName" type="text" class="form-control" placeholder="Table Name" id="inputSchemaTableName">
+                                    <input [(ngModel)]="action.tableName" type="text" class="form-control" id="inputSchemaTableName"
+                                           placeholder="{{ 'db.create.schema.TableNamePlaceholder' | translate }}">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Columns</label>
+                                <label class="col-sm-2 control-label">{{ 'db.create.schema.ColumnsLabel' | translate }}</label>
                                 <div class="col-sm-10">
                                     <ng2-smart-table [settings]="createSchemaActionDef" [source]="action.columns"></ng2-smart-table>
                                 </div>
@@ -74,13 +81,13 @@
                         <!--update action-->
                         <ng-container *ngIf="action.type=='modify'">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Add Or Modify Columns</label>
+                                <label class="col-sm-2 control-label">{{ 'db.create.schema.AddOrModifyColumns' | translate }}</label>
                                 <div class="col-sm-10">
                                     <ng2-smart-table [settings]="updateModifySchemaActionDef" [source]="action.modifyColumns"></ng2-smart-table>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Drop Columns</label>
+                                <label class="col-sm-2 control-label">{{ 'db.create.schema.DropColumns' | translate }}</label>
                                 <div class="col-sm-10">
                                     <ng2-smart-table [settings]="updateDropSchemaActionDef" [source]="action.dropColumns"></ng2-smart-table>
                                 </div>
@@ -96,44 +103,50 @@
                 <ng-container *ngIf="selectedType=='data'">
                     <div class="list-group-item" *ngFor="let action of dataActions; let idx = index">
                         <small>
-                            <span class="text-muted">Action {{idx + 1}}</span>
+                            <span class="text-muted">{{ 'db.create.data.IndexTitle' | translate: {number: idx + 1} }}</span>
                         </small>
                         <small class="pull-right">
-                            <a href="javascript:void(0)" (click)="removeAction(dataActions, idx)"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+                            <a href="javascript:void(0)" (click)="removeAction(dataActions, idx)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                {{ 'db.create.data.DeleteButtonText' | translate }}
+                            </a>
                             |
-                            <a href="javascript:void(0)" (click)="duplicateAction(dataActions, idx)"><span class="glyphicon glyphicon-copy"></span> 复制</a>
+                            <a href="javascript:void(0)" (click)="duplicateAction(dataActions, idx)">
+                                <span class="glyphicon glyphicon-copy"></span>
+                                {{ 'db.create.data.DuplicateButtonText' | translate }}
+                            </a>
                         </small>
 
                         <div class="form-group">
-                            <label for="inputActionType" class="col-sm-2 control-label">Type</label>
+                            <label for="inputActionType" class="col-sm-2 control-label">{{ 'db.create.data.TypeLabel' | translate }}</label>
                             <div class="col-sm-10">
                                 <select id="inputActionType" [(ngModel)]="action.type" class="form-control">
-                                    <option value="insert">Insert</option>
-                                    <option value="update">Update</option>
-                                    <option value="delete">Delete</option>
+                                    <option value="insert">{{ 'db.create.data.InsertAction' | translate }}</option>
+                                    <option value="update">{{ 'db.create.data.UpdateAction' | translate }}</option>
+                                    <option value="delete">{{ 'db.create.data.DeleteAction' | translate }}</option>
                                 </select>
                             </div>
                         </div>
 
                         <!--common for all action-->
-                        <div class="alert alert-warning" *ngIf="!action.type">请先选择操作类型</div>
+                        <div class="alert alert-warning" *ngIf="!action.type">{{ 'db.create.data.NoActionTypeWarning' | translate }}</div>
                         <ng-container *ngIf="action.type">
                             <div class="form-group">
-                                <label for="selectDataTableName" class="col-sm-2 control-label">Table Name</label>
+                                <label for="selectDataTableName" class="col-sm-2 control-label">{{ 'db.create.data.TableNameLabel' | translate }}</label>
                                 <div class="col-sm-10">
                                     <select id="selectDataTableName" [(ngModel)]="action.tableName" class="form-control">
                                         <option *ngFor="let table of tables" [value]="table.Name">{{table.Name}}</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="alert alert-warning" *ngIf="!action.tableName">请先选择操作表格</div>
+                            <div class="alert alert-warning" *ngIf="!action.tableName">{{ 'db.create.data.NoTableNameWarning' | translate }}</div>
                         </ng-container>
 
                         <ng-container *ngIf="action.tableName">
                             <!--pk value for update/delete action-->
                             <ng-container *ngIf="action.type=='update' || action.type=='delete'">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">PK Value</label>
+                                    <label class="col-sm-2 control-label">{{ 'db.create.data.PkValueLabel' | translate }}</label>
                                     <div class="col-sm-10">
                                         <input [(ngModel)]="action.pkval" type="text" class="form-control">
                                     </div>
@@ -162,32 +175,42 @@
                 <!--lock transaction-->
                 <ng-container *ngIf="selectedType=='lock'">
                     <div class="form-group">
-                        <label for="inputLockScripts" class="col-sm-2 control-label">Lock Scripts</label>
+                        <label for="inputLockScripts" class="col-sm-2 control-label">{{ 'db.create.lock.LockScriptsLabel' | translate }}</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="7" [(ngModel)]="lockScripts"></textarea>
-                            <p class="help-block"><a href="javascript:void(0)" (click)="example('single')">单用户锁定脚本</a> | <a href="javascript:void(0)" (click)="example('multiple')">多用户锁定脚本</a></p>
+                            <p class="help-block">
+                                <a href="javascript:void(0)" (click)="example('single')">{{ 'db.create.lock.SingleUserLockExample' | translate }}</a>
+                                |
+                                <a href="javascript:void(0)" (click)="example('multiple')">{{ 'db.create.lock.MultipleUserLockExample' | translate }}</a>
+                            </p>
                         </div>
                     </div>
 
                     <div class="list-group-item" *ngFor="let target of lockTargets; let idx = index">
                         <small>
-                            <span class="text-muted">Target {{idx + 1}}</span>
+                            <span class="text-muted">{{ 'db.create.lock.IndexTitle' | translate: {number: idx + 1} }}</span>
                         </small>
                         <small class="pull-right">
-                            <a href="javascript:void(0)" (click)="removeAction(lockTargets, idx)"><span class="glyphicon glyphicon-remove"></span> 删除</a>
+                            <a href="javascript:void(0)" (click)="removeAction(lockTargets, idx)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                {{ 'db.create.lock.DeleteButtonText' | translate }}
+                            </a>
                             |
-                            <a href="javascript:void(0)" (click)="duplicateAction(lockTargets, idx)"><span class="glyphicon glyphicon-copy"></span> 复制</a>
+                            <a href="javascript:void(0)" (click)="duplicateAction(lockTargets, idx)">
+                                <span class="glyphicon glyphicon-copy"></span>
+                                {{ 'db.create.lock.DuplicateButtonText' | translate }}
+                            </a>
                         </small>
 
                         <div class="form-group">
-                            <label for="inputLockTarget" class="col-sm-2 control-label">Lock Target</label>
+                            <label for="inputLockTarget" class="col-sm-2 control-label">{{ 'db.create.lock.LockTargetLabel' | translate }}</label>
                             <div class="col-sm-10">
                                 <select id="inputLockTarget" [(ngModel)]="target.type" class="form-control">
-                                    <option value="database">Database</option>
-                                    <option value="schema">Table Schema</option>
-                                    <option value="row">Table Row Data</option>
-                                    <option value="cell">Table Cell Data</option>
-                                    <option value="column">Table Column Data</option>
+                                    <option value="database">{{ 'db.create.lock.DatabaseType' | translate }}</option>
+                                    <option value="schema">{{ 'db.create.lock.TableSchemaType' | translate }}</option>
+                                    <option value="row">{{ 'db.create.lock.TableRowDataType' | translate }}</option>
+                                    <option value="cell">{{ 'db.create.lock.TableCellDataType' | translate }}</option>
+                                    <option value="column">{{ 'db.create.lock.TableColumnDataType' | translate }}</option>
                                 </select>
                             </div>
                         </div>
@@ -196,7 +219,7 @@
                         <!--<div class="alert alert-warning" *ngIf="!target.type">请先选择操作类型</div>-->
                         <ng-container *ngIf="target.type && target.type != 'database'">
                             <div class="form-group">
-                                <label for="selectDataTableName" class="col-sm-2 control-label">Table Name</label>
+                                <label for="selectDataTableName" class="col-sm-2 control-label">{{ 'db.create.lock.TableNameLabel' | translate }}</label>
                                 <div class="col-sm-10">
                                     <select id="selectDataTableName" [(ngModel)]="target.tableName" class="form-control">
                                         <option *ngFor="let table of tables" [value]="table.Name">{{table.Name}}</option>
@@ -210,7 +233,7 @@
                             <!--pk value for row/cell target-->
                             <ng-container *ngIf="target.type=='row' || target.type=='cell'">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">PK Value</label>
+                                    <label class="col-sm-2 control-label">{{ 'db.create.lock.PkValueLabel' | translate }}</label>
                                     <div class="col-sm-10">
                                         <input [(ngModel)]="target.pkval" type="text" class="form-control">
                                     </div>
@@ -220,7 +243,7 @@
                             <!--column for cell/column action-->
                             <ng-container *ngIf="target.type=='cell' || target.type == 'column'">
                                 <div class="form-group">
-                                    <label for="selectColumnName" class="col-sm-2 control-label">Column Name</label>
+                                    <label for="selectColumnName" class="col-sm-2 control-label">{{ 'db.create.lock.ColumnNameLabel' | translate }}</label>
                                     <div class="col-sm-10">
                                         <select id="selectColumnName" [(ngModel)]="target.col" class="form-control">
                                             <option *ngFor="let col of dataActionColumns[target.tableName]" [value]="col">{{col}}</option>
@@ -232,27 +255,40 @@
                     </div>
                 </ng-container>
 
-                <button type="button" class="list-group-item" (click)="appendAction()"><span class="glyphicon glyphicon-plus"></span> 添加</button>
+                <button *ngIf="selectedType" type="button" class="list-group-item" (click)="appendAction()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <ng-container [ngSwitch]="selectedType">
+                        <ng-template [ngSwitchCase]="'data'">
+                            {{ 'db.create.data.AppendButtonText' | translate }}
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'schema'">
+                            {{ 'db.create.schema.AppendButtonText' | translate }}
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'lock'">
+                            {{ 'db.create.lock.AppendButtonText' | translate }}
+                        </ng-template>
+                    </ng-container>
+                </button>
             </div>
         </div>
     </div>
     <div class="panel-footer text-right">
         <div class="form-inline">
             <div class="form-group">
-                <label for="inputPrivateKey">private Key</label>
+                <label for="inputPrivateKey">{{ 'db.create.key.PrivatekeyLabel' | translate }}</label>
                 <select id="inputPrivateKey" class="form-control" (change)="onPrivateKeyChange($event.target.value)" [(ngModel)]="selectedPrivateKey">
-                    <optgroup label="private key">
+                    <optgroup label="{{ 'db.create.key.StoredPrivateKeyGroup' | translate }}">
                         <option>privkey1</option>
                         <option>privkey2</option>
                     </optgroup>
-                    <optgroup label="other">
-                        <option value="import">temporary import</option>
-                        <option value="manage">manage...</option>
+                    <optgroup label="{{ 'db.create.key.OtherKeyGroup' | translate }}">
+                        <option value="import">{{ 'db.create.key.ImportOption' | translate }}</option>
+                        <option value="manage">{{ 'db.create.key.ManageOption' | translate }}</option>
                     </optgroup>
                 </select>
             </div>
             <input *ngIf="selectedPrivateKey == 'import'" [(ngModel)]="inputPrivateKey" type="text" class="form-control">
-            <button type="button" class="btn btn-primary" (click)="submit()">发起事务</button>
+            <button type="button" class="btn btn-primary" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
         </div>
     </div>
 </div>

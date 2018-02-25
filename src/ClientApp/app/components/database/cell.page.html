@@ -1,7 +1,7 @@
 ﻿<database-nav [dbid]="db.id" [dbname]="db.name" [tableName]="tableData?.tableName" [current]="pkval + ' | ' + column"></database-nav>
 <div class="panel panel-info">
     <div class="panel-heading">
-        <h3 class="panel-title">Related Transactions</h3>
+        <h3 class="panel-title">{{ 'db.cell.DataDetailTitle' | translate }}</h3>
     </div>
     <div class="table-responsive">
         <database-table [table]="tableData" [highlightColumn]="column"></database-table>
@@ -9,20 +9,30 @@
 </div>
 <div *ngIf="transactions" class="panel panel-info">
     <div class="panel-heading">
-        <h3 class="panel-title">Related Transactions</h3>
+        <h3 class="panel-title">{{ 'db.cell.DataRelatedTransactionsTitle' | translate }}</h3>
     </div>
     <table class="table">
         <tbody>
             <tr *ngFor="let tran of transactions">
                 <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
-                <td>{{tran.Type == 1 ? 'Schema Transaction' : 'Data Transaction'}}({{tran.Actions?.length}} Actions)</td>
+                <td>
+                    <ng-container [ngSwitch]="tran.Type">
+                        <ng-template [ngSwitchCase]="0">
+                            {{ 'db.cell.DataTransactionName' | translate }}
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="1">
+                            {{ 'db.cell.SchemaTransactionName' | translate }}
+                        </ng-template>
+                    </ng-container>
+                    {{ 'db.cell.TransactionSuffix' | translate: {length: tran.Actions?.length} }}
+                </td>
             </tr>
         </tbody>
     </table>
     <div class="panel-heading">
-        <h3 class="panel-title">Actions</h3>
+        <h3 class="panel-title">{{ 'db.cell.ActionsTitle' | translate }}</h3>
     </div>
     <div class="table-responsive">
-    <database-action [dbid]="db.id" [transactions]="transactions"></database-action>
+        <database-action [dbid]="db.id" [transactions]="transactions"></database-action>
     </div>
 </div>
