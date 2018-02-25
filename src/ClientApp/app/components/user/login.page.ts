@@ -88,6 +88,7 @@ export class LoginPage implements OnInit, OnDestroy {
     ) {
         this.loginRedirectUrl =this.authService.loginRedirectUrl;
         this.authService.localLogin();
+        this.authService.redirectLoginUser();
 
         let t = 1;
         if (t == 1) return;
