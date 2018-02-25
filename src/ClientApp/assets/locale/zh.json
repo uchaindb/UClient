@@ -95,19 +95,15 @@
       "ActionsTitle": "相关动作",
       "DataDetailTitle": "相关数据",
       "DataRelatedTransactionsTitle": "相关事务",
-      "DataTransactionName": "数据事务",
-      "SchemaTransactionName": "结构事务",
       "TransactionSuffix": "（包含{{length}}项动作）"
     },
     "chain": {
       "block": {
         "ActionsTitle": "相关动作",
-        "DataTransactionName": "数据事务",
         "Hash": "哈希(Hash)",
         "Height": "块高度",
         "Next": "下一块 >",
         "Previous": "< 前一块",
-        "SchemaTransactionName": "结构事务",
         "SummaryTitle": "块信息",
         "Time": "时间",
         "TransactionSuffix": "（包含{{length}}项动作）",
@@ -138,10 +134,8 @@
       "transaction": {
         "ActionsTitle": "相关动作",
         "Block": "所在区块",
-        "DataTransactionName": "数据事务",
         "Hash": "哈希(Hash)",
         "Initiator": "发起者",
-        "SchemaTransactionName": "结构事务",
         "SummaryTitle": "事务信息",
         "Time": "时间",
         "Type": "类型"
@@ -210,6 +204,11 @@
         "TableNamePlaceholder": "填写数据表名...",
         "TypeLabel": "动作类型"
       }
+    },
+    "def": {
+      "DataTransactionName": "数据事务",
+      "LockTransactionName": "锁定事务",
+      "SchemaTransactionName": "结构事务"
     },
     "detail": {
       "Address": "远端地址：",

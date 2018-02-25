@@ -17,11 +17,14 @@
                 <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
                 <td>
                     <ng-container [ngSwitch]="tran.Type">
-                        <ng-template [ngSwitchCase]="0">
-                            {{ 'db.cell.DataTransactionName' | translate }}
+                        <ng-template [ngSwitchCase]="'DataTransaction'">
+                            {{ 'db.def.DataTransactionName' | translate }}
                         </ng-template>
-                        <ng-template [ngSwitchCase]="1">
-                            {{ 'db.cell.SchemaTransactionName' | translate }}
+                        <ng-template [ngSwitchCase]="'SchemaTransaction'">
+                            {{ 'db.def.SchemaTransactionName' | translate }}
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'LockTransaction'">
+                            {{ 'db.def.LockTransactionName' | translate }}
                         </ng-template>
                     </ng-container>
                     {{ 'db.cell.TransactionSuffix' | translate: {length: tran.Actions?.length} }}

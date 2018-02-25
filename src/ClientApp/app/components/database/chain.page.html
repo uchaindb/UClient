@@ -33,11 +33,14 @@
                     <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
                     <td>
                         <ng-container [ngSwitch]="tran.Type">
-                            <ng-template [ngSwitchCase]="0">
-                                {{ 'db.chain.block.DataTransactionName' | translate }}
+                            <ng-template [ngSwitchCase]="'DataTransaction'">
+                                {{ 'db.def.DataTransactionName' | translate }}
                             </ng-template>
-                            <ng-template [ngSwitchCase]="1">
-                                {{ 'db.chain.block.SchemaTransactionName' | translate }}
+                            <ng-template [ngSwitchCase]="'SchemaTransaction'">
+                                {{ 'db.def.SchemaTransactionName' | translate }}
+                            </ng-template>
+                            <ng-template [ngSwitchCase]="'LockTransaction'">
+                                {{ 'db.def.LockTransactionName' | translate }}
                             </ng-template>
                         </ng-container>
                         {{ 'db.chain.block.TransactionSuffix' | translate: {length: tran.Actions?.length} }}
@@ -75,10 +78,13 @@
                     <td>
                         <ng-container [ngSwitch]="transaction.Type">
                             <ng-template [ngSwitchCase]="'DataTransaction'">
-                                {{ 'db.chain.transaction.DataTransactionName' | translate }}
+                                {{ 'db.def.DataTransactionName' | translate }}
                             </ng-template>
                             <ng-template [ngSwitchCase]="'SchemaTransaction'">
-                                {{ 'db.chain.transaction.SchemaTransactionName' | translate }}
+                                {{ 'db.def.SchemaTransactionName' | translate }}
+                            </ng-template>
+                            <ng-template [ngSwitchCase]="'LockTransaction'">
+                                {{ 'db.def.LockTransactionName' | translate }}
                             </ng-template>
                         </ng-container>
                     </td>
