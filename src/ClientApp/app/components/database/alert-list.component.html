@@ -1,7 +1,6 @@
 ﻿<ul class="list-group">
     <li *ngFor="let alert of configs" class="list-group-item">
         <button *ngIf="showDelete" type="button" (click)="remove(alert)" class="pull-right btn btn-primary btn-xs">{{ 'db.alert.RemoveButtonText' | translate }}</button>
-        <button type="button" (click)="notify(alert)" class="pull-right btn btn-danger btn-xs">notify</button>
         <ng-container [ngSwitch]="alert.type">
             <ng-template [ngSwitchCase]="'chain-fork'">
                 <span class="glyphicon glyphicon-random"></span>

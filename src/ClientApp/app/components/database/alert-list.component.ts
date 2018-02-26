@@ -33,8 +33,4 @@ export class DatabaseAlertListComponent implements OnInit {
     remove(alert: AlertConfiguration) {
         this.onDelete.emit(alert);
     }
-
-    notify(alert: AlertConfiguration) {
-        this.notifyService.createNotification("something", alert);
-    }
 }
