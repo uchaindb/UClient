@@ -7,6 +7,7 @@ var alertify = require("alertify.js")
 declare var GLOBAL_API_BASE_URL;
 declare var wx;
 declare var _czc;
+declare var UCLIENT_VERSION;
 
 @NgModule({
     bootstrap: [AppComponent],
@@ -21,6 +22,7 @@ declare var _czc;
         { provide: 'WEIXIN', useValue: typeof wx === 'undefined' ? null : wx },
         { provide: 'ALERTIFY', useValue: alertify },
         { provide: 'CZC', useValue: { getInstance: () => { return typeof _czc === 'undefined' ? null : _czc; } } },
+        { provide: 'UCLIENT_VERSION', useValue: UCLIENT_VERSION },
     ]
 })
 export class AppModule {

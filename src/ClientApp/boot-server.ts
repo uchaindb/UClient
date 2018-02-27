@@ -27,6 +27,7 @@ export default createServerRenderer(params => {
         { provide: 'WEIXIN', useValue: null },
         { provide: 'ALERTIFY', useValue: {} },
         { provide: 'CZC', useValue: null },
+        { provide: 'UCLIENT_VERSION', useValue: null },
     ];
 
     return platformDynamicServer(providers).bootstrapModule(AppModule).then(moduleRef => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { IBusyConfig } from "angular2-busy";
 import { MessageSeverity, AlertService } from "../../services/alert.service";
 import { Router } from "@angular/router";
@@ -16,6 +16,7 @@ export class AboutPage implements OnInit {
         private alertService: AlertService,
         private router: Router,
         private translationService: AppTranslationService,
+        @Inject("UCLIENT_VERSION") private UCLIENT_VERSION,
     ) {
     }
 
