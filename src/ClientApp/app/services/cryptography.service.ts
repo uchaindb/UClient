@@ -57,6 +57,17 @@ export class CryptographyService {
         return this.to_b58(cut);
     }
 
+    validatePrivateKey(privateKey: string): boolean {
+        if (privateKey.length != this.size * 2)
+            return false;
+
+        if ((privateKey.toLowerCase().match(/([0-9]|[a-f])/gim) || []).length != privateKey.length) {
+            return false;
+        }
+
+        return true;
+    }
+
     private hexStringToByte(str) {
         if (!str) {
             return new Uint8Array(0);

@@ -272,23 +272,22 @@
             </div>
         </div>
     </div>
-    <div class="panel-footer text-right">
+    <div class="panel-footer text-right text-center-xs">
         <div class="form-inline">
             <div class="form-group">
                 <label for="inputPrivateKey">{{ 'db.create.key.PrivatekeyLabel' | translate }}</label>
                 <select id="inputPrivateKey" class="form-control" (change)="onPrivateKeyChange($event.target.value)" [(ngModel)]="selectedPrivateKey">
                     <optgroup label="{{ 'db.create.key.StoredPrivateKeyGroup' | translate }}">
-                        <option>privkey1</option>
-                        <option>privkey2</option>
+                        <option *ngFor="let key of keyList" value="key.name">{{key.name}}</option>
                     </optgroup>
                     <optgroup label="{{ 'db.create.key.OtherKeyGroup' | translate }}">
                         <option value="import">{{ 'db.create.key.ImportOption' | translate }}</option>
-                        <option value="manage">{{ 'db.create.key.ManageOption' | translate }}</option>
+                        <!--<option value="manage">{{ 'db.create.key.ManageOption' | translate }}</option>-->
                     </optgroup>
                 </select>
             </div>
             <input *ngIf="selectedPrivateKey == 'import'" [(ngModel)]="inputPrivateKey" type="text" class="form-control">
-            <button type="button" class="btn btn-primary" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
+            <button type="button" class="btn btn-primary btn-block-xs" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
         </div>
     </div>
 </div>

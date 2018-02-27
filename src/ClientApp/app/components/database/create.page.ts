@@ -8,6 +8,7 @@ import { NotificationService } from '../../services/notification.service';
 import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
+import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
 
 export type TransactionType = "schema" | "data" | "lock";
 
@@ -34,6 +35,7 @@ export class DatabaseCreatePage implements OnInit {
     selectedPrivateKey = "import";
     inputPrivateKey: string;
     lockScripts: string;
+    keyList: Array<KeyConfiguration>;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -87,10 +89,10 @@ export class DatabaseCreatePage implements OnInit {
         private alertService: AlertService,
         private notifyService: NotificationService,
         private cryptoService: CryptographyService,
+        private privateKeyService: PrivateKeyService,
     ) { }
 
     ngOnInit() {
-        this.inputPrivateKey = this.cryptoService.generateRandomPrivateKey();
         this.route.paramMap
             .subscribe((params: ParamMap) => {
                 let dbid = params.get('dbid');
@@ -121,6 +123,8 @@ export class DatabaseCreatePage implements OnInit {
                     this.schemaActions[0].dropColumns = new LocalDataSource([{ name: col }]);
                 }
             });
+        this.privateKeyService.getKeyList()
+            .subscribe(_ => this.keyList = _);
     }
 
     prepareData() {
@@ -168,7 +172,16 @@ export class DatabaseCreatePage implements OnInit {
 
         this.generateCode();
         let c = this.code;
-        let privKey = this.inputPrivateKey;
+
+        let privKey;
+        if (this.selectedPrivateKey == "import") {
+            privKey = this.inputPrivateKey;
+        }
+        else {
+            var config = this.keyList.find(_ => _.name == this.selectedPrivateKey);
+            privKey = this.privateKeyService.getPrivateKeyDirectly(config);
+        }
+
         let pubKey = this.cryptoService.getPublicKey(privKey);
         let address = this.cryptoService.getAddress(pubKey);
         //console.log("privKey: ", privKey);

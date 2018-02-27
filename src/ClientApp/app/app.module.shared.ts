@@ -52,6 +52,7 @@ import { DatabaseNavComponent } from './components/database/nav.component';
 import { KeyManagePage } from './components/user/key.page';
 import { DatabaseAlertListComponent } from './components/database/alert-list.component';
 import { DatabaseCreatePage } from './components/database/create.page';
+import { PrivateKeyService } from './services/private-key.service';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
@@ -141,6 +142,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         AppTranslationService,
         ChainDbService,
         CryptographyService,
+        PrivateKeyService,
     ],
 })
 export class AppModuleShared {

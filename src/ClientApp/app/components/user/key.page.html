@@ -1,19 +1,19 @@
 ﻿<div class="list-group">
     <div *ngFor="let key of keylist" class="list-group-item">
         <div class="btn-group pull-right">
-            <button type="button" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-export"></span> {{ 'me.key.ExportButtonText' | translate }}</button>
-            <button type="button" class="btn btn-danger btn-xs"><span>&times; {{ 'me.key.DeleteButtonText' | translate }}</span></button>
+            <button type="button" class="btn btn-primary btn-xs" (click)="export(key)"><span class="glyphicon glyphicon-export"></span> {{ 'me.key.ExportButtonText' | translate }}</button>
+            <button type="button" class="btn btn-danger btn-xs" (click)="delete(key)"><span>&times; {{ 'me.key.DeleteButtonText' | translate }}</span></button>
         </div>
         <h4 class="list-group-item-heading">{{key.name}}</h4>
-        <p class="list-group-item-text text-muted">{{key.address}}</p>
+        <p class="list-group-item-text text-muted">{{key.key}}</p>
     </div>
-    <a href="" (click)="create()" class="list-group-item">
+    <a href="javascript:void(0)" (click)="create()" class="list-group-item">
         <h4>
             <span class="glyphicon glyphicon-plus"></span>
             {{ 'me.key.CreateButtonText' | translate }}
         </h4>
     </a>
-    <a href="" (click)="import()" class="list-group-item">
+    <a href="javascript:void(0)" (click)="import()" class="list-group-item">
         <h4>
             <span class="glyphicon glyphicon-import"></span>
             {{ 'me.key.ImportButtonText' | translate }}
