@@ -40,6 +40,12 @@ export class DatabaseActionComponent implements OnInit {
     }
 
     generateActions(transactions: Array<Transaction>) {
+        if (!transactions) {
+            this.dataActions = [];
+            this.schemaActions = [];
+            return;
+        }
+
         transactions.forEach(t => t.Actions.forEach(a => a.transaction = t));
         let dacts = transactions
             .filter(_ => _.Type == "DataTransaction")
