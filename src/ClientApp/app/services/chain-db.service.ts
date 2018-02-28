@@ -198,6 +198,7 @@ export class ChainDbService extends EndpointFactory {
 
     addChainDb(db: ChainDb): Observable<boolean> {
         var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
+        if (dblist.findIndex(_ => _.id == db.id) > -1) return;
         dblist.push(db);
         this.localStoreManager.savePermanentData(dblist, ChainDbService.DBKEY_CHAIN_DB_DATA);
 
