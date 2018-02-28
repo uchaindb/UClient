@@ -204,6 +204,14 @@ export class ChainDbService extends EndpointFactory {
         return Observable.of(true);
     }
 
+    removeChainDb(db: ChainDb): void {
+        var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
+        var idx = dblist
+            .findIndex(_ => _.id == db.id);
+        dblist.splice(idx, 1);
+        this.localStoreManager.savePermanentData(dblist, ChainDbService.DBKEY_CHAIN_DB_DATA);
+    }
+
     getChainDbStatus(db: ChainDb): Observable<StatusRpcResponse> {
         return this.rpcCall(db.address, "Status", []);
     }

@@ -1,7 +1,11 @@
 ﻿<database-nav current="{{ 'db.nav.List' | translate }}"></database-nav>
 <div class="list-group">
     <a *ngFor="let item of dblist" [routerLink]="['/database', item.id]" class="list-group-item">
-        <!--<button type="button" class="close"><span>&times;</span></button>-->
+        <span class="pull-right">
+            <span class="btn btn-xs btn-default" (click)="remove($event, item)">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </span>
+        </span>
         <div class="media-left">
             <img class="media-object chaindb-image" [src]="item.image">
         </div>
