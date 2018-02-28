@@ -11,6 +11,28 @@ import { CryptographyService } from '../../services/cryptography.service';
 import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
 
 export type TransactionType = "schema" | "data" | "lock";
+export type SchemaActionCreationType = {
+    type: "create" | "modify" | "drop",
+    tableName: string,
+    pkval?: string
+    col?: string
+    columns?: LocalDataSource,
+    modifyColumns?: LocalDataSource,
+    dropColumns?: LocalDataSource,
+};
+export type DataActionCreationType = {
+    type: "insert" | "update" | "delete",
+    tableName: string,
+    pkval?: string
+    col?: string
+    columns?: Array<{ Id: string }>,
+};
+export type LockTargetCreationType = {
+    type: "database" | "schema" | "row"| "cell"| "column",
+    tableName: string,
+    pkval?: string
+    col?: string
+};
 
 @Component({
     selector: 'database-create',
@@ -22,9 +44,9 @@ export class DatabaseCreatePage implements OnInit {
 
     tables: Array<any>;
     loaded = false;
-    schemaActions: Array<any> = [];
-    dataActions: Array<any> = [];
-    lockTargets: Array<any> = [];
+    schemaActions: Array<SchemaActionCreationType> = [];
+    dataActions: Array<DataActionCreationType> = [];
+    lockTargets: Array<LockTargetCreationType> = [];
     //schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ name: "Id", type: "string" }]) }];
     //dataActions: Array<any> = [{ type: "insert", tableName: "Donation", columns: { Id: "hello" }, }];
     selectedType: TransactionType = "schema";
@@ -224,13 +246,14 @@ export class DatabaseCreatePage implements OnInit {
             if (ret.length == 0) return null;
             return ret;
         };
+        // TODO: maybe need to avoid using protected property `data`?
         var sa = this.schemaActions
             .map<SchemaAction>(_ => ({
                 Type: getSchemaType(_.type),
                 Name: _.tableName,
-                Columns: mapSchemaColumnDefinition(_.columns && _.columns.data),
-                AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && _.modifyColumns.data),
-                DropColumns: mapStringArray(_.dropColumns && _.dropColumns.data),
+                Columns: mapSchemaColumnDefinition(_.columns && (<any>_.columns).data),
+                AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && (<any>_.modifyColumns).data),
+                DropColumns: mapStringArray(_.dropColumns && (<any>_.dropColumns).data),
             }));
 
         return sa;
@@ -265,10 +288,19 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     duplicateAction(actions: Array<any>, idx) {
-        console.log(actions, actions.slice(idx, idx + 1)[0]);
         let action = Object.assign({}, actions.slice(idx, idx + 1)[0]);
-        actions.splice(actions.length, 0, action);
-        console.log(actions);
+        if (this.selectedType == "data") {
+            this.appendAction(Object.assign({}, action, {columns:Array.from(action.columns)}));
+        }
+        else if (this.selectedType == "schema") {
+            this.appendAction(Object.assign({}, action, {
+                columns: new LocalDataSource( Array.from(action.columns.data)),
+                modifyColumns: new LocalDataSource( Array.from(action.modifyColumns.data)),
+                dropColumns: new LocalDataSource( Array.from(action.dropColumns.data)),
+            }));
+        } else {
+            this.appendAction(action);
+        }
     }
 
 
