@@ -21,7 +21,7 @@
     </div>
 </ng-container>
 <ng-container *ngIf="block">
-    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainBlock' | translate: {hash: block.Hash} }}"></database-nav>
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainBlock' | translate: {hash: (block.Hash | hashbeauty)} }}"></database-nav>
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">{{ 'db.chain.block.SummaryTitle' | translate }}</h3>
@@ -80,7 +80,7 @@
 </ng-container>
 
 <ng-container *ngIf="transaction">
-    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainTransaction' | translate: {hash: transaction.Hash} }}"></database-nav>
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainTransaction' | translate: {hash: (transaction.Hash | hashbeauty)} }}"></database-nav>
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">{{ 'db.chain.transaction.SummaryTitle' | translate }}</h3>
