@@ -101,18 +101,10 @@ export class ChainDbService extends EndpointFactory {
     refreshAlerts(): Observable<boolean> {
         let alertList = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS) as Array<AlertConfiguration> || [];
         let obsList = alertList
-            //.filter(_ => _.type == "chain-fork")
             .map(_ => this.generateAlertNotification(_));
-        //for (let i = 0; i < alertList.length; i++) {
-        //    let alert = alertList[i];
 
-        //    this.generateAlertNotification(alert);
-        //}
-
-        //console.log("obs list", obsList);
         return Observable.forkJoin(obsList)
             .map(_ => {
-                console.log("write back", _);
                 this.localStoreManager.savePermanentData(alertList, ChainDbService.DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS);
                 return true;
             });

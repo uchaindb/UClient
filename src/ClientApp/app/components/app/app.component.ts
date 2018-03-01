@@ -1,5 +1,5 @@
-﻿import { Component, ViewEncapsulation, OnInit, ViewChildren, QueryList, Inject, isDevMode } from '@angular/core';
-import { Location } from '@angular/common';
+﻿import { Component, ViewEncapsulation, OnInit, ViewChildren, QueryList, Inject, isDevMode, PLATFORM_ID } from '@angular/core';
+import { Location, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from "@angular/router";
 import { Title } from "@angular/platform-browser";
 import { AuthService } from "../../services/auth.service";
@@ -10,6 +10,7 @@ import { NavService } from "../../services/nav.service";
 import { ConfigurationService } from '../../services/configuration.service';
 import { WeixinService } from "../../services/weixin.service";
 import { AnalyticService } from "../../services/analytic.service";
+import { ChainDbService } from '../../services/chain-db.service';
 
 @Component({
     selector: 'app',
@@ -40,6 +41,8 @@ export class AppComponent implements OnInit {
         defaultTitle?: string
         defaultDescription?: string
     } = {};
+    intervalCheckAlert: number;
+    isCheckingAlert = false;
 
     constructor(private location: Location,
         titleService: Title,
@@ -55,6 +58,8 @@ export class AppComponent implements OnInit {
         private wxService: WeixinService,
         private analyticService: AnalyticService,
         @Inject("ALERTIFY") private alertify,
+        private chainDbService: ChainDbService,
+        @Inject(PLATFORM_ID) private platformId: string,
     ) {
         this.router.events
             .filter(e => e instanceof NavigationEnd)
@@ -143,6 +148,23 @@ export class AppComponent implements OnInit {
         this.authService.getLoginStatusEvent().subscribe(isLoggedIn => {
             this.isUserLoggedIn = isLoggedIn;
         });
+
+        if (isPlatformBrowser(this.platformId)) {
+            this.intervalCheckAlert = window.setInterval(() => {
+                if (this.isCheckingAlert) return;
+                this.isCheckingAlert = true;
+                this.chainDbService.refreshAlerts()
+                    .subscribe(_ => {
+                        this.isCheckingAlert = false;
+                    });
+            }, 10000);
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.intervalCheckAlert) {
+            clearInterval(this.intervalCheckAlert);
+        }
     }
 
     // get from https://stackoverflow.com/a/38652281/2558077
