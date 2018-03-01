@@ -6,6 +6,7 @@
             description = null,
             image = null,
             address = null,
+            staffpick = 0,
         } = obj;
 
         this.id = id;
@@ -13,6 +14,7 @@
         this.description = description;
         this.image = image;
         this.address = address;
+        this.staffpick = staffpick;
     }
 
     public id: string;
@@ -20,6 +22,7 @@
     public description?: string;
     public image?: string;
     public address: string;
+    public staffpick?: number;// 0: not pick; 1~255: greater number is priority pick
 
 }
 

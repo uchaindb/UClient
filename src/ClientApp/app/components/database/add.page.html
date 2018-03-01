@@ -1,22 +1,41 @@
 ﻿<database-nav current="{{ 'db.add.Title' | translate }}"></database-nav>
 <div class="help-block"></div>
-<div class="input-group input-group-sm">
-    <span class="input-group-addon glyphicon glyphicon-search"></span>
-    <input type="text" class="form-control" placeholder="{{ 'db.add.SearchPlaceholder' | translate }}">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="input-group input-group-sm">
+            <span class="input-group-addon glyphicon glyphicon-search"></span>
+            <input type="text" class="form-control" placeholder="{{ 'db.add.SearchPlaceholder' | translate }}" [(ngModel)]="searchText" (input)="updateSearchList($event.target.value)">
+        </div>
+    </div>
+    <div class="list-group">
+        <ng-container *ngFor="let item of searchList">
+            <ng-container *ngTemplateOutlet="dbTemplate; context: {item:item}">
+            </ng-container>
+        </ng-container>
+        <div *ngIf="searchText && (!searchList || searchList.length == 0)" class="list-group-item">
+            {{ 'db.add.SearchNoResultText' | translate }}
+        </div>
+    </div>
 </div>
 
 <hr />
 <div class="panel panel-default">
     <div class="panel-heading">{{ 'db.add.RecommendTitle' | translate }}</div>
     <div class="list-group">
-        <button type="button" *ngFor="let item of recommendList" (click)="select(item)" class="list-group-item">
-            <div class="media-left">
-                <img class="media-object chaindb-image" [src]="item.image">
-            </div>
-            <div class="media-body">
-                <h4 class="list-group-item-heading">{{item.name}}</h4>
-                <p class="list-group-item-text">{{item.description}}</p>
-            </div>
-        </button>
+        <ng-container *ngFor="let item of recommendList">
+            <ng-container *ngTemplateOutlet="dbTemplate; context: {item:item}">
+            </ng-container>
+        </ng-container>
     </div>
 </div>
+<ng-template #dbTemplate let-item="item">
+    <button type="button" (click)="select(item)" class="list-group-item">
+        <div class="media-left">
+            <img class="media-object chaindb-image" [src]="item.image">
+        </div>
+        <div class="media-body">
+            <h4 class="list-group-item-heading">{{item.name}}</h4>
+            <p class="list-group-item-text">{{item.description}}</p>
+        </div>
+    </button>
+</ng-template>

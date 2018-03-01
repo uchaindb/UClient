@@ -56,6 +56,7 @@ export class ChainDbService extends EndpointFactory {
                 description: "由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。由。。。运营，保存有从xxx开始的数据，为实时数据，接受大众监督。",
                 address: "http://localhost:7847/api/rpc",
                 image: "https://placeimg.com/200/200/any",
+                staffpick: 1,
             },
             {
                 id: "2",

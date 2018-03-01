@@ -74,8 +74,13 @@
   "db": {
     "add": {
       "RecommendTitle": "推荐",
+      "SearchNoResultText": "未搜索到相关结果，请输入其他的关键字进行尝试。",
       "SearchPlaceholder": "搜索...",
-      "Title": "添加链库"
+      "Title": "添加链库",
+      "notification": {
+        "DatabaseAddedContent": "正在打开链库详细信息页面",
+        "DatabaseAddedTitle": "添加链库成功"
+      }
     },
     "alert": {
       "RemoveButtonText": "取消监控",
