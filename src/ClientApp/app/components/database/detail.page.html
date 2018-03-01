@@ -11,13 +11,22 @@
     </div>
     <div class="panel-body">
         <ng-container *ngIf="db && lastBlock">
-            <p><span class="text-success">{{db.name}}</span></p>
-            <p><span class="text-success">{{db.description}}</span></p>
-            <p>{{ 'db.detail.Address' | translate }}<span class="text-success">{{db.address}}</span></p>
-            <p>{{ 'db.detail.Height' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
-            <p>{{ 'db.detail.LastBlock' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
-            <p><a [routerLink]="['/database', db.id, 'create']" class="btn btn-success">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
-            <button type="button" (click)="refreshAlertNotification()" class="btn btn-primary">Refresh</button></p>
+            <div class="media-left">
+                <img class="media-object chaindb-image" [src]="db.image">
+            </div>
+            <div class="media-body">
+                <h4 class="list-group-item-heading">
+                    {{db.name}}
+                    <a [routerLink]="['/database', db.id, 'create']" class="btn btn-success btn-sm">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
+                </h4>
+                <p class="text-muted">{{db.description}}</p>
+                <p>{{ 'db.detail.Address' | translate }}<span class="text-success">{{db.address}}</span></p>
+                <p>{{ 'db.detail.Height' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
+                <p>{{ 'db.detail.LastBlock' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>({{lastBlock.Time | date}})</p>
+                <p>
+                    <button type="button" (click)="refreshAlertNotification()" class="btn btn-primary">Refresh</button>
+                </p>
+            </div>
         </ng-container>
     </div>
 </div>
