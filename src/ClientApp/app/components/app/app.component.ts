@@ -11,6 +11,7 @@ import { ConfigurationService } from '../../services/configuration.service';
 import { WeixinService } from "../../services/weixin.service";
 import { AnalyticService } from "../../services/analytic.service";
 import { ChainDbService } from '../../services/chain-db.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
     selector: 'app',
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit {
         private analyticService: AnalyticService,
         @Inject("ALERTIFY") private alertify,
         private chainDbService: ChainDbService,
+        private notificationService: NotificationService,
         @Inject(PLATFORM_ID) private platformId: string,
     ) {
         this.router.events
@@ -158,6 +160,12 @@ export class AppComponent implements OnInit {
                         this.isCheckingAlert = false;
                     });
             }, 10000);
+
+            this.notificationService.getNewNotificationIdentity()
+                .subscribe(_ => {
+                    this.medot = _;
+                    //console.log("set medot", this.medot, _);
+                });
         }
     }
 

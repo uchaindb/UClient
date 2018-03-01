@@ -5,6 +5,7 @@ import { LocalStoreManager } from './local-store-manager.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { InboxNotification, AlertConfiguration } from '../models/alert.model';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class NotificationService {
@@ -41,6 +42,7 @@ export class NotificationService {
         var id = '_' + Math.random().toString(36).substr(2, 9);
         nlist.push({ id: id, sender: sender, summary: summary, origin: origin })
         this.localStoreManager.savePermanentData(nlist, NotificationService.DBKEY_NOTIFICATION_LIST);
+        this.updateNewNotificationIdentity();
     }
 
     markRead(id: string, read = true): void {
@@ -48,6 +50,7 @@ export class NotificationService {
         var idx = nlist.findIndex(_ => _.id == id);
         nlist[idx].read = read;
         this.localStoreManager.savePermanentData(nlist, NotificationService.DBKEY_NOTIFICATION_LIST);
+        this.updateNewNotificationIdentity();
     }
 
     removeNotification(id: string): void {
@@ -55,6 +58,26 @@ export class NotificationService {
         var idx = nlist.findIndex(_ => _.id == id);
         nlist.splice(idx, 1);
         this.localStoreManager.savePermanentData(nlist, NotificationService.DBKEY_NOTIFICATION_LIST);
+        this.updateNewNotificationIdentity();
     }
 
+    private subjectNewNotificationIdentity = new Subject<boolean>();
+
+    private updateNewNotificationIdentity() {
+        this.subjectNewNotificationIdentity.next(this.getNewNotificationIdentityInternal());
+    }
+
+    private getNewNotificationIdentityInternal(): boolean {
+        var nlist = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST) as Array<InboxNotification>;
+        if (nlist.filter(_ => !_.read).length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    getNewNotificationIdentity(): Observable<boolean> {
+        return Observable.of(this.getNewNotificationIdentityInternal())
+            .merge(Observable.from(this.subjectNewNotificationIdentity));
+    }
 }
