@@ -119,6 +119,24 @@
         "TransactionColumnName": "事务",
         "UpdateName": "更新"
       },
+      "general": {
+        "error": {
+          "BackButtonText": "返回前一页",
+          "LoadButtonText": "尝试重新载入",
+          "NavTitle": "载入出错",
+          "WarningText": "载入链信息出现错误，或许您可以晚一点再来尝试。"
+        },
+        "loading": {
+          "BackButtonText": "返回",
+          "InfoText": "正在载入链信息，请稍后",
+          "NavTitle": "正在载入"
+        },
+        "noInfo": {
+          "BackButtonText": "返回前一页",
+          "NavTitle": "无链信息",
+          "WarningText": "您所请求的链信息并不存在。"
+        }
+      },
       "schemaAction": {
         "CreateColumnName": "列名",
         "CreateColumnType": "数据类型",

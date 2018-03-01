@@ -1,4 +1,26 @@
-﻿<ng-container *ngIf="block">
+﻿<ng-container *ngIf="!error && !loading && !block && !transaction">
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.chain.general.noInfo.NavTitle' | translate }}"></database-nav>
+    <div class="alert alert-warning">
+        {{ 'db.chain.general.noInfo.WarningText' | translate }}
+        <button class="btn btn-primary btn-sm" (click)="back()">{{ 'db.chain.general.noInfo.BackButtonText' | translate }}</button>
+    </div>
+</ng-container>
+<ng-container *ngIf="loading && !block && !transaction">
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.chain.general.loading.NavTitle' | translate }}"></database-nav>
+    <div class="alert alert-info">
+        {{ 'db.chain.general.loading.InfoText' | translate }}
+        <button class="btn btn-primary btn-sm" (click)="back()">{{ 'db.chain.general.loading.BackButtonText' | translate }}</button>
+    </div>
+</ng-container>
+<ng-container *ngIf="error">
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.chain.general.error.NavTitle' | translate }}"></database-nav>
+    <div class="alert alert-danger">
+        {{ 'db.chain.general.error.WarningText' | translate }}
+        <button class="btn btn-success btn-sm" (click)="loadData()">{{ 'db.chain.general.error.LoadButtonText' | translate }}</button>
+        <button class="btn btn-primary btn-sm" (click)="back()">{{ 'db.chain.general.error.BackButtonText' | translate }}</button>
+    </div>
+</ng-container>
+<ng-container *ngIf="block">
     <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainBlock' | translate: {hash: block.Hash} }}"></database-nav>
     <div class="panel panel-info">
         <div class="panel-heading">
