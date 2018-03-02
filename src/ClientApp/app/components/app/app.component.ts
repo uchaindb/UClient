@@ -159,7 +159,7 @@ export class AppComponent implements OnInit {
                     .subscribe(_ => {
                         this.isCheckingAlert = false;
                     });
-            }, 10000);
+            }, 60 * 1000);
 
             this.notificationService.getNewNotificationIdentity()
                 .subscribe(_ => {
