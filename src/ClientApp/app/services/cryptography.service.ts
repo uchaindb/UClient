@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/of';
 import { ec as EC } from 'elliptic';
 import * as shajs from 'sha.js';
+import * as RIPEMD160 from 'ripemd160';
 
 type Signature = { r: Uint8Array, s: Uint8Array };
 
@@ -53,8 +54,8 @@ export class CryptographyService {
 
     getAddress(publicKey: string): string {
         var hash: Uint8Array = shajs('sha256').update(publicKey).digest();
-        var cut = hash.slice(0, 20);
-        return this.to_b58(cut);
+        var rip: Uint8Array = new RIPEMD160().update(hash).digest();
+        return this.to_b58(rip);
     }
 
     validatePrivateKey(privateKey: string): boolean {

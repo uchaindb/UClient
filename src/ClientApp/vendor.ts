@@ -20,3 +20,4 @@ import 'alertify.js';
 import 'alertify.js/dist/css/alertify.css';
 import 'elliptic';
 import 'sha.js';
+import 'ripemd160';
