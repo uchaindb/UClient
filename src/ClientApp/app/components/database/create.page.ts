@@ -187,16 +187,6 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     submit() {
-        //var sa = this.getRequestObject("schema") as Array<SchemaAction>;
-        //var da = this.getRequestObject("data") as Array<DataAction>;
-        var sa = this.getSchemaActions();
-        var da = this.getDataActions();
-        //console.info("schema", sa, this.schemaActions);
-        //console.info("data", da, this.dataActions);
-
-        this.generateCode();
-        let c = this.code;
-
         let privKey;
         if (this.selectedPrivateKey == "import") {
             privKey = this.inputPrivateKey;
@@ -206,26 +196,26 @@ export class DatabaseCreatePage implements OnInit {
             privKey = this.privateKeyService.getPrivateKeyDirectly(config);
         }
 
+        if (!privKey) {
+            this.alertService.showMessage("private key is mandatory.", null, MessageSeverity.error);
+            return;
+        }
+
         let pubKey = this.cryptoService.getPublicKey(privKey);
         let address = this.cryptoService.getAddress(pubKey);
-        //console.log("privKey: ", privKey);
-        //console.log("pubKey: ", pubKey);
-        //console.log("initiator: ", address);
 
         if (this.selectedType == "data") {
+            var da = this.getDataActions();
             this.dataService.createDataTransaction(this.db, privKey, da)
                 .subscribe(_ => {
                     this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
                     this.router.navigate(['database', this.db.id, 'create']);
                 });
-        }
-    }
+        } else if (this.selectedType == "schema") {
+            var sa = this.getSchemaActions();
 
-    getRequestObject(type: TransactionType): Array<SchemaAction> | Array<DataAction> {
-        if (type == "schema") {
-            return this.getSchemaActions();
-        } else {
-            return this.getDataActions();
+        } else if (this.selectedType == "lock") {
+
         }
     }
 
@@ -317,6 +307,14 @@ export class DatabaseCreatePage implements OnInit {
         this.alertService.showDialog("代码模式的编辑内容无法转回普通编辑模式，确定？", DialogType.confirm, _ => {
             this.codeMode = false;
         });
+    }
+
+    getRequestObject(type: TransactionType): Array<SchemaAction> | Array<DataAction> {
+        if (type == "schema") {
+            return this.getSchemaActions();
+        } else {
+            return this.getDataActions();
+        }
     }
 
     generateCode() {
