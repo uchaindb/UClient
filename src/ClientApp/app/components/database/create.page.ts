@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, Input, isDevMode } from '@angular/core';
+﻿import { Component, OnInit, Input, isDevMode, ElementRef, ViewChild } from '@angular/core';
 import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
@@ -28,7 +28,7 @@ export type DataActionCreationType = {
     columns?: Array<{ Id: string }>,
 };
 export type LockTargetCreationType = {
-    type: "database" | "schema" | "row"| "cell"| "column",
+    type: "database" | "schema" | "row" | "cell" | "column",
     tableName: string,
     pkval?: string
     col?: string
@@ -58,6 +58,8 @@ export class DatabaseCreatePage implements OnInit {
     inputPrivateKey: string;
     lockScripts: string;
     keyList: Array<KeyConfiguration>;
+
+    @ViewChild('lockScriptsTextBox') lockScriptsTextBox: ElementRef;
 
     baseActionDef = {
         filter: { inputClass: "hidden" },
@@ -290,13 +292,13 @@ export class DatabaseCreatePage implements OnInit {
     duplicateAction(actions: Array<any>, idx) {
         let action = Object.assign({}, actions.slice(idx, idx + 1)[0]);
         if (this.selectedType == "data") {
-            this.appendAction(Object.assign({}, action, {columns:Array.from(action.columns)}));
+            this.appendAction(Object.assign({}, action, { columns: Array.from(action.columns) }));
         }
         else if (this.selectedType == "schema") {
             this.appendAction(Object.assign({}, action, {
-                columns: new LocalDataSource( Array.from(action.columns.data)),
-                modifyColumns: new LocalDataSource( Array.from(action.modifyColumns.data)),
-                dropColumns: new LocalDataSource( Array.from(action.dropColumns.data)),
+                columns: new LocalDataSource(Array.from(action.columns.data)),
+                modifyColumns: new LocalDataSource(Array.from(action.modifyColumns.data)),
+                dropColumns: new LocalDataSource(Array.from(action.dropColumns.data)),
             }));
         } else {
             this.appendAction(action);
@@ -334,10 +336,35 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     example(type: 'single' | 'multiple') {
-        if (type == 'single') {
-            this.lockScripts = "<USER_ADDRESS>\nOP_CheckSignature";
-        } else if (type == 'multiple') {
-            this.lockScripts = "<USER1_ADDRESS>\n<USER2_ADDRESS>\n...\n<USERn_ADDRESS>\n<n>\nOP_CheckOneOfMultiSignature";
+        let change = () => {
+            if (type == 'single') {
+                this.lockScripts = "<USER_ADDRESS>\nOP_CheckSignature";
+            } else if (type == 'multiple') {
+                this.lockScripts = "<USER1_ADDRESS>\n<USER2_ADDRESS>\n...\n<USERn_ADDRESS>\n<n>\nOP_CheckOneOfMultiSignature";
+            }
+        }
+
+        if (this.lockScripts && this.lockScripts.length > 0) {
+            this.alertService.showDialog("content of text area would be overwritten, are your sure?", DialogType.confirm, _ => { change(); });
+        }
+        else {
+            change();
+        }
+    }
+
+    insert(address: string) {
+        let area = this.lockScriptsTextBox.nativeElement;
+        let value = address;
+        if (area.selectionStart || area.selectionStart == '0') {
+            var startPos = area.selectionStart;
+            var endPos = area.selectionEnd;
+            area.value = area.value.substring(0, startPos)
+                + value
+                + area.value.substring(endPos, area.value.length);
+            area.selectionStart = startPos + value.length;
+            area.selectionEnd = startPos + value.length;
+        } else {
+            area.value += value;
         }
     }
 }

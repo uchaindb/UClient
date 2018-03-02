@@ -201,6 +201,7 @@
         "DeleteButtonText": "删除",
         "DuplicateButtonText": "复制",
         "IndexTitle": "锁定对象 {{number}}",
+        "InsertAddressButtonText": "插入自己的地址",
         "LockScriptsLabel": "锁定脚本",
         "LockTargetLabel": "锁定对象",
         "MultipleUserLockExample": "多用户锁定脚本",

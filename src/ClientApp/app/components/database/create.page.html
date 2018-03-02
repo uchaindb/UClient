@@ -177,12 +177,24 @@
                     <div class="form-group">
                         <label for="inputLockScripts" class="col-sm-2 control-label">{{ 'db.create.lock.LockScriptsLabel' | translate }}</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" rows="7" [(ngModel)]="lockScripts"></textarea>
-                            <p class="help-block">
+                            <textarea #lockScriptsTextBox class="form-control" rows="7" [(ngModel)]="lockScripts"></textarea>
+                            <div class="help-block">
                                 <a href="javascript:void(0)" (click)="example('single')">{{ 'db.create.lock.SingleUserLockExample' | translate }}</a>
                                 |
                                 <a href="javascript:void(0)" (click)="example('multiple')">{{ 'db.create.lock.MultipleUserLockExample' | translate }}</a>
-                            </p>
+                                |
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ 'db.create.lock.InsertAddressButtonText' | translate }}
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li *ngFor="let key of keyList">
+                                            <a href="javascript:void(0)" (click)="insert(key.address)">{{key.name}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

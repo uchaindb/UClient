@@ -11,6 +11,7 @@ import { NotificationService } from './notification.service';
 export type KeyConfiguration = {
     name: string,
     key: string,
+    address?: string,
 };
 
 @Injectable()
@@ -33,7 +34,11 @@ export class PrivateKeyService extends EndpointFactory {
 
     getKeyList(): Observable<Array<KeyConfiguration>> {
         var keyList = (this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<KeyConfiguration> || [])
-            .filter(_ => _.key = _.key.slice(0, 6) + "..." + _.key.slice(-2));
+            .map(_ => ({
+                name: _.name,
+                key: _.key.slice(0, 6) + "..." + _.key.slice(-2),
+                address: this.cryptoService.getAddress(this.cryptoService.getPublicKey(_.key)),
+            }));
 
         return Observable.of(keyList);
     }
