@@ -53,7 +53,7 @@ export class CryptographyService {
     }
 
     getAddress(publicKey: string): string {
-        var hash: Uint8Array = shajs('sha256').update(publicKey).digest();
+        var hash: Uint8Array = shajs('sha256').update(this.hexStringToByte(publicKey)).digest();
         var rip: Uint8Array = new RIPEMD160().update(hash).digest();
         return this.to_b58(rip);
     }
@@ -88,12 +88,54 @@ export class CryptographyService {
         }).join('')
     }
 
-    private test() {
+    unitTests() {
         var privKey = this.generateRandomPrivateKey();
         var pubKey = this.getPublicKey(privKey);
         var sig = this.sign("中文", privKey);
         var ret = this.verify("中文", pubKey, sig);
-        console.log(privKey, pubKey, sig, ret);
+        //console.log(privKey, pubKey, sig, ret);
+        console.log('%ctesting: general sign and verify process', 'color:blue',
+            ret);
+
+        console.log('%ctesting: #generateRandomPrivateKey should generate private key with right length', 'color:green',
+            this.generateRandomPrivateKey().length == 64);
+
+        let verifyCases = [
+            {
+                pub: "03ea01cb94bdaf0cd1c01b159d474f9604f4af35a3e2196f6bdfdb33b2aa4961fa",
+                msg: "hello",
+                r: "5331be791532d157df5b5620620d938bcb622ad02c81cfc184c460efdad18e69",
+                s: "5480d77440c511e9ad02ea30d773cb54e88f8cbb069644aefa283957085f38b5",
+            }, {
+                pub: "03661b86d54eb3a8e7ea2399e0db36ab65753f95fff661da53ae0121278b881ad0",
+                msg: "world",
+                r: "b1e6ff4f40536fb7ed706b0f7567903cc227a5241a079fb86f3de51b8321c1e6",
+                s: "90f37ad0c788848605c1653567935845f0d35a8a1a37174dcbbd235caac8e969",
+            }, {
+                pub: "03661b86d54eb3a8e7ea2399e0db36ab65753f95fff661da53ae0121278b881ad0",
+                msg: "中文",
+                r: "b8cba1ff42304d74d083e87706058f59cdd4f755b995926d2cd80a734c5a3c37",
+                s: "e4583bfd4339ac762c1c91eee3782660a6baf62cd29e407eccd3da3e9de55a02",
+            }];
+        for (let i = 0; i < verifyCases.length; i++) {
+            let c = verifyCases[i];
+            console.log(`%ctesting: could verify message[${c.msg}] with given r and s through public key`, 'color:blue',
+                this.verify(c.msg, c.pub, { r: this.hexStringToByte(c.r), s: this.hexStringToByte(c.s) }));
+        }
+
+        let addressCases = [
+            {
+                pub: "03ea01cb94bdaf0cd1c01b159d474f9604f4af35a3e2196f6bdfdb33b2aa4961fa",
+                address: "Pz1YdSerVNjpLkuJj52ytPNWPKh",
+            }, {
+                pub: "03661b86d54eb3a8e7ea2399e0db36ab65753f95fff661da53ae0121278b881ad0",
+                address: "44pzjeaz2TyPjdUjHhXELiBe2tCy",
+            }];
+        for (let i = 0; i < addressCases.length; i++) {
+            let c = addressCases[i];
+            console.log(`%ctesting: generating address [${c.address}]`, 'color:green',
+                c.address == this.getAddress(c.pub));
+        }
     }
 
     //got from: https://github.com/45678/Base58
@@ -109,7 +151,7 @@ export class CryptographyService {
         }
     }
 
-    to_b58(buffer: Uint8Array) :string{
+    to_b58(buffer: Uint8Array): string {
         var carry, digits, j, i;
         if (buffer.length === 0) {
             return "";
@@ -144,7 +186,7 @@ export class CryptographyService {
             digits.push(0);
             i++;
         }
-        return digits.reverse().map((digit)=> {
+        return digits.reverse().map((digit) => {
             return this.ALPHABET[digit];
         }).join("");
     }
