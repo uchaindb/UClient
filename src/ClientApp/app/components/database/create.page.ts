@@ -212,19 +212,22 @@ export class DatabaseCreatePage implements OnInit {
             this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
             this.router.navigate(['database', this.db.id, 'create']);
         };
+        let errCallback = (_) => {
+            this.alertService.showMessage("server failed to process the request", null, MessageSeverity.error);
+        };
 
         if (this.selectedType == "data") {
             var da = this.getDataActions();
             this.dataService.createDataTransaction(this.db, privKey, da)
-                .subscribe(rpcCallback);
+                .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "schema") {
             var sa = this.getSchemaActions();
             this.dataService.createSchemaTransaction(this.db, privKey, sa)
-                .subscribe(rpcCallback);
+                .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "lock") {
             var lt = this.getLockTargets();
             this.dataService.createLockTransaction(this.db, privKey, this.lockScripts, lt)
-                .subscribe(rpcCallback);
+                .subscribe(rpcCallback, errCallback);
         } else {
             this.alertService.showMessage("cannot recognize the type you selected", null, MessageSeverity.warn);
         }
@@ -378,9 +381,9 @@ export class DatabaseCreatePage implements OnInit {
     example(type: 'single' | 'multiple') {
         let change = () => {
             if (type == 'single') {
-                this.lockScripts = "<USER_ADDRESS>\nOP_CheckSignature";
+                this.lockScripts = "<USER_ADDRESS>\nOC_CheckSignature";
             } else if (type == 'multiple') {
-                this.lockScripts = "<USER1_ADDRESS>\n<USER2_ADDRESS>\n...\n<USERn_ADDRESS>\n<n>\nOP_CheckOneOfMultiSignature";
+                this.lockScripts = "<USER1_ADDRESS>\n<USER2_ADDRESS>\n...\n<USERn_ADDRESS>\n<n>\nOC_CheckOneOfMultiSignature";
             }
         }
 
