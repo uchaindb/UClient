@@ -153,11 +153,7 @@ export type DataAction = {
     Columns?: Array<ColumnData>,
 }
 
-export enum SchemaColumnType {
-    String,
-    Number,
-    Blob,
-}
+export type SchemaColumnType = "String" | "Number" | "Blob";
 export type SchemaActionEnum = "CreateSchemaAction" | "ModifySchemaAction" | "DropSchemaAction";
 export type SchemaColumnDefinition = { Name: string, Type: SchemaColumnType, PrimaryKey: boolean }
 export type SchemaAction = {
@@ -168,6 +164,13 @@ export type SchemaAction = {
     DropColumns?: Array<string>,
 }
 
+export type LockTargetEnum = "None" | "Database" | "TableSchema" | "TableRowData" | "TableCellData" | "TableColumnData";
+export type LockTarget = {
+    TargetType: LockTargetEnum,
+    TableName?: string,
+    PrimaryKey?: string,
+    ColumnName?: string,
+}
 
 
 export type UInt256 = string;

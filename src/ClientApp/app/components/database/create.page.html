@@ -1,8 +1,10 @@
 ﻿<database-nav [dbid]="db?.id" [dbname]="db?.name" current="{{ 'db.nav.CreatePage' | translate }}"></database-nav>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <button *ngIf="!codeMode" type="button" (click)="gotoCode()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoCode' | translate }}</button>
-        <button *ngIf="codeMode" type="button" (click)="gotoGui()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoGui' | translate }}</button>
+        <ng-container *ngIf="enableCodeMode">
+            <button *ngIf="!codeMode" type="button" (click)="gotoCode()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoCode' | translate }}</button>
+            <button *ngIf="codeMode" type="button" (click)="gotoGui()" class="btn btn-primary btn-xs pull-right">{{ 'db.create.GotoGui' | translate }}</button>
+        </ng-container>
         <h3 class="panel-title">{{ 'db.create.PageTitle' | translate }}</h3>
     </div>
     <div *ngIf="codeMode" class="panel-body">
@@ -290,7 +292,7 @@
                 <label for="inputPrivateKey">{{ 'db.create.key.PrivatekeyLabel' | translate }}</label>
                 <select id="inputPrivateKey" class="form-control" (change)="onPrivateKeyChange($event.target.value)" [(ngModel)]="selectedPrivateKey">
                     <optgroup label="{{ 'db.create.key.StoredPrivateKeyGroup' | translate }}">
-                        <option *ngFor="let key of keyList" value="key.name">{{key.name}}</option>
+                        <option *ngFor="let key of keyList" value="{{key.name}}">{{key.name}}</option>
                     </optgroup>
                     <optgroup label="{{ 'db.create.key.OtherKeyGroup' | translate }}">
                         <option value="import">{{ 'db.create.key.ImportOption' | translate }}</option>

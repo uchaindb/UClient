@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, Input, isDevMode, ElementRef, ViewChild } from '@angular/core';
-import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData } from '../../models/chain-db.model';
+import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData, LockTarget, LockTargetEnum, SchemaColumnType } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
@@ -11,8 +11,9 @@ import { CryptographyService } from '../../services/cryptography.service';
 import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
 
 export type TransactionType = "schema" | "data" | "lock";
+export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
 export type SchemaActionCreationType = {
-    type: "create" | "modify" | "drop",
+    type: SchemaActionCreationTypeEnum,
     tableName: string,
     pkval?: string
     col?: string
@@ -20,15 +21,17 @@ export type SchemaActionCreationType = {
     modifyColumns?: LocalDataSource,
     dropColumns?: LocalDataSource,
 };
+export type DataActionCreationTypeEnum = "insert" | "update" | "delete";
 export type DataActionCreationType = {
-    type: "insert" | "update" | "delete",
+    type: DataActionCreationTypeEnum,
     tableName: string,
     pkval?: string
     col?: string
     columns?: Array<{ Id: string }>,
 };
+export type LockTargetCreationTypeEnum = "database" | "schema" | "row" | "cell" | "column";
 export type LockTargetCreationType = {
-    type: "database" | "schema" | "row" | "cell" | "column",
+    type: LockTargetCreationTypeEnum,
     tableName: string,
     pkval?: string
     col?: string
@@ -44,6 +47,7 @@ export class DatabaseCreatePage implements OnInit {
 
     tables: Array<any>;
     loaded = false;
+    enableCodeMode = false;
     schemaActions: Array<SchemaActionCreationType> = [];
     dataActions: Array<DataActionCreationType> = [];
     lockTargets: Array<LockTargetCreationType> = [];
@@ -204,31 +208,42 @@ export class DatabaseCreatePage implements OnInit {
         let pubKey = this.cryptoService.getPublicKey(privKey);
         let address = this.cryptoService.getAddress(pubKey);
 
+        let rpcCallback = (_) => {
+            this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
+            this.router.navigate(['database', this.db.id, 'create']);
+        };
+
         if (this.selectedType == "data") {
             var da = this.getDataActions();
             this.dataService.createDataTransaction(this.db, privKey, da)
-                .subscribe(_ => {
-                    this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
-                    this.router.navigate(['database', this.db.id, 'create']);
-                });
+                .subscribe(rpcCallback);
         } else if (this.selectedType == "schema") {
             var sa = this.getSchemaActions();
-
+            this.dataService.createSchemaTransaction(this.db, privKey, sa)
+                .subscribe(rpcCallback);
         } else if (this.selectedType == "lock") {
-
+            var lt = this.getLockTargets();
+            this.dataService.createLockTransaction(this.db, privKey, this.lockScripts, lt)
+                .subscribe(rpcCallback);
+        } else {
+            this.alertService.showMessage("cannot recognize the type you selected", null, MessageSeverity.warn);
         }
     }
 
     getSchemaActions(): Array<SchemaAction> {
-        let getSchemaType = (type: string): SchemaActionEnum =>
+        let getSchemaType = (type: SchemaActionCreationTypeEnum): SchemaActionEnum =>
             type == "create" ? "CreateSchemaAction"
                 : type == "modify" ? "ModifySchemaAction"
                     : "DropSchemaAction";
 
+        let getColumnDefType = (type: string): SchemaColumnType =>
+            type == "string" ? "String"
+                : type == "number" ? "Number"
+                    : "Blob";
+
         let mapSchemaColumnDefinition = (arr): Array<SchemaColumnDefinition> => {
-            if (!arr) return null;
-            let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: c.type, Name: c.name, PrimaryKey: c.ispk }));
-            if (ret.length == 0) return null;
+            if (!arr || arr.length == 0) return null;
+            let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: getColumnDefType(c.type), Name: c.name, PrimaryKey: c.ispk == true }));
             return ret;
         };
 
@@ -252,7 +267,7 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     getDataActions(): Array<DataAction> {
-        let getDataType = (type: string): DataActionEnum =>
+        let getDataType = (type: DataActionCreationTypeEnum): DataActionEnum =>
             type == "insert" ? "InsertDataAction"
                 : type == "update" ? "UpdateDataAction"
                     : "DeleteDataAction";
@@ -273,6 +288,33 @@ export class DatabaseCreatePage implements OnInit {
             }));
 
         return da;
+    }
+
+    getLockTargets(): Array<LockTarget> {
+        let getDataType = (type: LockTargetCreationTypeEnum): LockTargetEnum =>
+            type == "database" ? "Database"
+                : type == "schema" ? "TableSchema"
+                    : type == "row" ? "TableRowData"
+                        : type == "column" ? "TableColumnData"
+                            : type == "cell" ? "TableCellData"
+                                : "None";
+
+        let mapColumnData = (obj): Array<ColumnData> => {
+            if (!obj) return null;
+            let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
+            if (ret.length == 0) return null;
+            return ret;
+        };
+
+        var lt = this.lockTargets
+            .map<LockTarget>(_ => ({
+                TargetType: getDataType(_.type),
+                TableName: _.tableName,
+                PrimaryKey: _.pkval,
+                ColumnName: _.col,
+            }));
+
+        return lt;
     }
 
     removeAction(actions: Array<any>, idx) {
