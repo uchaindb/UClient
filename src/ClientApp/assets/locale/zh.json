@@ -77,9 +77,23 @@
       "SearchNoResultText": "未搜索到相关结果，请输入其他的关键字进行尝试。",
       "SearchPlaceholder": "搜索...",
       "Title": "添加链库",
+      "manual": {
+        "AddModalTitle": "手动添加",
+        "AddressLabel": "网络地址（必填）",
+        "AddressPlaceholder": "如：http://dhcdb.uchaindb.com/api/rpc",
+        "CloseButtonText": "关闭",
+        "ConnectDatabaseButtonText": "手动添加链库",
+        "DescLabel": "链库简介（选填）",
+        "DescPlaceholder": "链库简介",
+        "NameLabel": "链库名字（选填）",
+        "NamePlaceholder": "链库名字",
+        "SaveButtonText": "保存"
+      },
       "notification": {
         "DatabaseAddedContent": "正在打开链库详细信息页面",
-        "DatabaseAddedTitle": "添加链库成功"
+        "DatabaseAddedTitle": "添加链库成功",
+        "ManualAddEmptyAddressContent": "至少地址不能为空",
+        "ManualAddEmptyAddressTitle": "数据有错"
       }
     },
     "alert": {

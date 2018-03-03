@@ -20,7 +20,13 @@ export class DatabaseAddPage implements OnInit {
     translations: {
         databaseAddedTitle?: string,
         databaseAddedContent?: string,
+        manualAddEmptyAddressTitle?: string,
+        manualAddEmptyAddressContent?: string,
     } = {};
+
+    manualName: string;
+    manualDesc: string;
+    manualAddress: string;
 
     constructor(
         private dataService: ChainDbService,
@@ -31,6 +37,8 @@ export class DatabaseAddPage implements OnInit {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.databaseAddedTitle = gT('db.add.notification.DatabaseAddedTitle')
         this.translations.databaseAddedContent = gT('db.add.notification.DatabaseAddedContent')
+        this.translations.manualAddEmptyAddressTitle = gT('db.add.notification.ManualAddEmptyAddressTitle')
+        this.translations.manualAddEmptyAddressContent = gT('db.add.notification.ManualAddEmptyAddressContent')
     }
 
     ngOnInit() {
@@ -64,5 +72,29 @@ export class DatabaseAddPage implements OnInit {
         this.dataService.addChainDb(item);
         this.alertService.showMessage(this.translations.databaseAddedTitle, this.translations.databaseAddedContent, MessageSeverity.success);
         this.router.navigate(["/database", item.id]);
+    }
+
+    saveManual() {
+        if (!this.manualAddress) {
+            this.alertService.showMessage(this.translations.manualAddEmptyAddressTitle, this.translations.manualAddEmptyAddressContent, MessageSeverity.error);
+            return;
+        }
+        this.dataService.getDbList()
+            .subscribe(list => {
+                let id = 100000;
+                while (list.findIndex(_ => _.id == id.toString()) > -1) {
+                    id++;
+                }
+                let item: ChainDb = {
+                    id: id.toString(),
+                    name: this.manualName ? this.manualName : this.manualAddress,
+                    description: this.manualDesc ? this.manualDesc : this.manualName ? this.manualName : this.manualAddress,
+                    address: this.manualAddress,
+                    image: '/apple-touch-icon.png',
+                };
+                this.dataService.addChainDb(item);
+                this.alertService.showMessage(this.translations.databaseAddedTitle, this.translations.databaseAddedContent, MessageSeverity.success);
+                this.router.navigate(["/database", item.id]);
+            });
     }
 }
