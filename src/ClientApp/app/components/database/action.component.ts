@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, isDevMode } from '@angular/core';
 import { ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { ChainDbService } from '../../services/chain-db.service';
-import { ChainDb, Transaction, Block } from '../../models/chain-db.model';
+import { ChainDb, Transaction, Block, ScriptToken } from '../../models/chain-db.model';
 
 @Component({
     selector: 'database-action',
@@ -21,6 +21,7 @@ export class DatabaseActionComponent implements OnInit {
 
     schemaActions: Array<any>;
     dataActions: Array<{ actions: Array<any>, pkname: string, tableName: string, columns: Array<string> }>;
+    lockTransactions: Array<Transaction>;
 
     constructor(
         private route: ActivatedRoute,
@@ -43,10 +44,11 @@ export class DatabaseActionComponent implements OnInit {
         if (!transactions) {
             this.dataActions = [];
             this.schemaActions = [];
+            this.lockTransactions = [];
             return;
         }
 
-        transactions.forEach(t => t.Actions.forEach(a => a.transaction = t));
+        transactions.forEach(t => t.Actions && t.Actions.forEach(a => (<any>a).transaction = t));
         let dacts = transactions
             .filter(_ => _.Type == "DataTransaction")
             .map(_ => _.Actions)
@@ -95,5 +97,16 @@ export class DatabaseActionComponent implements OnInit {
             .filter(_ => _.Type == "SchemaTransaction")
             .map(_ => _.Actions)
             .reduce((a, b) => a.concat(b), []);
+
+        this.lockTransactions = transactions
+            .filter(_ => _.Type == "LockTransaction");
+        transactions.forEach(t => (<any>t).code = this.generateCode(t.LockScripts));
+    }
+
+    generateCode(tokens: Array<ScriptToken>):string {
+        tokens = tokens || [];
+        return tokens
+            .map(_ => _.OpCode == "Object" ? _.Object : _.OpCode)
+            .join('\n');
     }
 }

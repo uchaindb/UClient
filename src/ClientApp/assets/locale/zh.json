@@ -104,14 +104,15 @@
     },
     "chain": {
       "block": {
-        "ActionsTitle": "相关动作",
+        "ActionTransactionSuffix": "（包含{{length}}项动作）",
+        "DetailTitle": "相关动作",
         "Hash": "哈希(Hash)",
         "Height": "块高度",
         "Next": "下一块 >",
         "Previous": "< 前一块",
         "SummaryTitle": "块信息",
+        "TargetTransactionSuffix": "（包含{{length}}项对象）",
         "Time": "时间",
-        "TransactionSuffix": "（包含{{length}}项动作）",
         "TransactionsTitle": "相关事务"
       },
       "dataAction": {
@@ -140,6 +141,19 @@
           "BackButtonText": "返回前一页",
           "NavTitle": "无链信息",
           "WarningText": "您所请求的链信息并不存在。"
+        }
+      },
+      "lockTransaction": {
+        "ColumnName": "列名",
+        "Name": "锁定事务",
+        "PrimaryKeyValue": "主键值",
+        "TableName": "表名",
+        "type": {
+          "Database": "锁定数据库",
+          "TableCellData": "锁定数据单元",
+          "TableColumnData": "锁定数据列",
+          "TableRowData": "锁定数据行",
+          "TableSchema": "锁定表结构"
         }
       },
       "schemaAction": {

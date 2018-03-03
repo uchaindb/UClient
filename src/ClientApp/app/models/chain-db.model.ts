@@ -105,6 +105,8 @@ export class Transaction extends HashBase {
             Type = null,
             Signature = null,
             Actions = [],
+            LockTargets = [],
+            LockScripts = [],
         } = obj;
         super({ Hash: Hash });
 
@@ -112,14 +114,19 @@ export class Transaction extends HashBase {
         this.Type = Type;
         this.Signature = Signature;
         this.Actions = Actions;
+        this.LockTargets = LockTargets;
+        this.LockScripts = LockScripts;
     }
 
     public Initiator?: string;
     public Type?: TransactionTypeEnum;
     public Signature?: string;
-    public Actions?: Array<any>;
-
+    public Actions?: Array<DataAction & SchemaAction>;
+    public LockTargets?: Array<LockTarget>;
+    public LockScripts?: Array<ScriptToken>;
 }
+
+export type ScriptToken = { OpCode: string, Object: string };
 
 export class HistoryEntry {
     constructor(obj: HistoryEntry = {} as HistoryEntry) {

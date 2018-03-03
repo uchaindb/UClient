@@ -141,3 +141,54 @@
         </div>
     </div>
 </ng-container>
+<!--for lock targets-->
+<ng-container *ngFor="let tran of lockTransactions">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {{ 'db.chain.lockTransaction.Name' | translate }}
+                <a [routerLink]="['/database', dbid, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <pre>{{tran.code}}</pre>
+        </div>
+        <ul class="list-group">
+            <li *ngFor="let target of tran.LockTargets" class="list-group-item">
+                <ng-container [ngSwitch]="target.TargetType">
+                    <ng-template [ngSwitchCase]="'Database'">
+                        <span class="glyphicon glyphicon-tasks"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.Database' | translate }}"></span>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'TableSchema'">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableSchema' | translate }}"></span>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'TableRowData'">
+                        <span class="glyphicon glyphicon-list"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableRowData' | translate }}"></span>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'TableCellData'">
+                        <span class="glyphicon glyphicon-option-vertical"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableCellData' | translate }}"></span>
+                    </ng-template>
+                    <ng-template [ngSwitchCase]="'TableColumnData'">
+                        <span class="glyphicon glyphicon-unchecked"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableColumnData' | translate }}"></span>
+                    </ng-template>
+                </ng-container>
+                <ul class="alert-detail-list">
+                    <li *ngIf="target.TableName">
+                        {{ 'db.chain.lockTransaction.TableName' | translate }} <mark>{{target.TableName}}</mark>
+                    </li>
+                    <li *ngIf="target.ColumnName">
+                        {{ 'db.chain.lockTransaction.ColumnName' | translate }} <mark>{{target.ColumnName}}</mark>
+                    </li>
+                    <li *ngIf="target.PrimaryKey">
+                        {{ 'db.chain.lockTransaction.PrimaryKeyValue' | translate }} <mark>{{target.PrimaryKey}}</mark>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</ng-container>

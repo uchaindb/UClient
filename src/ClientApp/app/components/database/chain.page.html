@@ -57,21 +57,23 @@
                         <ng-container [ngSwitch]="tran.Type">
                             <ng-template [ngSwitchCase]="'DataTransaction'">
                                 {{ 'db.def.DataTransactionName' | translate }}
+                                {{ 'db.chain.block.ActionTransactionSuffix' | translate: {length: tran.Actions?.length} }}
                             </ng-template>
                             <ng-template [ngSwitchCase]="'SchemaTransaction'">
                                 {{ 'db.def.SchemaTransactionName' | translate }}
+                                {{ 'db.chain.block.ActionTransactionSuffix' | translate: {length: tran.Actions?.length} }}
                             </ng-template>
                             <ng-template [ngSwitchCase]="'LockTransaction'">
                                 {{ 'db.def.LockTransactionName' | translate }}
+                                {{ 'db.chain.block.TargetTransactionSuffix' | translate: {length: tran.LockTargets?.length} }}
                             </ng-template>
                         </ng-container>
-                        {{ 'db.chain.block.TransactionSuffix' | translate: {length: tran.Actions?.length} }}
                     </td>
                 </tr>
             </tbody>
         </table>
         <div class="panel-heading">
-            <h3 class="panel-title">{{ 'db.chain.block.ActionsTitle' | translate }}</h3>
+            <h3 class="panel-title">{{ 'db.chain.block.DetailTitle' | translate }}</h3>
         </div>
         <div class="panel-body">
             <database-action [dbid]="db.id" [transactions]="block.Transactions"></database-action>
