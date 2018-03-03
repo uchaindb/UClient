@@ -393,7 +393,7 @@ export class ChainDbService extends EndpointFactory {
 
     private getLockTransactionHashContent(initiator: string, lockScripts: string, targets: Array<LockTarget>): string {
         let mapColumns = (columns: Array<LockTarget>): Array<string> =>
-            columns.map(_ => `[${_.TargetType}]${(!_.TableName ? '' : _.TableName + ':')}${(!_.PrimaryKey ? '' : _.PrimaryKey + ':')}${_.ColumnName}`);
+            columns.map(_ => `[${_.TargetType}]${(!_.TableName ? '' : _.TableName + ':')}${(!_.PrimaryKey ? '' : _.PrimaryKey + ':')}${(!_.ColumnName ? '' : _.ColumnName)}`);
         return `${initiator}|${lockScripts}|${mapColumns(targets).join(", ")}`
     }
 
