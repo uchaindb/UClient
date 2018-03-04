@@ -24,7 +24,8 @@ export class NotificationService {
         if (!this.localStoreManager.exists(NotificationService.DBKEY_NOTIFICATION_LIST)) {
             this.localStoreManager.savePermanentData([], NotificationService.DBKEY_NOTIFICATION_LIST);
         }
-        var nlist = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST);
+        var nlist = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST)
+            .reverse();
         return Observable.of(nlist);
     }
 
