@@ -144,6 +144,7 @@ export class ChainDbService extends EndpointFactory {
                     if (alert.data && alert.data.lastTransactionId) {
                         query = query
                             .map(table => {
+                                if (!table) return null;
                                 if (table.History.TransactionHash != alert.data.lastTransactionId) {
                                     this.notificationService.createNotification(`table [${alert.tableName}] schema changed from transaction [${alert.data.lastTransactionId}] to [${table.History.TransactionHash}]`, alert);
                                 }
@@ -154,6 +155,7 @@ export class ChainDbService extends EndpointFactory {
 
                     // update data using fresh server data
                     query = query.map(table => {
+                        if (!table) return null;
                         //console.log("update data", table);
                         alert.data = { lastTransactionId: table.History.TransactionHash };
                         return table;
