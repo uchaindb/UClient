@@ -3,6 +3,7 @@ import { ChainDbService } from '../../services/chain-db.service';
 import { CryptographyService } from '../../services/cryptography.service';
 import { PrivateKeyService, KeyConfiguration } from '../../services/private-key.service';
 import { AlertService, DialogType, MessageSeverity } from '../../services/alert.service';
+import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
     selector: 'user-key',
@@ -12,12 +13,37 @@ import { AlertService, DialogType, MessageSeverity } from '../../services/alert.
 export class KeyManagePage implements OnInit {
     keylist: Array<KeyConfiguration>;
 
+    translations: {
+        importNameTakenTitle?: string,
+        importNameTakenContent?: string,
+        importNamePromptMessage?: string,
+        importInvalidKeyTitle?: string,
+        importInvalidKeyContent?: string,
+        importKeyPromptMessage?: string,
+        createNameTakenTitle?: string,
+        createNameTakenContent?: string,
+        createNamePromptMessage?: string,
+        exportMessage?: string,
+    } = {};
+
     constructor(
         private dataService: PrivateKeyService,
         private cryptoService: CryptographyService,
         private alertService: AlertService,
+        private translationService: AppTranslationService,
     ) {
         this.updateList();
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.importNameTakenTitle = gT("me.key.notification.ImportNameTakenTitle");
+        this.translations.importNameTakenContent = gT("me.key.notification.ImportNameTakenContent");
+        this.translations.importNamePromptMessage = gT("me.key.notification.ImportNamePromptMessage");
+        this.translations.importInvalidKeyTitle = gT("me.key.notification.ImportInvalidKeyTitle");
+        this.translations.importInvalidKeyContent = gT("me.key.notification.ImportInvalidKeyContent");
+        this.translations.importKeyPromptMessage = gT("me.key.notification.ImportKeyPromptMessage");
+        this.translations.createNameTakenTitle = gT("me.key.notification.CreateNameTakenTitle");
+        this.translations.createNameTakenContent = gT("me.key.notification.CreateNameTakenContent");
+        this.translations.createNamePromptMessage = gT("me.key.notification.CreateNamePromptMessage");
+        this.translations.exportMessage = gT("me.key.notification.ExportMessage");
     }
 
     updateList() {
@@ -36,15 +62,15 @@ export class KeyManagePage implements OnInit {
     }
 
     import() {
-        this.alertService.showDialog("type name", DialogType.prompt, name => {
+        this.alertService.showDialog(this.translations.importNamePromptMessage, DialogType.prompt, name => {
             if (this.keylist.findIndex(_ => _.name == name) > -1) {
-                this.alertService.showMessage("name already been taken, consider another one", "", MessageSeverity.error);
+                this.alertService.showMessage(this.translations.importNameTakenTitle, this.translations.importNameTakenContent, MessageSeverity.error);
                 return;
             }
 
-            this.alertService.showDialog("type key", DialogType.prompt, key => {
+            this.alertService.showDialog(this.translations.importKeyPromptMessage, DialogType.prompt, key => {
                 if (!this.cryptoService.validatePrivateKey(key)) {
-                    this.alertService.showMessage("private key invalid", "", MessageSeverity.error);
+                    this.alertService.showMessage(this.translations.importInvalidKeyTitle, this.translations.importInvalidKeyContent, MessageSeverity.error);
                     return;
                 }
 
@@ -57,14 +83,14 @@ export class KeyManagePage implements OnInit {
     export(key: KeyConfiguration) {
         this.dataService.getPrivateKey(key)
             .subscribe(_ => {
-                this.alertService.showDialog("your private key is: " + _, DialogType.alert);
+                this.alertService.showDialog(this.translations.exportMessage + _, DialogType.alert);
             });
     }
 
     create() {
-        this.alertService.showDialog("type name", DialogType.prompt, name => {
+        this.alertService.showDialog(this.translations.createNamePromptMessage, DialogType.prompt, name => {
             if (this.keylist.findIndex(_ => _.name == name) > -1) {
-                this.alertService.showMessage("name already been taken, consider another one", "", MessageSeverity.error);
+                this.alertService.showMessage(this.translations.createNameTakenTitle, this.translations.createNameTakenContent, MessageSeverity.error);
             }
             else {
                 let genKey = this.cryptoService.generateRandomPrivateKey();

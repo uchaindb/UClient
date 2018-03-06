@@ -5,6 +5,7 @@ import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { AlertConfiguration } from '../../models/alert.model';
 import { NotificationService } from '../../services/notification.service';
+import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
     selector: 'database-detail',
@@ -20,13 +21,35 @@ export class DatabaseDetailPage implements OnInit {
     monitor: boolean;
     alertConfigs: Array<AlertConfiguration>;
 
+    translations: {
+        toggleMonitorRemovedTitle?: string,
+        toggleMonitorRemovedContent?: string,
+        toggleMonitorAddedTitle?: string,
+        toggleMonitorAddedContent?: string,
+        alertListItemRemovedTitle?: string,
+        alertListItemRemovedContent?: string,
+        manualRefreshAlertTitle?: string,
+        manualRefreshAlertContent?: string,
+    } = {};
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
         private notifyService: NotificationService,
-    ) { }
+        private translationService: AppTranslationService,
+    ) {
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.toggleMonitorRemovedTitle = gT("db.detail.notification.ToggleMonitorRemovedTitle");
+        this.translations.toggleMonitorRemovedContent = gT("db.detail.notification.ToggleMonitorRemovedContent");
+        this.translations.toggleMonitorAddedTitle = gT("db.detail.notification.ToggleMonitorAddedTitle");
+        this.translations.toggleMonitorAddedContent = gT("db.detail.notification.ToggleMonitorAddedContent");
+        this.translations.alertListItemRemovedTitle = gT("db.detail.notification.AlertListItemRemovedTitle");
+        this.translations.alertListItemRemovedContent = gT("db.detail.notification.AlertListItemRemovedContent");
+        this.translations.manualRefreshAlertTitle = gT("db.detail.notification.ManualRefreshAlertTitle");
+        this.translations.manualRefreshAlertContent = gT("db.detail.notification.ManualRefreshAlertContent");
+    }
 
     ngOnInit() {
         this.route.paramMap
@@ -63,30 +86,28 @@ export class DatabaseDetailPage implements OnInit {
         let config = this.alertConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
         if (config) {
             this.dataService.removeAlertConfig(config);
-            this.alertService.showMessage('alert removed', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
             this.dataService.addAlertConfig({
                 type: "chain-fork",
                 dbid: this.db.id,
             })
-            this.alertService.showMessage('alert added', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
         this.refreshAlerts();
     }
 
     remove(alert: AlertConfiguration) {
-        console.info("remove", alert);
         this.dataService.removeAlertConfig(alert);
-        this.alertService.showMessage('alert removed', '', MessageSeverity.success);
+        this.alertService.showMessage(this.translations.alertListItemRemovedTitle, this.translations.alertListItemRemovedContent, MessageSeverity.success);
         this.refreshAlerts();
     }
 
     refreshAlertNotification() {
         this.dataService.refreshAlerts()
             .subscribe(_ => {
-                console.log("refreshed",_);
-                this.alertService.showMessage('alert notification refreshed', '', MessageSeverity.success);
+                this.alertService.showMessage(this.translations.manualRefreshAlertTitle, this.translations.manualRefreshAlertContent, MessageSeverity.success);
             });
     }
 }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, ColumnDef, CellDef, TableData } from '../../models/chain-db.model';
 import { AlertType, AlertConfiguration } from '../../models/alert.model';
+import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
     selector: 'database-table',
@@ -29,12 +30,26 @@ export class DatabaseTableComponent implements OnInit {
     alertCellData: AlertType = "cell-data-modify";
     alertConfigs: Array<AlertConfiguration>;
 
+    translations: {
+        toggleMonitorRemovedTitle?: string,
+        toggleMonitorRemovedContent?: string,
+        toggleMonitorAddedTitle?: string,
+        toggleMonitorAddedContent?: string,
+    } = {};
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
-    ) { }
+        private translationService: AppTranslationService,
+    ) {
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");
+        this.translations.toggleMonitorRemovedContent = gT("db.table.notification.ToggleMonitorRemovedContent");
+        this.translations.toggleMonitorAddedTitle = gT("db.table.notification.ToggleMonitorAddedTitle");
+        this.translations.toggleMonitorAddedContent = gT("db.table.notification.ToggleMonitorAddedContent");
+    }
 
     ngOnInit() { }
 
@@ -65,7 +80,7 @@ export class DatabaseTableComponent implements OnInit {
             );
         if (config) {
             this.dataService.removeAlertConfig(config);
-            this.alertService.showMessage('alert removed', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
             this.dataService.addAlertConfig({
                 type: type,
@@ -74,7 +89,7 @@ export class DatabaseTableComponent implements OnInit {
                 columnName: colName,
                 primaryKeyValue: pkval,
             })
-            this.alertService.showMessage('alert added', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
         this.refreshAlerts();

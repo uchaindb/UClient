@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, RowDef, ColumnDef, TableData } from '../../models/chain-db.model';
 import { AlertConfiguration, AlertType } from '../../models/alert.model';
+import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
     selector: 'database-table-page',
@@ -22,12 +23,26 @@ export class DatabaseTablePage implements OnInit {
     alertTableData: AlertType = "table-data-modify";
     alertConfigs: Array<AlertConfiguration>;
 
+    translations: {
+        toggleMonitorRemovedTitle?: string,
+        toggleMonitorRemovedContent?: string,
+        toggleMonitorAddedTitle?: string,
+        toggleMonitorAddedContent?: string,
+    } = {};
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
-    ) { }
+        private translationService: AppTranslationService,
+    ) {
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");
+        this.translations.toggleMonitorRemovedContent = gT("db.table.notification.ToggleMonitorRemovedContent");
+        this.translations.toggleMonitorAddedTitle = gT("db.table.notification.ToggleMonitorAddedTitle");
+        this.translations.toggleMonitorAddedContent = gT("db.table.notification.ToggleMonitorAddedContent");
+    }
 
     ngOnInit() {
         this.route.paramMap
@@ -66,14 +81,14 @@ export class DatabaseTablePage implements OnInit {
         let config = this.alertConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
         if (config) {
             this.dataService.removeAlertConfig(config);
-            this.alertService.showMessage('alert removed', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
             this.dataService.addAlertConfig({
                 type: type,
                 dbid: this.db.id,
                 tableName: this.tableData.tableName,
             })
-            this.alertService.showMessage('alert added', '', MessageSeverity.success);
+            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
         this.refreshAlerts();

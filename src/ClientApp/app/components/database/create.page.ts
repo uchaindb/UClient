@@ -9,6 +9,7 @@ import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
 import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
+import { AppTranslationService } from '../../services/app-translation.service';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -110,6 +111,22 @@ export class DatabaseCreatePage implements OnInit {
         },
     }, this.baseActionDef);
 
+    translations: {
+        dataActionExceedsMessage?: string,
+        schemaActionExceedsMessage?: string,
+        lockTargetExceedsMessage?: string,
+        lackPrivateKeyTitle?: string,
+        lackPrivateKeyContent?: string,
+        successSendTitle?: string,
+        successSendContent?: string,
+        errorSendTitle?: string,
+        errorSendContent?: string,
+        unknownTransactionTypeTitle?: string,
+        unknownTransactionTypeContent?: string,
+        gotoCodeConfirmation?: string,
+        gotoGuiConfirmation?: string,
+        exampleOverwrittenConfirmation?: string,
+    } = {};
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
@@ -118,7 +135,24 @@ export class DatabaseCreatePage implements OnInit {
         private notifyService: NotificationService,
         private cryptoService: CryptographyService,
         private privateKeyService: PrivateKeyService,
-    ) { }
+        private translationService: AppTranslationService,
+    ) {
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.dataActionExceedsMessage = gT("db.create.notification.DataActionExceedsMessage");
+        this.translations.schemaActionExceedsMessage = gT("db.create.notification.SchemaActionExceedsMessage");
+        this.translations.lockTargetExceedsMessage = gT("db.create.notification.LockTargetExceedsMessage");
+        this.translations.lackPrivateKeyTitle = gT("db.create.notification.LackPrivateKeyTitle");
+        this.translations.lackPrivateKeyContent = gT("db.create.notification.LackPrivateKeyContent");
+        this.translations.successSendTitle = gT("db.create.notification.SuccessSendTitle");
+        this.translations.successSendContent = gT("db.create.notification.SuccessSendContent");
+        this.translations.errorSendTitle = gT("db.create.notification.ErrorSendTitle");
+        this.translations.errorSendContent = gT("db.create.notification.ErrorSendContent");
+        this.translations.unknownTransactionTypeTitle = gT("db.create.notification.UnknownTransactionTypeTitle");
+        this.translations.unknownTransactionTypeContent = gT("db.create.notification.UnknownTransactionTypeContent");
+        this.translations.gotoCodeConfirmation = gT("db.create.notification.GotoCodeConfirmation");
+        this.translations.gotoGuiConfirmation = gT("db.create.notification.GotoGuiConfirmation");
+        this.translations.exampleOverwrittenConfirmation = gT("db.create.notification.ExampleOverwrittenConfirmation");
+    }
 
     ngOnInit() {
         this.route.paramMap
@@ -166,7 +200,7 @@ export class DatabaseCreatePage implements OnInit {
     appendAction(defs) {
         if (this.selectedType == "data") {
             if (this.dataActions.length >= 10)
-                this.alertService.showMessage("最多10个动作");
+                this.alertService.showMessage(this.translations.dataActionExceedsMessage);
             else
                 this.dataActions.push(Object.assign({
                     columns: {},
@@ -174,7 +208,7 @@ export class DatabaseCreatePage implements OnInit {
         }
         else if (this.selectedType == "schema") {
             if (this.schemaActions.length >= 10)
-                this.alertService.showMessage("最多10个动作");
+                this.alertService.showMessage(this.translations.schemaActionExceedsMessage);
             else
                 this.schemaActions.push(Object.assign({
                     columns: new LocalDataSource(),
@@ -183,7 +217,7 @@ export class DatabaseCreatePage implements OnInit {
                 }, defs || {}));
         } else {
             if (this.lockTargets.length >= 10)
-                this.alertService.showMessage("最多10个对象");
+                this.alertService.showMessage(this.translations.lockTargetExceedsMessage);
             else
                 this.lockTargets.push(Object.assign({
                 }, defs || {}));
@@ -201,7 +235,7 @@ export class DatabaseCreatePage implements OnInit {
         }
 
         if (!privKey) {
-            this.alertService.showMessage("private key is mandatory.", null, MessageSeverity.error);
+            this.alertService.showMessage(this.translations.lackPrivateKeyTitle, this.translations.lackPrivateKeyContent, MessageSeverity.error);
             return;
         }
 
@@ -209,11 +243,11 @@ export class DatabaseCreatePage implements OnInit {
         let address = this.cryptoService.getAddress(pubKey);
 
         let rpcCallback = (_) => {
-            this.alertService.showMessage("已成功发送请求", null, MessageSeverity.success);
+            this.alertService.showMessage(this.translations.successSendTitle, this.translations.successSendContent, MessageSeverity.success);
             this.router.navigate(['database', this.db.id, 'create']);
         };
         let errCallback = (_) => {
-            this.alertService.showMessage("server failed to process the request", null, MessageSeverity.error);
+            this.alertService.showMessage(this.translations.errorSendTitle, this.translations.errorSendContent, MessageSeverity.error);
         };
 
         if (this.selectedType == "data") {
@@ -229,7 +263,7 @@ export class DatabaseCreatePage implements OnInit {
             this.dataService.createLockTransaction(this.db, privKey, this.lockScripts, lt)
                 .subscribe(rpcCallback, errCallback);
         } else {
-            this.alertService.showMessage("cannot recognize the type you selected", null, MessageSeverity.warn);
+            this.alertService.showMessage(this.translations.unknownTransactionTypeTitle, this.translations.unknownTransactionTypeContent, MessageSeverity.warn);
         }
     }
 
@@ -342,14 +376,14 @@ export class DatabaseCreatePage implements OnInit {
 
 
     gotoCode() {
-        this.alertService.showDialog("转到代码模式后无法将代码模式的编辑内容转回普通编辑模式，确定？", DialogType.confirm, _ => {
+        this.alertService.showDialog(this.translations.gotoCodeConfirmation, DialogType.confirm, _ => {
             this.generateCode();
             this.codeMode = true;
         });
     }
 
     gotoGui() {
-        this.alertService.showDialog("代码模式的编辑内容无法转回普通编辑模式，确定？", DialogType.confirm, _ => {
+        this.alertService.showDialog(this.translations.gotoGuiConfirmation, DialogType.confirm, _ => {
             this.codeMode = false;
         });
     }
@@ -388,7 +422,7 @@ export class DatabaseCreatePage implements OnInit {
         }
 
         if (this.lockScripts && this.lockScripts.length > 0) {
-            this.alertService.showDialog("content of text area would be overwritten, are your sure?", DialogType.confirm, _ => { change(); });
+            this.alertService.showDialog(this.translations.exampleOverwrittenConfirmation, DialogType.confirm, _ => { change(); });
         }
         else {
             change();

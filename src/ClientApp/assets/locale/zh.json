@@ -2,7 +2,12 @@
   "alert": {
     "detail": {
       "ConfigSectionTitle": "对应警报配置",
-      "DismissButtonText": "删除该消息"
+      "DismissButtonText": "删除该消息",
+      "notification": {
+        "AlertDismissedContent": "",
+        "AlertDismissedTitle": "该条消息已经成功删除",
+        "DismissConfirmationMessage": "是否确定要彻底删除该条消息？"
+      }
     },
     "list": {
       "ListPanelText": "消息列表",
@@ -241,6 +246,22 @@
         "TableRowDataType": "数据列",
         "TableSchemaType": "数据表结构"
       },
+      "notification": {
+        "DataActionExceedsMessage": "最多10个动作",
+        "ErrorSendContent": "",
+        "ErrorSendTitle": "服务器未能完成处理你的请求，请检查你的请求是否正确或拥有权限。",
+        "ExampleOverwrittenConfirmation": "您的脚本将会被新的示例代码所覆盖，是否要继续使用新的示例代码？",
+        "GotoCodeConfirmation": "转到代码模式后无法将代码模式的编辑内容转回普通编辑模式，确定？",
+        "GotoGuiConfirmation": "代码模式的编辑内容无法转回普通编辑模式，确定？",
+        "LackPrivateKeyContent": "",
+        "LackPrivateKeyTitle": "您没有选中或键入正确的私钥",
+        "LockTargetExceedsMessage": "最多10个对象",
+        "SchemaActionExceedsMessage": "最多10个动作",
+        "SuccessSendContent": "",
+        "SuccessSendTitle": "已将该事务成功发送至链库",
+        "UnknownTransactionTypeContent": "",
+        "UnknownTransactionTypeTitle": "未知的事务类型，请重新选择事务类型"
+      },
       "schema": {
         "AddOrModifyColumns": "添加或修改列",
         "AppendButtonText": "添加动作",
@@ -270,10 +291,25 @@
       "Height": "区块高度：",
       "LastBlock": "最后区块：",
       "LockDatabase": "锁定数据库",
-      "TablesTitle": "数据表"
+      "TablesTitle": "数据表",
+      "notification": {
+        "AlertListItemRemovedContent": "",
+        "AlertListItemRemovedTitle": "该项监控已被成功删除",
+        "ManualRefreshAlertContent": "",
+        "ManualRefreshAlertTitle": "成功完成手动刷新",
+        "ToggleMonitorAddedContent": "",
+        "ToggleMonitorAddedTitle": "已经开始此项监控",
+        "ToggleMonitorRemovedContent": "",
+        "ToggleMonitorRemovedTitle": "该项监控已撤除"
+      }
     },
     "list": {
-      "ConnectDatabase": "添加链库"
+      "ConnectDatabase": "添加链库",
+      "notification": {
+        "DatabaseRemovedContent": "",
+        "DatabaseRemovedTitle": "数据库已经完成删除",
+        "RemoveConfirmation": "您是否确定要将该链库从列表中删除？（库中数据不受影响）"
+      }
     },
     "nav": {
       "ChainBlock": "区块： {{hash}}",
@@ -301,7 +337,13 @@
       "MonitorTableDataTooltip": "监控数据表数据变化",
       "MonitorTableSchemaTooltip": "监控数据表结构及数据变化",
       "PkSuffix": "主键",
-      "TableTitle": "表[{{name}}] 数据信息"
+      "TableTitle": "表[{{name}}] 数据信息",
+      "notification": {
+        "ToggleMonitorAddedContent": "",
+        "ToggleMonitorAddedTitle": "已经开始此项监控",
+        "ToggleMonitorRemovedContent": "",
+        "ToggleMonitorRemovedTitle": "该项监控已撤除"
+      }
     }
   },
   "defaults": {
@@ -332,7 +374,19 @@
       "CreateButtonText": "创建",
       "DeleteButtonText": "删除",
       "ExportButtonText": "导出",
-      "ImportButtonText": "导入"
+      "ImportButtonText": "导入",
+      "notification": {
+        "CreateNamePromptMessage": "请输入您想要创建的私钥名称：",
+        "CreateNameTakenContent": "",
+        "CreateNameTakenTitle": "该名字已经被使用，请选择其他名字重试。",
+        "ExportMessage": "您的私钥如下：（请勿泄露）",
+        "ImportInvalidKeyContent": "",
+        "ImportInvalidKeyTitle": "您输入的私钥不合法，请查证后重试",
+        "ImportKeyPromptMessage": "请输入您的私钥字符串：",
+        "ImportNamePromptMessage": "请输入您想要导入的私钥名称：",
+        "ImportNameTakenContent": "",
+        "ImportNameTakenTitle": "该名字已经被使用，请选择其他名字重试。"
+      }
     },
     "login": {
       "error": {
