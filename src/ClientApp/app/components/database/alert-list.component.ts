@@ -19,13 +19,23 @@ export class DatabaseAlertListComponent implements OnInit {
     @Input() showDb: boolean = true;
     @Input() showDelete: boolean = true;
 
+    dblist: { [index: string]: string } = {};
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
         private router: Router,
         private alertService: AlertService,
         private notifyService: NotificationService,
-    ) { }
+    ) {
+        this.dataService.getDbList()
+            .subscribe(_ => {
+                var obj = {};
+                for (var i = 0; i < _.length; ++i)
+                    obj[_[i].id] = _[i].name;
+                this.dblist = obj;
+            });
+    }
 
     ngOnInit() {
     }

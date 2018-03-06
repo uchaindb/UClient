@@ -24,11 +24,13 @@
             </ng-template>
         </ng-container>
         <ul class="alert-detail-list">
-            <li *ngIf="alert.dbname && showDb">
-                {{ 'db.alert.detail.DatabaseName' | translate }} <mark>{{alert.dbname}}</mark>
+            <li *ngIf="dblist && dblist[alert.dbid] && showDb">
+                {{ 'db.alert.detail.DatabaseName' | translate }}
+                <mark><a [routerLink]="['/database', alert.dbid]">{{dblist[alert.dbid]}}</a></mark>
             </li>
             <li *ngIf="alert.tableName">
-                {{ 'db.alert.detail.TableName' | translate }} <mark>{{alert.tableName}}</mark>
+                {{ 'db.alert.detail.TableName' | translate }}
+                <mark><a [routerLink]="['/database', alert.dbid, 'table', alert.tableName]">{{alert.tableName}}</a></mark>
             </li>
             <li *ngIf="alert.columnName">
                 {{ 'db.alert.detail.ColumnName' | translate }} <mark>{{alert.columnName}}</mark>
