@@ -11,6 +11,7 @@ import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
 import { CryptographyService } from './cryptography.service';
 import { NotificationService } from './notification.service';
+import { AppTranslationService } from './app-translation.service';
 
 export type ChainDbRpcMethod =
     "Status" |
@@ -30,6 +31,12 @@ export class ChainDbService extends EndpointFactory {
     public static readonly DBKEY_CHAIN_DB_DATA = "chain_db";
     public static readonly DBKEY_CHAIN_DB_ALERT_CONFIGURATIONS = "alert_config";
 
+    translations: {
+        chainForkMessage?: any,
+        tableSchemaMessage?: any,
+        cellDataModifyMessage?: any,
+    } = {};
+
     constructor(
         http: Http,
         configurations: ConfigurationService,
@@ -37,8 +44,13 @@ export class ChainDbService extends EndpointFactory {
         private localStoreManager: LocalStoreManager,
         private cryptoService: CryptographyService,
         private notificationService: NotificationService,
+        private translationService: AppTranslationService,
     ) {
         super(http, configurations, injector);
+        let gT = (key: string, params?: Object) => translationService.getTranslation(key, params);
+        this.translations.chainForkMessage = (params: Object) => gT("alert.service.ChainForkMessage", params);
+        this.translations.tableSchemaMessage = (params: Object) => gT("alert.service.TableSchemaMessage", params);
+        this.translations.cellDataModifyMessage = (params: Object) => gT("alert.service.CellDataModifyMessage", params);
     }
 
     getDbList(pager?: Pager): Observable<Array<ChainDb>> {
@@ -126,7 +138,7 @@ export class ChainDbService extends EndpointFactory {
                                 .map(resp => {
                                     //console.log("detecting change", resp, alert.data);
                                     if (!(resp.Block && resp.Block.Hash == alert.data.lastBlockId && resp.Block.Height == alert.data.lastBlockHeight)) {
-                                        this.notificationService.createNotification(`database [${db.id}]${db.name} fork detected`, alert);
+                                        this.notificationService.createNotification(this.translations.chainForkMessage(db), alert);
                                     }
                                 }));
                     }
@@ -146,7 +158,8 @@ export class ChainDbService extends EndpointFactory {
                             .map(table => {
                                 if (!table) return null;
                                 if (table.History.TransactionHash != alert.data.lastTransactionId) {
-                                    this.notificationService.createNotification(`table [${alert.tableName}] schema changed from transaction [${alert.data.lastTransactionId}] to [${table.History.TransactionHash}]`, alert);
+                                    let data = Object.assign({}, alert, table);
+                                    this.notificationService.createNotification(this.translations.tableSchemaMessage(data), alert);
                                 }
                                 //console.log("generate noti.. from data", table);
                                 return table;
@@ -173,7 +186,8 @@ export class ChainDbService extends EndpointFactory {
                         query = query
                             .map(hash => {
                                 if (hash != alert.data.lastTransactionId) {
-                                    this.notificationService.createNotification(`cell [${alert.primaryKeyValue}-${alert.columnName}] of table [${alert.tableName}] has changed from transaction [${alert.data.lastTransactionId}] to [${hash}]`, alert);
+                                    let data = Object.assign({ hash: hash }, alert);
+                                    this.notificationService.createNotification(this.translations.cellDataModifyMessage(data), alert);
                                 }
                                 return hash;
                             });

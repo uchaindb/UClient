@@ -10,7 +10,7 @@
                     <ng-container *ngIf="message.read">{{message.sender}}</ng-container>
                     <b *ngIf="!message.read">{{message.sender}} <span class="text-success">{{ 'alert.list.NewItemSuffixText' | translate }}</span></b>
                 </h4>
-                <p class="list-group-item-text">{{message.summary}}</p>
+                <p class="list-group-item-text" innerHtml="{{message.summary | newline}}"></p>
             </div>
         </a>
     </div>

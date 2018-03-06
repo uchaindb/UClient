@@ -15,6 +15,12 @@
     },
     "nav": {
       "HomeLinkText": "消息"
+    },
+    "service": {
+      "CellDataModifyMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的单元格 <a href='/database/{{dbid}}/table/{{tableName}}/cell/{{primaryKeyValue}}/{{columnName}}'>[{{primaryKeyValue}}-{{columnName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTransactionId}}'>[{{data.lastTransactionId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{hash}}'>[{{hash}}]</a>",
+      "ChainForkMessage": "检测到链库<a href='/database/{{id}}'>[{{name}}]</a>的分叉。",
+      "SenderName": "系统消息",
+      "TableSchemaMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTransactionId}}'>[{{data.lastTransactionId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{History.TransactionHash}}'>[{{History.TransactionHash}}]</a>"
     }
   },
   "app": {

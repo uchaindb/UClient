@@ -6,18 +6,26 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { InboxNotification, AlertConfiguration } from '../models/alert.model';
 import { Subject } from 'rxjs';
+import { AppTranslationService } from './app-translation.service';
 
 @Injectable()
 export class NotificationService {
 
     public static readonly DBKEY_NOTIFICATION_LIST = "notification_list";
 
+    translations: {
+        senderName?: string,
+    } = {};
+
     constructor(
         http: Http,
         configurations: ConfigurationService,
         injector: Injector,
         private localStoreManager: LocalStoreManager,
+        private translationService: AppTranslationService,
     ) {
+        let gT = (key: string) => this.translationService.getTranslation(key);
+        this.translations.senderName = gT("alert.service.SenderName");
     }
 
     getNotificationList(): Observable<Array<InboxNotification>> {
@@ -38,7 +46,7 @@ export class NotificationService {
     }
 
     createNotification(summary: string, origin: AlertConfiguration = null, sender: string = null): void {
-        sender = sender || "系统消息";
+        sender = sender || this.translations.senderName;
         var nlist: Array<InboxNotification> = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST) || [];
         var id = '_' + Math.random().toString(36).substr(2, 9);
         nlist.push({ id: id, sender: sender, summary: summary, origin: origin })
