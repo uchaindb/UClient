@@ -293,6 +293,32 @@
                     </ng-container>
                 </button>
             </div>
+
+            <hr />
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    <input type="checkbox" [(ngModel)]="enableUnlockScripts">
+                    {{ 'db.create.unlock.UnlockScriptsLabel' | translate }}
+                </label>
+                <div class="col-sm-10">
+                    <ng-container *ngIf="enableUnlockScripts">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#unlockSelect" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabSelectTitle' | translate }}</a></li>
+                            <li role="presentation"><a href="#unlockManual" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabManualTitle' | translate }}</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="unlockSelect">
+                                <select class="form-control" [(ngModel)]="selectedUnlockKey">
+                                    <option *ngFor="let key of keyList" value="{{key.name}}">{{key.name}}</option>
+                                </select>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="unlockManual">
+                                <textarea #lockScriptsTextBox class="form-control" rows="7" [(ngModel)]="unlockScripts"></textarea>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
         </div>
     </div>
     <div class="panel-footer text-right text-center-xs">

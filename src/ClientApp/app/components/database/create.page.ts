@@ -70,6 +70,7 @@ export class DatabaseCreatePage implements OnInit {
     lockScripts: string;
     keyList: Array<KeyConfiguration>;
     permissionList: Array<PermissionCheckBoxType>;
+    enableUnlockScripts = false;
 
     @ViewChild('lockScriptsTextBox') lockScriptsTextBox: ElementRef;
 

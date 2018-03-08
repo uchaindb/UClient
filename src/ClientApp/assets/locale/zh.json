@@ -301,6 +301,11 @@
         "TableNameLabel": "数据表名",
         "TableNamePlaceholder": "填写数据表名...",
         "TypeLabel": "动作类型"
+      },
+      "unlock": {
+        "TabManualTitle": "手动编写脚本",
+        "TabSelectTitle": "选择解锁私钥",
+        "UnlockScriptsLabel": "解锁脚本"
       }
     },
     "def": {
