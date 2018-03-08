@@ -462,6 +462,7 @@ export class DatabaseCreatePage implements OnInit {
         } else {
             area.value += value;
         }
+        this.lockScripts = area.value;
     }
 
     onPermissionChange(target: LockTargetCreationType, name: LockPermissionEnum, event) {
