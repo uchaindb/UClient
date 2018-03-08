@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, Input, isDevMode, ElementRef, ViewChild } from '@angular/core';
-import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData, LockTarget, LockTargetEnum, SchemaColumnType } from '../../models/chain-db.model';
+import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, SchemaActionEnum, DataActionEnum, ColumnData, LockTarget, LockTargetEnum, SchemaColumnType, LockPermissionEnum } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
@@ -33,9 +33,15 @@ export type DataActionCreationType = {
 export type LockTargetCreationTypeEnum = "database" | "schema" | "row" | "cell" | "column";
 export type LockTargetCreationType = {
     type: LockTargetCreationTypeEnum,
+    permissions: Array<LockPermissionEnum>,
     tableName: string,
     pkval?: string
     col?: string
+};
+export type PermissionCheckBoxType = {
+    value: LockPermissionEnum,
+    name: string,
+    desc: string,
 };
 
 @Component({
@@ -63,6 +69,7 @@ export class DatabaseCreatePage implements OnInit {
     inputPrivateKey: string;
     lockScripts: string;
     keyList: Array<KeyConfiguration>;
+    permissionList: Array<PermissionCheckBoxType>;
 
     @ViewChild('lockScriptsTextBox') lockScriptsTextBox: ElementRef;
 
@@ -152,6 +159,16 @@ export class DatabaseCreatePage implements OnInit {
         this.translations.gotoCodeConfirmation = gT("db.create.notification.GotoCodeConfirmation");
         this.translations.gotoGuiConfirmation = gT("db.create.notification.GotoGuiConfirmation");
         this.translations.exampleOverwrittenConfirmation = gT("db.create.notification.ExampleOverwrittenConfirmation");
+
+        this.permissionList = [
+            { value: "None", name: gT("db.create.lock.permission.None"), desc: gT("db.create.lock.permissionDesc.None") },
+            { value: "ReadOnly", name: gT("db.create.lock.permission.ReadOnly"), desc: gT("db.create.lock.permissionDesc.ReadOnly") },
+            { value: "Insert", name: gT("db.create.lock.permission.Insert"), desc: gT("db.create.lock.permissionDesc.Insert") },
+            { value: "Update", name: gT("db.create.lock.permission.Update"), desc: gT("db.create.lock.permissionDesc.Update") },
+            { value: "Delete", name: gT("db.create.lock.permission.Delete"), desc: gT("db.create.lock.permissionDesc.Delete") },
+            { value: "AlterLock", name: gT("db.create.lock.permission.AlterLock"), desc: gT("db.create.lock.permissionDesc.AlterLock") },
+            { value: "AlterSchema", name: gT("db.create.lock.permission.AlterSchema"), desc: gT("db.create.lock.permissionDesc.AlterSchema") },
+        ];
     }
 
     ngOnInit() {
@@ -220,6 +237,7 @@ export class DatabaseCreatePage implements OnInit {
                 this.alertService.showMessage(this.translations.lockTargetExceedsMessage);
             else
                 this.lockTargets.push(Object.assign({
+                    permissions: []
                 }, defs || {}));
         }
     }
@@ -346,6 +364,7 @@ export class DatabaseCreatePage implements OnInit {
         var lt = this.lockTargets
             .map<LockTarget>(_ => ({
                 TargetType: getDataType(_.type),
+                PublicPermission: _.permissions,
                 TableName: _.tableName,
                 PrimaryKey: _.pkval,
                 ColumnName: _.col,
@@ -442,6 +461,45 @@ export class DatabaseCreatePage implements OnInit {
             area.selectionEnd = startPos + value.length;
         } else {
             area.value += value;
+        }
+    }
+
+    onPermissionChange(target: LockTargetCreationType, name: LockPermissionEnum, event) {
+        target.permissions  = target.permissions || [];
+        let uncheckAllExcept = (except: LockPermissionEnum) => {
+            target.permissions = [except];
+        }
+
+        let uncheck = (item: LockPermissionEnum) => {
+            let idx = target.permissions.findIndex(_ => _ == item);
+            if (idx > -1) target.permissions.splice(idx, 1);
+        };
+
+        let uncheckNoneAndReadOnly = () => {
+            uncheck("None");
+            uncheck("ReadOnly");
+        };
+
+        if (event) {
+            target.permissions = [...target.permissions, name];
+        } else {
+            uncheck(name);
+        }
+
+        if (name == "None" && this.permissionList.find(_ => _.value == "None")) {
+            uncheckAllExcept("None");
+        } else if (name == "ReadOnly" && this.permissionList.find(_ => _.value == "ReadOnly")) {
+            uncheckAllExcept("ReadOnly");
+        } else if (name == "Insert" && this.permissionList.find(_ => _.value == "Insert")) {
+            uncheckNoneAndReadOnly();
+        } else if (name == "Update" && this.permissionList.find(_ => _.value == "Update")) {
+            uncheckNoneAndReadOnly();
+        } else if (name == "Delete" && this.permissionList.find(_ => _.value == "Delete")) {
+            uncheckNoneAndReadOnly();
+        } else if (name == "AlterLock" && this.permissionList.find(_ => _.value == "AlterLock")) {
+            uncheckNoneAndReadOnly();
+        } else if (name == "AlterSchema" && this.permissionList.find(_ => _.value == "AlterSchema")) {
+            uncheckNoneAndReadOnly();
         }
     }
 }

@@ -245,12 +245,31 @@
         "LockTargetLabel": "锁定对象",
         "MultipleUserLockExample": "多用户锁定脚本",
         "PkValueLabel": "主键值",
+        "PublicPermissionLabel": "开放权限",
         "SingleUserLockExample": "单用户锁定脚本",
         "TableCellDataType": "数据单元",
         "TableColumnDataType": "数据列",
         "TableNameLabel": "数据表名",
         "TableRowDataType": "数据列",
-        "TableSchemaType": "数据表结构"
+        "TableSchemaType": "数据表结构",
+        "permission": {
+          "AlterLock": "修改锁定脚本",
+          "AlterSchema": "修改表结构",
+          "Delete": "删除表数据",
+          "Insert": "插入表数据",
+          "None": "无限制",
+          "ReadOnly": "只读",
+          "Update": "更新表数据"
+        },
+        "permissionDesc": {
+          "AlterLock": "允许修改锁定脚本",
+          "AlterSchema": "允许修改表结构",
+          "Delete": "允许从表中删除数据",
+          "Insert": "允许向表中插入数据",
+          "None": "无权限控制，即可以做任何事情",
+          "ReadOnly": "无其他任意修改权限，仅可读取数据",
+          "Update": "允许更新表中的数据"
+        }
       },
       "notification": {
         "DataActionExceedsMessage": "最多10个动作",

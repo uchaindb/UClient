@@ -172,8 +172,10 @@ export type SchemaAction = {
 }
 
 export type LockTargetEnum = "None" | "Database" | "TableSchema" | "TableRowData" | "TableCellData" | "TableColumnData";
+export type LockPermissionEnum = "None" | "ReadOnly" | "Insert" | "Update" | "Delete" | "AlterSchema" | "AlterLock";
 export type LockTarget = {
     TargetType: LockTargetEnum,
+    PublicPermission: LockPermissionEnum[];
     TableName?: string,
     PrimaryKey?: string,
     ColumnName?: string,
