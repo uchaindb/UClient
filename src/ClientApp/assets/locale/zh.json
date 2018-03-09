@@ -10,8 +10,18 @@
       }
     },
     "list": {
+      "DismissAllMessageButtonTitle": "删除所有消息",
       "ListPanelText": "消息列表",
-      "NewItemSuffixText": "【新】"
+      "MarkReadAllMessageButtonTitle": "将所有消息标记为已读",
+      "NewItemSuffixText": "【新】",
+      "notification": {
+        "AlertDismissedContent": "",
+        "AlertDismissedTitle": "所有消息删除成功",
+        "AlertMarkReadContent": "",
+        "AlertMarkReadTitle": "所有消息已经成功标记为已读",
+        "DismissAllConfirmationMessage": "是否要删除所有的消息？（此步骤不可撤销）",
+        "MarkReadAllConfirmationMessage": "是否要将所有消息设为已读？（此步骤不可撤销）"
+      }
     },
     "nav": {
       "HomeLinkText": "消息"

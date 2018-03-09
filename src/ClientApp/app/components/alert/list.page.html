@@ -1,5 +1,16 @@
 ﻿<div class="panel panel-default">
-    <div class="panel-heading">{{ 'alert.list.ListPanelText' | translate }}</div>
+    <div class="panel-heading">
+        <button type="button" class="close" (click)="markReadAll()"
+                title="{{ 'alert.list.MarkReadAllMessageButtonTitle' | translate }}">
+            <span class="glyphicon glyphicon-check"></span>
+        </button>
+        &nbsp;
+        <button type="button" class="close" (click)="dismissAll()"
+                title="{{ 'alert.list.DismissAllMessageButtonTitle' | translate }}">
+            <span class="glyphicon glyphicon-fire"></span>
+        </button>
+        {{ 'alert.list.ListPanelText' | translate }}
+    </div>
     <div class="list-group">
         <a *ngFor="let message of messages" [routerLink]="['/alert', message.id]" class="list-group-item">
             <div class="media-left">
