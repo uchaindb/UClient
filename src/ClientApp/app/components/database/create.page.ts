@@ -328,6 +328,11 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     gotoGui() {
+        if (!this.code) {
+            this.codeMode = false;
+            return;
+        }
+
         this.alertService.showDialog(this.translations.gotoGuiConfirmation, DialogType.confirm, _ => {
             if (this.parseCode()) {
                 this.codeMode = false;
