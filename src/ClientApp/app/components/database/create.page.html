@@ -8,7 +8,7 @@
         <h3 class="panel-title">{{ 'db.create.PageTitle' | translate }}</h3>
     </div>
     <div *ngIf="codeMode" class="panel-body">
-        <textarea class="form-control" rows="24">{{code}}</textarea>
+        <textarea class="form-control" rows="24" [(ngModel)]="code"></textarea>
     </div>
     <div *ngIf="!codeMode" class="panel-body panel-container">
         <div class="form-horizontal">
@@ -336,7 +336,7 @@
                 </select>
             </div>
             <input *ngIf="selectedPrivateKey == 'import'" [(ngModel)]="inputPrivateKey" type="text" class="form-control">
-            <button type="button" class="btn btn-primary btn-block-xs" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
+            <button type="button" class="btn btn-primary btn-block-xs" [class.disabled]="codeMode" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
         </div>
     </div>
 </div>

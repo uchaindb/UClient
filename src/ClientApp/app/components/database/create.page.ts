@@ -10,6 +10,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
 import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
 import { AppTranslationService } from '../../services/app-translation.service';
+import { DatabaseCreatePageFunction } from './create.page.function';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -17,20 +18,19 @@ export type SchemaActionCreationType = {
     type: SchemaActionCreationTypeEnum,
     tableName: string,
     pkval?: string
-    col?: string
     columns?: LocalDataSource,
     modifyColumns?: LocalDataSource,
     dropColumns?: LocalDataSource,
 };
 export type DataActionCreationTypeEnum = "insert" | "update" | "delete";
+export type DataActionColumnCreationType = { [Id: string]: string };
 export type DataActionCreationType = {
     type: DataActionCreationTypeEnum,
     tableName: string,
     pkval?: string
-    col?: string
-    columns?: Array<{ Id: string }>,
+    columns?: DataActionColumnCreationType,
 };
-export type LockTargetCreationTypeEnum = "database" | "schema" | "row" | "cell" | "column";
+export type LockTargetCreationTypeEnum = "none" | "database" | "schema" | "row" | "cell" | "column";
 export type LockTargetCreationType = {
     type: LockTargetCreationTypeEnum,
     permissions: Array<LockPermissionEnum>,
@@ -54,7 +54,7 @@ export class DatabaseCreatePage implements OnInit {
 
     tables: Array<any>;
     loaded = false;
-    enableCodeMode = false;
+    enableCodeMode = true;
     schemaActions: Array<SchemaActionCreationType> = [];
     dataActions: Array<DataActionCreationType> = [];
     lockTargets: Array<LockTargetCreationType> = [];
@@ -134,6 +134,8 @@ export class DatabaseCreatePage implements OnInit {
         gotoCodeConfirmation?: string,
         gotoGuiConfirmation?: string,
         exampleOverwrittenConfirmation?: string,
+        parseCodeExceptionMessage?: string,
+        forbidSubmitInCodeModeMessage?: string,
     } = {};
     constructor(
         private dataService: ChainDbService,
@@ -160,6 +162,8 @@ export class DatabaseCreatePage implements OnInit {
         this.translations.gotoCodeConfirmation = gT("db.create.notification.GotoCodeConfirmation");
         this.translations.gotoGuiConfirmation = gT("db.create.notification.GotoGuiConfirmation");
         this.translations.exampleOverwrittenConfirmation = gT("db.create.notification.ExampleOverwrittenConfirmation");
+        this.translations.parseCodeExceptionMessage = gT("db.create.notification.ParseCodeExceptionMessage");
+        this.translations.forbidSubmitInCodeModeMessage = gT("db.create.notification.ForbidSubmitInCodeModeMessage");
 
         this.permissionList = [
             { value: "None", name: gT("db.create.lock.permission.None"), desc: gT("db.create.lock.permissionDesc.None") },
@@ -243,7 +247,7 @@ export class DatabaseCreatePage implements OnInit {
         }
     }
 
-    submit() {
+    getPrivateKey() {
         let privKey;
         if (this.selectedPrivateKey == "import") {
             privKey = this.inputPrivateKey;
@@ -253,6 +257,16 @@ export class DatabaseCreatePage implements OnInit {
             privKey = this.privateKeyService.getPrivateKeyDirectly(config);
         }
 
+        return privKey;
+    }
+
+    submit() {
+        if (this.codeMode) {
+            this.alertService.showDialog(this.translations.forbidSubmitInCodeModeMessage, DialogType.alert);
+            return;
+        }
+
+        let privKey = this.getPrivateKey();
         if (!privKey) {
             this.alertService.showMessage(this.translations.lackPrivateKeyTitle, this.translations.lackPrivateKeyContent, MessageSeverity.error);
             return;
@@ -263,115 +277,27 @@ export class DatabaseCreatePage implements OnInit {
 
         let rpcCallback = (_) => {
             this.alertService.showMessage(this.translations.successSendTitle, this.translations.successSendContent, MessageSeverity.success);
-            this.router.navigate(['database', this.db.id, 'create']);
+            this.router.navigate(['database', this.db.id]);
         };
         let errCallback = (_) => {
             this.alertService.showMessage(this.translations.errorSendTitle, this.translations.errorSendContent, MessageSeverity.error);
         };
 
         if (this.selectedType == "data") {
-            var da = this.getDataActions();
+            var da = DatabaseCreatePageFunction.getDataActions(this.dataActions);
             this.dataService.createDataTransaction(this.db, privKey, da)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "schema") {
-            var sa = this.getSchemaActions();
+            var sa = DatabaseCreatePageFunction.getSchemaActions(this.schemaActions);
             this.dataService.createSchemaTransaction(this.db, privKey, sa)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "lock") {
-            var lt = this.getLockTargets();
+            var lt = DatabaseCreatePageFunction.getLockTargets(this.lockTargets);
             this.dataService.createLockTransaction(this.db, privKey, this.lockScripts, lt)
                 .subscribe(rpcCallback, errCallback);
         } else {
             this.alertService.showMessage(this.translations.unknownTransactionTypeTitle, this.translations.unknownTransactionTypeContent, MessageSeverity.warn);
         }
-    }
-
-    getSchemaActions(): Array<SchemaAction> {
-        let getSchemaType = (type: SchemaActionCreationTypeEnum): SchemaActionEnum =>
-            type == "create" ? "CreateSchemaAction"
-                : type == "modify" ? "ModifySchemaAction"
-                    : "DropSchemaAction";
-
-        let getColumnDefType = (type: string): SchemaColumnType =>
-            type == "string" ? "String"
-                : type == "number" ? "Number"
-                    : "Blob";
-
-        let mapSchemaColumnDefinition = (arr): Array<SchemaColumnDefinition> => {
-            if (!arr || arr.length == 0) return null;
-            let ret = arr.map(c => (<SchemaColumnDefinition>{ Type: getColumnDefType(c.type), Name: c.name, PrimaryKey: c.ispk == true }));
-            return ret;
-        };
-
-        let mapStringArray = (arr): Array<string> => {
-            if (!arr) return null;
-            let ret = arr.map(c => c.name);
-            if (ret.length == 0) return null;
-            return ret;
-        };
-        // TODO: maybe need to avoid using protected property `data`?
-        var sa = this.schemaActions
-            .map<SchemaAction>(_ => ({
-                Type: getSchemaType(_.type),
-                Name: _.tableName,
-                Columns: mapSchemaColumnDefinition(_.columns && (<any>_.columns).data),
-                AddOrModifyColumns: mapSchemaColumnDefinition(_.modifyColumns && (<any>_.modifyColumns).data),
-                DropColumns: mapStringArray(_.dropColumns && (<any>_.dropColumns).data),
-            }));
-
-        return sa;
-    }
-
-    getDataActions(): Array<DataAction> {
-        let getDataType = (type: DataActionCreationTypeEnum): DataActionEnum =>
-            type == "insert" ? "InsertDataAction"
-                : type == "update" ? "UpdateDataAction"
-                    : "DeleteDataAction";
-
-        let mapColumnData = (obj): Array<ColumnData> => {
-            if (!obj) return null;
-            let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
-            if (ret.length == 0) return null;
-            return ret;
-        };
-
-        var da = this.dataActions
-            .map<DataAction>(_ => ({
-                Type: getDataType(_.type),
-                SchemaName: _.tableName,
-                Columns: mapColumnData(_.columns),
-                PrimaryKeyValue: _.pkval,
-            }));
-
-        return da;
-    }
-
-    getLockTargets(): Array<LockTarget> {
-        let getDataType = (type: LockTargetCreationTypeEnum): LockTargetEnum =>
-            type == "database" ? "Database"
-                : type == "schema" ? "TableSchema"
-                    : type == "row" ? "TableRowData"
-                        : type == "column" ? "TableColumnData"
-                            : type == "cell" ? "TableCellData"
-                                : "None";
-
-        let mapColumnData = (obj): Array<ColumnData> => {
-            if (!obj) return null;
-            let ret = Object.keys(obj).map(_ => (<ColumnData>{ Name: _, Data: obj[_] }));
-            if (ret.length == 0) return null;
-            return ret;
-        };
-
-        var lt = this.lockTargets
-            .map<LockTarget>(_ => ({
-                TargetType: getDataType(_.type),
-                PublicPermission: _.permissions,
-                TableName: _.tableName,
-                PrimaryKey: _.pkval,
-                ColumnName: _.col,
-            }));
-
-        return lt;
     }
 
     removeAction(actions: Array<any>, idx) {
@@ -394,7 +320,6 @@ export class DatabaseCreatePage implements OnInit {
         }
     }
 
-
     gotoCode() {
         this.alertService.showDialog(this.translations.gotoCodeConfirmation, DialogType.confirm, _ => {
             this.generateCode();
@@ -404,25 +329,52 @@ export class DatabaseCreatePage implements OnInit {
 
     gotoGui() {
         this.alertService.showDialog(this.translations.gotoGuiConfirmation, DialogType.confirm, _ => {
-            this.codeMode = false;
+            if (this.parseCode()) {
+                this.codeMode = false;
+            }
         });
     }
 
-    getRequestObject(type: TransactionType): Array<SchemaAction> | Array<DataAction> {
-        if (type == "schema") {
-            return this.getSchemaActions();
-        } else {
-            return this.getDataActions();
-        }
+    generateCode() {
+        let replacer = (key, value) => (value === null || value == "") ? undefined : value;
+
+        let getRequestObject = () => {
+            if (this.selectedType == "schema") {
+                return { actions: DatabaseCreatePageFunction.getSchemaActions(this.schemaActions) };
+            } else if (this.selectedType == "data") {
+                return { actions: DatabaseCreatePageFunction.getDataActions(this.dataActions) };
+            } else if (this.selectedType == "lock") {
+                return { lockScripts: this.lockScripts, targets: DatabaseCreatePageFunction.getLockTargets(this.lockTargets) };
+            } else {
+                return null;
+            }
+        };
+
+        let data = getRequestObject();
+        let fullobj = data ? Object.assign({ type: this.selectedType }, data) : {};
+        this.code = JSON.stringify(fullobj, replacer, 2);
     }
 
-    generateCode() {
-        let replacer = (key, value) => {
-            if (value === null) return undefined;
-            if (value == "") return undefined;
-            return value;
+    parseCode() {
+        try {
+            let obj = JSON.parse(this.code);
+            let type = obj.type as TransactionType;
+            this.selectedType = type;
+            if (type == "schema") {
+                this.schemaActions = DatabaseCreatePageFunction.getSchemaActionCreationTypes(obj.actions as SchemaAction[]);
+            } else if (type == "data") {
+                this.dataActions = DatabaseCreatePageFunction.getDataActionCreationTypes(obj.actions as DataAction[]);
+            } else if (type == "lock") {
+                this.lockTargets = DatabaseCreatePageFunction.getLockTargetCreationTypes(obj.targets as LockTarget[]);
+                this.lockScripts = obj.lockScripts;
+            } else {
+                //nothing happened
+            }
+            return true;
+        } catch (error) {
+            this.alertService.showDialog(this.translations.parseCodeExceptionMessage + error, DialogType.alert);
+            return false;
         }
-        this.code = JSON.stringify(this.getRequestObject(this.selectedType), replacer, 2);
     }
 
     onPrivateKeyChange(value) {
@@ -467,7 +419,7 @@ export class DatabaseCreatePage implements OnInit {
     }
 
     onPermissionChange(target: LockTargetCreationType, name: LockPermissionEnum, event) {
-        target.permissions  = target.permissions || [];
+        target.permissions = target.permissions || [];
         let uncheckAllExcept = (except: LockPermissionEnum) => {
             target.permissions = [except];
         }
