@@ -61,6 +61,18 @@ export class ChainDbService extends EndpointFactory {
         return Observable.of(dblist);
     }
 
+    setDbEditMode(dbid: string, edit = true): void {
+        var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
+        var idx = dblist.findIndex(_ => _.id == dbid);
+        if (idx == -1) {
+            console.warn("setDbEditMode failed due to cannot find dbid");
+            return;
+        }
+
+        dblist[idx].editmode = edit;
+        this.localStoreManager.savePermanentData(dblist, ChainDbService.DBKEY_CHAIN_DB_DATA);
+    }
+
     getRecommendDbList(pager?: Pager): Observable<Array<ChainDb>> {
         var dblist: Array<ChainDb> = [
             {

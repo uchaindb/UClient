@@ -7,6 +7,7 @@
             image = null,
             address = null,
             staffpick = 0,
+            editmode = false,
         } = obj;
 
         this.id = id;
@@ -15,6 +16,7 @@
         this.image = image;
         this.address = address;
         this.staffpick = staffpick;
+        this.editmode = editmode;
     }
 
     public id: string;
@@ -23,6 +25,7 @@
     public image?: string;
     public address: string;
     public staffpick?: number;// 0: not pick; 1~255: greater number is priority pick
+    public editmode?: boolean;
 
 }
 

@@ -2,12 +2,27 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <button type="button" class="close" (click)="toggleMonitor()"
-                title="monitor fork of block chain">
+                title="{{ 'db.detail.DatabaseToggleButtonTitle' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitor"
                   [class.glyphicon-star]="monitor"></span>
         </button>
-        <h3 class="panel-title">{{ 'db.detail.BasicInfoTitle' | translate }}</h3>
+        <h3 class="panel-title">
+            {{ 'db.detail.BasicInfoTitle' | translate }}
+            <button type="button" (click)="toggleEditMode()"
+                    class="btn btn-xs"
+                    [class.btn-danger]="db.editmode"
+                    [class.btn-primary]="!db.editmode">
+                <ng-container *ngIf="!db.editmode">
+                    <span class="glyphicon glyphicon-edit"></span>
+                    {{ 'db.detail.SwitchToEditModeButtonText' | translate }}
+                </ng-container>
+                <ng-container *ngIf="db.editmode">
+                    <span class="glyphicon glyphicon-ban-circle"></span>
+                    {{ 'db.detail.SwitchToBrowseModeButtonText' | translate }}
+                </ng-container>
+            </button>
+        </h3>
     </div>
     <div class="panel-body">
         <ng-container *ngIf="db && lastBlock">
@@ -17,7 +32,7 @@
             <div class="media-body">
                 <h4 class="list-group-item-heading">
                     {{db.name}}
-                    <a [routerLink]="['/database', db.id, 'create']" class="btn btn-success btn-sm">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
+                    <a *ngIf="db?.editmode" [routerLink]="['/database', db.id, 'create']" class="btn btn-success btn-sm">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
                 </h4>
                 <p class="text-muted">{{db.description}}</p>
                 <p>{{ 'db.detail.Address' | translate }}<span class="text-success">{{db.address}}</span></p>
@@ -33,7 +48,7 @@
 
 <div class="panel panel-success">
     <div class="panel-heading">
-        <button type="button" class="close" title="add new table"
+        <button *ngIf="db?.editmode" type="button" class="close" title="add new table"
                 [routerLink]="['/database', db.id, 'create']"
                 [queryParams]="{type: 'schema', action: 'create'}">
             <span class="glyphicon glyphicon-plus"></span>
@@ -41,7 +56,7 @@
         <h3 class="panel-title">
             {{ 'db.detail.TablesTitle' | translate }}
             <span class="btn-group btn-group-xs" role="group">
-                <button type="button" class="btn btn-warning" title="lock database"
+                <button *ngIf="db?.editmode" type="button" class="btn btn-warning" title="lock database"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'lock', target: 'database'}">
                     <span class="glyphicon glyphicon-lock"></span> {{ 'db.detail.LockDatabase' | translate }}

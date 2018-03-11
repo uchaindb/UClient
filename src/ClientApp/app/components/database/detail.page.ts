@@ -30,6 +30,10 @@ export class DatabaseDetailPage implements OnInit {
         alertListItemRemovedContent?: string,
         manualRefreshAlertTitle?: string,
         manualRefreshAlertContent?: string,
+        toggleEditModeOnTitle?: string,
+        toggleEditModeOnContent?: string,
+        toggleEditModeOffTitle?: string,
+        toggleEditModeOffContent?: string,
     } = {};
 
     constructor(
@@ -49,9 +53,17 @@ export class DatabaseDetailPage implements OnInit {
         this.translations.alertListItemRemovedContent = gT("db.detail.notification.AlertListItemRemovedContent");
         this.translations.manualRefreshAlertTitle = gT("db.detail.notification.ManualRefreshAlertTitle");
         this.translations.manualRefreshAlertContent = gT("db.detail.notification.ManualRefreshAlertContent");
+        this.translations.toggleEditModeOffTitle = gT("db.detail.notification.ToggleEditModeOffTitle");
+        this.translations.toggleEditModeOffContent = gT("db.detail.notification.ToggleEditModeOffContent");
+        this.translations.toggleEditModeOnTitle = gT("db.detail.notification.ToggleEditModeOnTitle");
+        this.translations.toggleEditModeOnContent = gT("db.detail.notification.ToggleEditModeOnContent");
     }
 
     ngOnInit() {
+        this.refresh();
+    }
+
+    refresh() {
         this.route.paramMap
             .subscribe((params: ParamMap) => {
                 let dbid = params.get('dbid');
@@ -109,5 +121,17 @@ export class DatabaseDetailPage implements OnInit {
             .subscribe(_ => {
                 this.alertService.showMessage(this.translations.manualRefreshAlertTitle, this.translations.manualRefreshAlertContent, MessageSeverity.success);
             });
+    }
+
+    toggleEditMode() {
+        let edit = this.db.editmode;
+        this.dataService.setDbEditMode(this.db.id, !edit);
+        if (edit) {
+            this.alertService.showMessage(this.translations.toggleEditModeOffTitle, this.translations.toggleEditModeOffContent, MessageSeverity.success);
+        } else {
+            this.alertService.showMessage(this.translations.toggleEditModeOnTitle, this.translations.toggleEditModeOnContent, MessageSeverity.success);
+        }
+
+        this.refresh();
     }
 }
