@@ -95,7 +95,8 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         RouterModule.forRoot([
             { path: '', redirectTo: 'database', pathMatch: 'full' },
             { path: 'discover', component: DiscoverPage, canActivate: [AuthGuard], data: { title: "Discover", backlink: false, } },
-            { path: 'discover/:url', component: ArticlePage, canActivate: [AuthGuard], data: { title: "Discover", } },
+            { path: 'discover/:category', component: DiscoverPage, canActivate: [AuthGuard], data: { title: "Discover", backlink: false, } },
+            { path: 'discover/:category/:url', component: ArticlePage, canActivate: [AuthGuard], data: { title: "Discover", } },
             { path: 'app/about', component: AboutPage, canActivate: [AuthGuard], data: { title: "me.About", } },
             { path: 'app/feedback', component: FeedbackPage, canActivate: [AuthGuard], data: { title: "me.Feedback", } },
             { path: 'database', component: DatabaseListPage, canActivate: [AuthGuard], data: { title: "db.List", backlink: false, } },

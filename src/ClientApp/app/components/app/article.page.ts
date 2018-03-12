@@ -43,7 +43,8 @@ export class ArticlePage implements OnInit {
         this.route.paramMap
             .subscribe((params: ParamMap) => {
                 let url = params.get('url');
-                this.url = url;
+                let category = params.get('category');
+                this.url = `/${category}/${url}`;
                 this.title = "hello";
             },
             err => isDevMode() && console.error(err)

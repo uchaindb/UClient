@@ -1,8 +1,7 @@
 ﻿import { Component, OnInit, Input } from '@angular/core';
 import { UiTextService } from '../../services/uitext.service';
-
-export type ArticleType = { title: string, url: string, author: string, date: string };
-export type InfoTabType = "guide" | "faq" | "db" | "case";
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ArticleType, ArticleList, InfoTabType } from '../../models/discover.model';
 
 @Component({
     selector: 'discover-page',
@@ -11,15 +10,22 @@ export type InfoTabType = "guide" | "faq" | "db" | "case";
 })
 export class DiscoverPage implements OnInit {
 
-    originList: { [index: string]: Array<ArticleType> };
+    originList: ArticleList;
     articleList: Array<ArticleType>;
     selectedList: InfoTabType = "guide";
 
     constructor(
         private uitextService: UiTextService,
+        private route: ActivatedRoute,
+        private router: Router,
     ) {
-        this.uitextService.getArticleList()
-            .subscribe(_ => this.setArticle(this.selectedList, _));
+        this.route.paramMap
+            .subscribe((params: ParamMap) => {
+                let category = params.get('category') as InfoTabType;
+                if (category) this.selectedList = category;
+                this.uitextService.getArticleList()
+                    .subscribe(_ => this.setArticle(this.selectedList, _));
+            });
     }
 
     ngOnInit() {
@@ -28,6 +34,12 @@ export class DiscoverPage implements OnInit {
     setArticle(tab: InfoTabType, list?: { [index: string]: Array<ArticleType> }) {
         if (list != null) this.originList = list;
 
+        this.selectedList = tab;
         this.articleList = this.originList[tab];
+    }
+
+    genLink(article: ArticleType) {
+        var segments = article.url.split("/").filter(_ => _);
+        return ['/discover', ...segments];
     }
 }

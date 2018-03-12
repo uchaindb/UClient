@@ -1,16 +1,16 @@
 ﻿<div class="help-block"></div>
 <div class="text-center-xs">
     <div class="btn-group" role="group">
-        <button type="button" class="btn btn-success" (click)="setArticle('guide')">
+        <button type="button" class="btn btn-success" [class.active]="selectedList == 'guide'" [routerLink]="['/discover', 'guide']">
             <span class="glyphicon glyphicon-apple"></span> {{ 'discover.list.GuideTabButtonText' | translate }}
         </button>
-        <button type="button" class="btn btn-primary" (click)="setArticle('faq')">
+        <button type="button" class="btn btn-primary" [class.active]="selectedList == 'faq'" [routerLink]="['/discover', 'faq']">
             <span class="glyphicon glyphicon-question-sign"></span> {{ 'discover.list.FaqTabButtonText' | translate }}
         </button>
         <!--<button type="button" class="btn btn-danger" (click)="setArticle('db')">
             <span class="glyphicon glyphicon-hdd"></span> {{ 'discover.list.DbTabButtonText' | translate }}
         </button>-->
-        <button type="button" class="btn btn-warning" (click)="setArticle('case')">
+        <button type="button" class="btn btn-warning" [class.active]="selectedList == 'case'" [routerLink]="['/discover', 'case']">
             <span class="glyphicon glyphicon-stats"></span> {{ 'discover.list.CaseTabButtonText' | translate }}
         </button>
     </div>
@@ -18,7 +18,7 @@
 <ng-container *ngFor="let article of articleList">
     <div class="media">
         <div class="media-body">
-            <h4 class="media-heading"><a [routerLink]="['/discover',article.url]">{{article.title}}</a></h4>
+            <h4 class="media-heading"><a [routerLink]="genLink(article)">{{article.title}}</a></h4>
             <p class="text-muted">
                 {{article.author}}
                 <span class="text-muted pull-right">{{article.date}}</span>
