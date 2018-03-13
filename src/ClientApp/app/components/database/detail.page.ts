@@ -6,6 +6,7 @@ import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { AlertConfiguration } from '../../models/alert.model';
 import { NotificationService } from '../../services/notification.service';
 import { AppTranslationService } from '../../services/app-translation.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'database-detail',
@@ -20,6 +21,9 @@ export class DatabaseDetailPage implements OnInit {
 
     monitor: boolean;
     alertConfigs: Array<AlertConfiguration>;
+
+    loading = false;
+    loadError = false;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -64,21 +68,28 @@ export class DatabaseDetailPage implements OnInit {
     }
 
     refresh() {
+        this.loading = true;
+        this.loadError = false;
+        this.lastBlock = null;
+        let errCallback = err => { this.loadError = true; this.loading = false; };
         this.route.paramMap
             .subscribe((params: ParamMap) => {
                 let dbid = params.get('dbid');
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
-                        this.dataService.getChainDbStatus(this.db)
-                            .subscribe(_ => this.lastBlock = _.Tail);
-                        this.dataService.getChainDbTableNames(this.db)
-                            .subscribe(_ => this.tables = _.Tables);
+                        let obStatus = this.dataService.getChainDbStatus(this.db);
+                        let obTable = this.dataService.getChainDbTableNames(this.db);
+                        Observable.forkJoin(obStatus, obTable)
+                            .subscribe(_ => {
+                                const [status, tables] = _;
+                                this.lastBlock = status.Tail;
+                                this.tables = tables.Tables;
+                                this.loading = false;
+                            }, errCallback);
                     });
                 this.refreshAlerts();
-            },
-            err => isDevMode() && console.error(err)
-            );
+            }, errCallback);
     }
 
     refreshAlerts() {
