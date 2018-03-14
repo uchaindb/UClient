@@ -210,7 +210,8 @@
         "Initiator": "发起者",
         "SummaryTitle": "事务信息",
         "Time": "时间",
-        "Type": "类型"
+        "Type": "类型",
+        "WitnessBlock": "见证区块"
       }
     },
     "create": {
