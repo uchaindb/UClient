@@ -110,6 +110,8 @@ export class Transaction extends HashBase {
             Actions = [],
             LockTargets = [],
             LockScripts = [],
+            WitnessBlock = null,
+            Block = null,
         } = obj;
         super({ Hash: Hash });
 
@@ -119,6 +121,8 @@ export class Transaction extends HashBase {
         this.Actions = Actions;
         this.LockTargets = LockTargets;
         this.LockScripts = LockScripts;
+        this.WitnessBlock = WitnessBlock;
+        this.Block = Block;
     }
 
     public Initiator?: string;
@@ -127,6 +131,8 @@ export class Transaction extends HashBase {
     public Actions?: Array<DataAction & SchemaAction>;
     public LockTargets?: Array<LockTarget>;
     public LockScripts?: Array<ScriptToken>;
+    public WitnessBlock?: string;
+    public Block?: string;
 }
 
 export type ScriptToken = { OpCode: string, Object: string };
@@ -193,6 +199,7 @@ export interface CreateDataTransactionRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     Initiator?: string;
     Signature?: string;
+    WitnessBlock?: string;
     Actions?: DataAction[];
 }
 
@@ -200,6 +207,7 @@ export interface CreateSchemaTransactionRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     Initiator?: string;
     Signature?: string;
+    WitnessBlock?: string;
     Actions?: SchemaAction[];
 }
 
