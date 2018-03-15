@@ -403,9 +403,9 @@ export class ChainDbService extends EndpointFactory {
         return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
     }
 
-    private generateUnlockScriptsForTransaction(privateKey: string, hashContent:string): string {
+    private generateUnlockScriptsForTransaction(privateKey: string, hashContent: string): string {
         let tosign = this.cryptoService.hash(hashContent);
-        let signature = this.cryptoService.signData(tosign, privateKey);
+        let signature = this.cryptoService.sign(tosign, privateKey);
         return this.getSignatureB58(signature);
     }
 
@@ -465,7 +465,7 @@ export class ChainDbService extends EndpointFactory {
         let mapColumns = (columns: Array<LockTarget>): Array<string> =>
             columns.map(_ => `[${_.TargetType}][${_.PublicPermission}]${(!_.TableName ? '' : _.TableName)}:${(!_.PrimaryKey ? '' : _.PrimaryKey)}:${(!_.ColumnName ? '' : _.ColumnName)}`);
         let unlockContent = unlockScripts ? unlockScripts + "|" : "";
-        return `${unlockContent}${initiator}|${witness}|${lockScripts}|${mapColumns(targets).join(",")}`
+        return `${unlockContent}${initiator}|${witness}|${lockScripts ? lockScripts : ''}|${mapColumns(targets).join(",")}`
     }
 
     readonly errorCodes = {

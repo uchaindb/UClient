@@ -32,18 +32,7 @@ export class CryptographyService {
         return this.hexStringToByte( shajs('sha256').update(data).digest('hex'));
     }
 
-    signData(data: Uint8Array, privateKey: string): Signature {
-        var hash = this.hexStringToByte(shajs('sha256').update(data).digest('hex'));
-
-        let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
-        var sig = key.sign(hash);
-        return {
-            r: new Uint8Array(sig.r.toArray()),
-            s: new Uint8Array(sig.s.toArray()),
-        };
-    }
-
-    sign(data: string, privateKey: string): Signature {
+    sign(data: string | Uint8Array, privateKey: string): Signature {
         var hash = this.hexStringToByte(shajs('sha256').update(data).digest('hex'));
 
         let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
