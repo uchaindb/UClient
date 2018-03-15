@@ -177,6 +177,31 @@
                         &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableColumnData' | translate }}"></span>
                     </ng-template>
                 </ng-container>
+                <ng-container *ngFor="let permission of target.PublicPermission">
+                    <ng-container [ngSwitch]="permission">
+                        <ng-template [ngSwitchCase]="'None'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.None' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'ReadOnly'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.ReadOnly' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'Insert'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Insert' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'Update'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Update' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'Delete'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Delete' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'AlterLock'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.AlterLock' | translate }}"></span>
+                        </ng-template>
+                        <ng-template [ngSwitchCase]="'AlterSchema'">
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.ALterSchema' | translate }}"></span>
+                        </ng-template>
+                    </ng-container>
+                </ng-container>
                 <ul class="alert-detail-list">
                     <li *ngIf="target.TableName">
                         {{ 'db.chain.lockTransaction.TableName' | translate }} <mark>{{target.TableName}}</mark>

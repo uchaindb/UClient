@@ -183,6 +183,15 @@
         "Name": "锁定事务",
         "PrimaryKeyValue": "主键值",
         "TableName": "表名",
+        "permission": {
+          "AlterLock": "允许修改锁定脚本",
+          "AlterSchema": "允许修改表结构",
+          "Delete": "允许删除表数据",
+          "Insert": "允许插入表数据",
+          "None": "权限无限制",
+          "ReadOnly": "只读权限",
+          "Update": "允许更新表数据"
+        },
         "type": {
           "Database": "锁定数据库",
           "TableCellData": "锁定数据单元",
