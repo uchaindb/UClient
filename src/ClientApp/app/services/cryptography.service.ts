@@ -7,7 +7,7 @@ import { ec as EC } from 'elliptic';
 import * as shajs from 'sha.js';
 import * as RIPEMD160 from 'ripemd160';
 
-type Signature = { r: Uint8Array, s: Uint8Array };
+export type Signature = { r: Uint8Array, s: Uint8Array };
 
 @Injectable()
 export class CryptographyService {
@@ -28,8 +28,23 @@ export class CryptographyService {
         return this.toHexString(a);
     }
 
+    hash(data: string): Uint8Array {
+        return this.hexStringToByte( shajs('sha256').update(data).digest('hex'));
+    }
+
+    signData(data: Uint8Array, privateKey: string): Signature {
+        var hash = this.hexStringToByte(shajs('sha256').update(data).digest('hex'));
+
+        let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
+        var sig = key.sign(hash);
+        return {
+            r: new Uint8Array(sig.r.toArray()),
+            s: new Uint8Array(sig.s.toArray()),
+        };
+    }
+
     sign(data: string, privateKey: string): Signature {
-        var hash = shajs('sha256').update(data).digest('hex');
+        var hash = this.hexStringToByte(shajs('sha256').update(data).digest('hex'));
 
         let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
         var sig = key.sign(hash);
@@ -149,6 +164,10 @@ export class CryptographyService {
             this.ALPHABET_MAP[this.ALPHABET.charAt(i)] = i;
             i++;
         }
+    }
+
+    toB58FromHex(str: string): string {
+        return this.to_b58(this.hexStringToByte(str));
     }
 
     to_b58(buffer: Uint8Array): string {

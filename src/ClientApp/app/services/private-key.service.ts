@@ -38,6 +38,7 @@ export class PrivateKeyService extends EndpointFactory {
                 name: _.name,
                 key: _.key.slice(0, 6) + "..." + _.key.slice(-2),
                 address: this.cryptoService.getAddress(this.cryptoService.getPublicKey(_.key)),
+                pubKey: this.cryptoService.toB58FromHex(this.cryptoService.getPublicKey(_.key)),
             }));
 
         return Observable.of(keyList);

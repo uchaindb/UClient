@@ -71,6 +71,7 @@ export class DatabaseCreatePage implements OnInit {
     keyList: Array<KeyConfiguration>;
     permissionList: Array<PermissionCheckBoxType>;
     enableUnlockScripts = false;
+    selectedUnlockKey: string;
 
     @ViewChild('lockScriptsTextBox') lockScriptsTextBox: ElementRef;
 
@@ -275,6 +276,12 @@ export class DatabaseCreatePage implements OnInit {
         let pubKey = this.cryptoService.getPublicKey(privKey);
         let address = this.cryptoService.getAddress(pubKey);
 
+        let unlockPrivateKey = null;
+        if (this.enableUnlockScripts) {
+            let config = this.keyList.find(_ => _.name == this.selectedUnlockKey);
+            unlockPrivateKey = this.privateKeyService.getPrivateKeyDirectly(config);
+        }
+
         let rpcCallback = (_) => {
             this.alertService.showMessage(this.translations.successSendTitle, this.translations.successSendContent, MessageSeverity.success);
             this.router.navigate(['database', this.db.id]);
@@ -285,15 +292,15 @@ export class DatabaseCreatePage implements OnInit {
 
         if (this.selectedType == "data") {
             var da = DatabaseCreatePageFunction.getDataActions(this.dataActions);
-            this.dataService.createDataTransaction(this.db, privKey, da)
+            this.dataService.createDataTransaction(this.db, privKey, unlockPrivateKey, da)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "schema") {
             var sa = DatabaseCreatePageFunction.getSchemaActions(this.schemaActions);
-            this.dataService.createSchemaTransaction(this.db, privKey, sa)
+            this.dataService.createSchemaTransaction(this.db, privKey, unlockPrivateKey, sa)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "lock") {
             var lt = DatabaseCreatePageFunction.getLockTargets(this.lockTargets);
-            this.dataService.createLockTransaction(this.db, privKey, this.lockScripts, lt)
+            this.dataService.createLockTransaction(this.db, privKey, unlockPrivateKey, this.lockScripts, lt)
                 .subscribe(rpcCallback, errCallback);
         } else {
             this.alertService.showMessage(this.translations.unknownTransactionTypeTitle, this.translations.unknownTransactionTypeContent, MessageSeverity.warn);
@@ -406,9 +413,9 @@ export class DatabaseCreatePage implements OnInit {
         }
     }
 
-    insert(address: string) {
+    insert(pubKey: string) {
         let area = this.lockScriptsTextBox.nativeElement;
-        let value = address;
+        let value = pubKey;
         if (area.selectionStart || area.selectionStart == '0') {
             var startPos = area.selectionStart;
             var endPos = area.selectionEnd;

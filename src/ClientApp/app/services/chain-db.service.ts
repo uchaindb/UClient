@@ -9,7 +9,7 @@ import { Pager } from "../models/pager.model";
 import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTransactionRpcResponse, ListTableSchema, ColumnData, SchemaAction, SchemaColumnDefinition, LockTarget } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
 import { AlertConfiguration } from '../models/alert.model';
-import { CryptographyService } from './cryptography.service';
+import { CryptographyService, Signature } from './cryptography.service';
 import { NotificationService } from './notification.service';
 import { AppTranslationService } from './app-translation.service';
 
@@ -343,53 +343,78 @@ export class ChainDbService extends EndpointFactory {
             });
     }
 
-    createDataTransaction(db: ChainDb, privateKey: string, actions: Array<DataAction>): Observable<CreateTransactionRpcResponse> {
+    createDataTransaction(db: ChainDb, privateKey: string, unlockPrivateKey: string, actions: Array<DataAction>): Observable<CreateTransactionRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = this.cryptoService.getAddress(pubKey);
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let hashContent = this.getDataTransactionHashContent(initiator, witness, actions);
-                console.log("data hash content:", hashContent);
+                let unlockScripts = this.generateUnlockScriptsForDataTransaction(unlockPrivateKey, initiator, witness, actions);
+                let hashContent = this.getDataTransactionHashContent(initiator, witness, actions, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateDataTransaction", [initiator, sig, witness, ...as]);
+                return this.rpcCall(db.address, "CreateDataTransaction", [initiator, sig, witness, unlockScripts, ...as]);
             });
     }
 
-    createSchemaTransaction(db: ChainDb, privateKey: string, actions: Array<SchemaAction>): Observable<CreateTransactionRpcResponse> {
+    createSchemaTransaction(db: ChainDb, privateKey: string, unlockPrivateKey: string, actions: Array<SchemaAction>): Observable<CreateTransactionRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = this.cryptoService.getAddress(pubKey);
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions);
-                console.log("schema hash content:", hashContent);
+                let unlockScripts = this.generateUnlockScriptsForSchemaTransaction(unlockPrivateKey, initiator, witness, actions);
+                let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateSchemaTransaction", [initiator, sig, witness, ...as]);
+                return this.rpcCall(db.address, "CreateSchemaTransaction", [initiator, sig, witness, unlockScripts, ...as]);
             });
     }
 
-    createLockTransaction(db: ChainDb, privateKey: string, lockScripts: string, targets: Array<LockTarget>): Observable<CreateTransactionRpcResponse> {
+    createLockTransaction(db: ChainDb, privateKey: string, unlockPrivateKey: string, lockScripts: string, targets: Array<LockTarget>): Observable<CreateTransactionRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = this.cryptoService.getAddress(pubKey);
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets);
-                console.log("lock hash content:", hashContent);
+                let unlockScripts = this.generateUnlockScriptsForLockTransaction(unlockPrivateKey, initiator, witness, lockScripts, targets);
+                let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = targets.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateLockTransaction", [initiator, sig, lockScripts, witness, ...as]);
+                return this.rpcCall(db.address, "CreateLockTransaction", [initiator, sig, witness, unlockScripts, lockScripts, ...as]);
             });
+    }
+
+    private generateUnlockScriptsForDataTransaction(privateKey: string, initiator: string, witness: string, actions: Array<DataAction>): string {
+        let hashContent = this.getDataTransactionHashContent(initiator, witness, actions);
+        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+    }
+
+    private generateUnlockScriptsForSchemaTransaction(privateKey: string, initiator: string, witness: string, actions: Array<SchemaAction>): string {
+        let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions);
+        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+    }
+
+    private generateUnlockScriptsForLockTransaction(privateKey: string, initiator: string, witness: string, lockScripts: string, targets: Array<LockTarget>): string {
+        let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets);
+        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+    }
+
+    private generateUnlockScriptsForTransaction(privateKey: string, hashContent:string): string {
+        let tosign = this.cryptoService.hash(hashContent);
+        let signature = this.cryptoService.signData(tosign, privateKey);
+        return this.getSignatureB58(signature);
     }
 
     private signTransaction(privateKey: string, hashContent: string): string {
         let signature = this.cryptoService.sign(hashContent, privateKey);
+        return this.getSignatureB58(signature);
+    }
+
+    private getSignatureB58(signature: Signature): string {
         let sigarr = new Uint8Array(signature.r.length + signature.s.length);
         sigarr.set(signature.r);
         sigarr.set(signature.s, signature.r.length);
@@ -397,25 +422,26 @@ export class ChainDbService extends EndpointFactory {
         return sig;
     }
 
-    private getDataTransactionHashContent(initiator: string, witness: string, actions: Array<DataAction>): string {
+    private getDataTransactionHashContent(initiator: string, witness: string, actions: Array<DataAction>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<ColumnData>): Array<string> =>
             columns.map(_ => `${_.Name}:${_.Data}`);
         let acts = actions
             .map(_ => {
                 switch (_.Type) {
                     case "InsertDataAction":
-                        return `[${_.SchemaName}]Insert:${mapColumns(_.Columns).join(", ")}`;
+                        return `[${_.SchemaName}]Insert:${mapColumns(_.Columns).join(",")}`;
                     case "UpdateDataAction":
-                        return `[${_.SchemaName}]Update[${_.PrimaryKeyValue}]:${mapColumns(_.Columns).join(", ")}`;
+                        return `[${_.SchemaName}]Update[${_.PrimaryKeyValue}]:${mapColumns(_.Columns).join(",")}`;
                     case "DeleteDataAction":
                         return `[${_.SchemaName}]Delete[${_.PrimaryKeyValue}]`;
                     default:
                 }
             });
-        return `${initiator}|${witness}|${acts.join(", ")}`
+        let unlockContent = unlockScripts ? unlockScripts + "|" : "";
+        return `${unlockContent}${initiator}|${witness}|${acts.join(",")}`
     }
 
-    private getSchemaTransactionHashContent(initiator: string, witness: string, actions: Array<SchemaAction>): string {
+    private getSchemaTransactionHashContent(initiator: string, witness: string, actions: Array<SchemaAction>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<SchemaColumnDefinition>): Array<string> =>
             !columns ? []
                 : columns.map(_ => `${(_.PrimaryKey ? '[P]' : '')}${_.Name}:${_.Type}`);
@@ -423,21 +449,23 @@ export class ChainDbService extends EndpointFactory {
             .map(_ => {
                 switch (_.Type) {
                     case "CreateSchemaAction":
-                        return `[${_.Name}]CreateColumns:${mapColumns(_.Columns).join(", ")}`;
+                        return `[${_.Name}]CreateColumns:${mapColumns(_.Columns).join(",")}`;
                     case "ModifySchemaAction":
-                        return `[${_.Name}]DropColumns:${(_.DropColumns || []).join(", ")};AddOrModifyColumns:${mapColumns(_.AddOrModifyColumns).join(", ")}`;
+                        return `[${_.Name}]DropColumns:${(_.DropColumns || []).join(",")};AddOrModifyColumns:${mapColumns(_.AddOrModifyColumns).join(",")}`;
                     case "DropSchemaAction":
                         return `[${_.Name}]DropSchema`;
                     default:
                 }
             });
-        return `${initiator}|${witness}|${acts.join(", ")}`
+        let unlockContent = unlockScripts ? unlockScripts + "|" : "";
+        return `${unlockContent}${initiator}|${witness}|${acts.join(",")}`
     }
 
-    private getLockTransactionHashContent(initiator: string, witness: string, lockScripts: string, targets: Array<LockTarget>): string {
+    private getLockTransactionHashContent(initiator: string, witness: string, lockScripts: string, targets: Array<LockTarget>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<LockTarget>): Array<string> =>
             columns.map(_ => `[${_.TargetType}][${_.PublicPermission}]${(!_.TableName ? '' : _.TableName)}:${(!_.PrimaryKey ? '' : _.PrimaryKey)}:${(!_.ColumnName ? '' : _.ColumnName)}`);
-        return `${initiator}|${witness}|${lockScripts}|${mapColumns(targets).join(", ")}`
+        let unlockContent = unlockScripts ? unlockScripts + "|" : "";
+        return `${unlockContent}${initiator}|${witness}|${lockScripts}|${mapColumns(targets).join(",")}`
     }
 
     readonly errorCodes = {
