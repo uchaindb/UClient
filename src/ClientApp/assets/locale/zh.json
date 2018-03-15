@@ -181,6 +181,7 @@
       "lockTransaction": {
         "ColumnName": "列名",
         "Name": "锁定事务",
+        "NoLockScriptText": "此事务中不包含锁定脚本",
         "PrimaryKeyValue": "主键值",
         "TableName": "表名",
         "permission": {

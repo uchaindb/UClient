@@ -151,7 +151,8 @@
             </h3>
         </div>
         <div class="panel-body">
-            <pre>{{tran.code}}</pre>
+            <div class="alert alert-info" *ngIf="!tran.code">{{ 'db.chain.lockTransaction.NoLockScriptText' | translate }}</div>
+            <pre *ngIf="tran.code">{{tran.code}}</pre>
         </div>
         <ul class="list-group">
             <li *ngFor="let target of tran.LockTargets" class="list-group-item">
@@ -198,7 +199,7 @@
                             <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.AlterLock' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'AlterSchema'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.ALterSchema' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.AlterSchema' | translate }}"></span>
                         </ng-template>
                     </ng-container>
                 </ng-container>
