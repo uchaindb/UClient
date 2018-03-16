@@ -47,7 +47,7 @@
                     <p>{{ 'db.detail.Height' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Height]">{{lastBlock.Height}}</a></p>
                     <p>
                         {{ 'db.detail.LastBlock' | translate }}<a [routerLink]="['/database', db.id, 'chain', lastBlock.Hash]">{{lastBlock.Hash | hashbeauty}}</a>
-                        ({{lastBlock.Time | date}})
+                        ({{lastBlock.Time | date: "yyyy-MM-dd HH:mm:ss"}})
                     </p>
                 </ng-container>
                 <ng-container *ngIf="loading">
