@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ChainDbService } from '../../services/chain-db.service';
 import { CryptographyService } from '../../services/cryptography.service';
-import { PrivateKeyService, KeyConfiguration } from '../../services/private-key.service';
+import { PrivateKeyService } from '../../services/private-key.service';
 import { AlertService, DialogType, MessageSeverity } from '../../services/alert.service';
 import { AppTranslationService } from '../../services/app-translation.service';
+import { KeyConfiguration } from '../../models/cryptography.model';
 
 @Component({
     selector: 'user-key',
@@ -57,7 +58,7 @@ export class KeyManagePage implements OnInit {
     }
 
     delete(key: KeyConfiguration) {
-        this.dataService.removeKey(key);
+        this.dataService.removeKey(key.name);
         this.updateList();
     }
 
@@ -69,21 +70,22 @@ export class KeyManagePage implements OnInit {
             }
 
             this.alertService.showDialog(this.translations.importKeyPromptMessage, DialogType.prompt, key => {
-                if (!this.cryptoService.validatePrivateKey(key)) {
+                let privateKey = this.cryptoService.parsePrivateKey(key);
+                if (!privateKey) {
                     this.alertService.showMessage(this.translations.importInvalidKeyTitle, this.translations.importInvalidKeyContent, MessageSeverity.error);
                     return;
                 }
 
-                this.dataService.addKey({ name: name, key: key });
+                this.dataService.addKey(name, key);
                 this.updateList();
             });
         });
     }
 
     export(key: KeyConfiguration) {
-        this.dataService.getPrivateKey(key)
+        this.dataService.getPrivateKey(key.name)
             .subscribe(_ => {
-                this.alertService.showDialog(this.translations.exportMessage + _, DialogType.alert);
+                this.alertService.showDialog(this.translations.exportMessage + _.toB58String(), DialogType.alert);
             });
     }
 
@@ -94,7 +96,8 @@ export class KeyManagePage implements OnInit {
             }
             else {
                 let genKey = this.cryptoService.generateRandomPrivateKey();
-                this.dataService.addKey({ name: name, key: genKey });
+                let key = genKey.toB58String();
+                this.dataService.addKey(name, key);
                 this.updateList();
             }
         });

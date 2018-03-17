@@ -1,4 +1,4 @@
-﻿import { Injectable, Injector } from '@angular/core';
+﻿import { Injectable, Injector, isDevMode } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/observable/of';
 import { ConfigurationService } from "./configuration.service";
@@ -7,12 +7,7 @@ import { Http, Headers, Response, RequestOptions } from "@angular/http";
 import { LocalStoreManager } from './local-store-manager.service';
 import { CryptographyService } from './cryptography.service';
 import { NotificationService } from './notification.service';
-
-export type KeyConfiguration = {
-    name: string,
-    key: string,
-    address?: string,
-};
+import { KeyConfiguration, PrivateKey, SavedKeyConfiguration } from '../models/cryptography.model';
 
 @Injectable()
 export class PrivateKeyService extends EndpointFactory {
@@ -32,46 +27,74 @@ export class PrivateKeyService extends EndpointFactory {
         super(http, configurations, injector);
     }
 
-    getKeyList(): Observable<Array<KeyConfiguration>> {
-        var keyList = (this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<KeyConfiguration> || [])
-            .map(_ => ({
+    getKeyListFromStore(): Array<KeyConfiguration> {
+        try {
+            return (this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<SavedKeyConfiguration> || [])
+                .map<KeyConfiguration>(_ => ({ name: _.name, key: PrivateKey.Parse(_.key) }))
+        }
+        catch (err) {
+            isDevMode() && console.error(err);
+            return [];
+        }
+    }
+
+    saveKeyListToStore(keyList: Array<KeyConfiguration>): void {
+        var arr = keyList
+            .map<SavedKeyConfiguration>(_ => ({
                 name: _.name,
-                key: _.key.slice(0, 6) + "..." + _.key.slice(-2),
-                address: this.cryptoService.getAddress(this.cryptoService.getPublicKey(_.key)),
-                pubKey: this.cryptoService.toB58FromHex(this.cryptoService.getPublicKey(_.key)),
+                key: _.key.toB58String(),
+            }));
+        this.localStoreManager.savePermanentData(arr, PrivateKeyService.DBKEY_PRIVATE_KEY_DATA);
+    }
+
+    getKeyList(): Observable<Array<KeyConfiguration>> {
+        var keyList = this.getKeyListFromStore()
+            .map<KeyConfiguration>(_ => ({
+                name: _.name,
+                key: _.key,
+                displayKey: this.maskKey(_.key),
+                address: this.cryptoService.getPublicKey(_.key).toAddress(),
+                pubKey: this.cryptoService.getPublicKey(_.key),
             }));
 
         return Observable.of(keyList);
     }
 
-    getPrivateKey(config: KeyConfiguration): Observable<string> {
-        return Observable.of(this.getPrivateKeyDirectly(config));
+    getPrivateKey(name: string): Observable<PrivateKey> {
+        return Observable.of(this.getPrivateKeyDirectly(name));
     }
 
-    getPrivateKeyDirectly(config: KeyConfiguration): string {
-        let keyList = (this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<KeyConfiguration> || [])
+    getPrivateKeyDirectly(name: string): PrivateKey {
+        let keyList = this.getKeyListFromStore();
         var idx = keyList
-            .findIndex(_ => _.name == config.name && _.key.slice(0, 6) == config.key.slice(0, 6));
+            .findIndex(_ => _.name == name);
         var key = keyList[idx].key;
 
         return key;
     }
 
-    addKey(config: KeyConfiguration): void {
-        var keyList = this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<KeyConfiguration> || [];
-        if (keyList.findIndex(_ => _.name == config.name) > -1) return;
-        if (!this.cryptoService.validatePrivateKey(config.key)) return;
-        config.key = config.key.toLowerCase();
+    addKey(name: string, b58keystr: string): void {
+        var keyList = this.getKeyListFromStore();
+        if (keyList.findIndex(_ => _.name == name) > -1) return;
+        let privateKey = this.cryptoService.parsePrivateKey(b58keystr);
+        if (!privateKey) return;
 
-        keyList.push(config);
-        this.localStoreManager.savePermanentData(keyList, PrivateKeyService.DBKEY_PRIVATE_KEY_DATA);
+        keyList.push({ name: name, key: privateKey });
+        this.saveKeyListToStore(keyList);
     }
 
-    removeKey(config: KeyConfiguration): void {
-        var keyList = this.localStoreManager.getData(PrivateKeyService.DBKEY_PRIVATE_KEY_DATA) as Array<KeyConfiguration> || [];
+    removeKey(name: string): void {
+        var keyList = this.getKeyListFromStore();
         var idx = keyList
-            .findIndex(_ => _.name == config.name && _.key.slice(0, 6) == config.key.slice(0, 6));
+            .findIndex(_ => _.name == name);
         keyList.splice(idx, 1);
-        this.localStoreManager.savePermanentData(keyList, PrivateKeyService.DBKEY_PRIVATE_KEY_DATA);
+        this.saveKeyListToStore(keyList);
+    }
+
+    private maskKey(privateKey: PrivateKey): string {
+        if (!privateKey) return null;
+        let key = privateKey.toB58String();
+        if (!key) return null;
+        return key.slice(0, 6) + "..." + key.slice(-2);
     }
 }

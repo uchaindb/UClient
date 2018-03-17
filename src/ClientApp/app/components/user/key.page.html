@@ -5,7 +5,7 @@
             <button type="button" class="btn btn-danger btn-xs" (click)="delete(key)"><span>&times; {{ 'me.key.DeleteButtonText' | translate }}</span></button>
         </div>
         <h4 class="list-group-item-heading">{{key.name}}</h4>
-        <p class="list-group-item-text text-muted">{{key.key}}</p>
+        <p class="list-group-item-text text-muted">{{key.displayKey}}</p>
     </div>
     <a href="javascript:void(0)" (click)="create()" class="list-group-item">
         <h4>

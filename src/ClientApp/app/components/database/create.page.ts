@@ -8,9 +8,10 @@ import { NotificationService } from '../../services/notification.service';
 import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
-import { KeyConfiguration, PrivateKeyService } from '../../services/private-key.service';
+import { PrivateKeyService } from '../../services/private-key.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { DatabaseCreatePageFunction } from './create.page.function';
+import { KeyConfiguration } from '../../models/cryptography.model';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -254,8 +255,7 @@ export class DatabaseCreatePage implements OnInit {
             privKey = this.inputPrivateKey;
         }
         else {
-            var config = this.keyList.find(_ => _.name == this.selectedPrivateKey);
-            privKey = this.privateKeyService.getPrivateKeyDirectly(config);
+            privKey = this.privateKeyService.getPrivateKeyDirectly(this.selectedPrivateKey);
         }
 
         return privKey;
@@ -274,12 +274,11 @@ export class DatabaseCreatePage implements OnInit {
         }
 
         let pubKey = this.cryptoService.getPublicKey(privKey);
-        let address = this.cryptoService.getAddress(pubKey);
+        let address = pubKey.toAddress();
 
         let unlockPrivateKey = null;
         if (this.enableUnlockScripts) {
-            let config = this.keyList.find(_ => _.name == this.selectedUnlockKey);
-            unlockPrivateKey = this.privateKeyService.getPrivateKeyDirectly(config);
+            unlockPrivateKey = this.privateKeyService.getPrivateKeyDirectly(this.selectedUnlockKey);
         }
 
         let rpcCallback = (_) => {

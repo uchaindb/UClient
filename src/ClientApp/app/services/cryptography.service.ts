@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, isDevMode } from '@angular/core';
 import { TranslateService, TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -6,36 +6,53 @@ import 'rxjs/add/observable/of';
 import { ec as EC } from 'elliptic';
 import * as shajs from 'sha.js';
 import * as RIPEMD160 from 'ripemd160';
+import { Signature, PrivateKey, PublicKey, Address, ByteBase } from '../models/cryptography.model';
+import { B58 } from './b58';
 
-export type Signature = { r: Uint8Array, s: Uint8Array };
+interface BigInteger {
+    toArray: () => number[];
+}
+
+interface KeyStore {
+    sign: (a: Uint8Array) => { r: BigInteger, s: BigInteger };
+    verify: (a: Uint8Array, sig: Signature) => boolean;
+    getPublic: (ex: boolean, encoding: "utf8" | "ascii" | "hex") => Uint8Array;
+}
+
+interface Elliptic {
+    keyFromPrivate: (a: Uint8Array) => KeyStore;
+    keyFromPublic: (a: Uint8Array) => KeyStore;
+}
 
 @Injectable()
 export class CryptographyService {
 
-    private ec: any;
+    private ec: Elliptic;
     size = 32;
 
     constructor() {
         this.ec = new EC('secp256k1');
-        this.initb58();
     }
 
-    generateRandomPrivateKey(): string {
+    generateRandomPrivateKey(): PrivateKey {
         var a = [];
         for (var i = 0; i < this.size; i++) {
             a.push(Math.floor(Math.random() * 256));
         }
-        return this.toHexString(a);
+        return new PrivateKey(a);
     }
 
-    hash(data: string): Uint8Array {
-        return this.hexStringToByte( shajs('sha256').update(data).digest('hex'));
+    hash(data: string | Uint8Array): Uint8Array {
+        return CryptographyService.hash(data);
+    }
+    static hash(data: string | Uint8Array): Uint8Array {
+        return shajs('sha256').update(data).digest();
     }
 
-    sign(data: string | Uint8Array, privateKey: string): Signature {
-        var hash = this.hexStringToByte(shajs('sha256').update(data).digest('hex'));
+    sign(data: string | Uint8Array, privateKey: PrivateKey): Signature {
+        var hash = this.hash(data);
 
-        let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
+        let key = this.ec.keyFromPrivate(privateKey.data);
         var sig = key.sign(hash);
         return {
             r: new Uint8Array(sig.r.toArray()),
@@ -43,37 +60,37 @@ export class CryptographyService {
         };
     }
 
-    verify(data: string, publicKey: string, sig: Signature): boolean {
-        var hash: Uint8Array = shajs('sha256').update(data).digest();
+    verify(data: string | Uint8Array, publicKey: PublicKey, sig: Signature): boolean {
+        var hash = this.hash(data);
 
-        let key = this.ec.keyFromPublic(this.hexStringToByte(publicKey));
+        let key = this.ec.keyFromPublic(publicKey.data);
         return key.verify(hash, sig);
     }
 
-    getPublicKey(privateKey: string): string {
-        let key = this.ec.keyFromPrivate(this.hexStringToByte(privateKey));
-        var pubKey = key.getPublic();
-        return key.getPublic(true, "hex");
+    getPublicKey(privateKey: PrivateKey): PublicKey {
+        let key = this.ec.keyFromPrivate(privateKey.data);
+        return new PublicKey(key.getPublic(true, "ascii"));
     }
 
-    getAddress(publicKey: string): string {
-        var hash: Uint8Array = shajs('sha256').update(this.hexStringToByte(publicKey)).digest();
+    static getAddress(publicKey: PublicKey): Address {
+        var hash = this.hash(publicKey.data);
         var rip: Uint8Array = new RIPEMD160().update(hash).digest();
-        return this.to_b58(rip);
+        return new Address(rip);
     }
 
-    validatePrivateKey(privateKey: string): boolean {
-        if (privateKey.length != this.size * 2)
-            return false;
-
-        if ((privateKey.toLowerCase().match(/([0-9]|[a-f])/gim) || []).length != privateKey.length) {
-            return false;
+    parsePrivateKey(keyString: string): PrivateKey {
+        try {
+            var a = PrivateKey.Parse(keyString);
+            if (a.data.length != this.size) return null;
+            return a;
         }
-
-        return true;
+        catch (err) {
+            isDevMode() && console.error("parse error", err);
+            return null;
+        }
     }
 
-    private hexStringToByte(str) {
+    private hexStringToByte(str: string) {
         if (!str) {
             return new Uint8Array(0);
         }
@@ -102,7 +119,7 @@ export class CryptographyService {
             ret);
 
         console.log('%ctesting: #generateRandomPrivateKey should generate private key with right length', 'color:green',
-            this.generateRandomPrivateKey().length == 64);
+            this.generateRandomPrivateKey().data.length == this.size);
 
         let verifyCases = [
             {
@@ -124,7 +141,7 @@ export class CryptographyService {
         for (let i = 0; i < verifyCases.length; i++) {
             let c = verifyCases[i];
             console.log(`%ctesting: could verify message[${c.msg}] with given r and s through public key`, 'color:blue',
-                this.verify(c.msg, c.pub, { r: this.hexStringToByte(c.r), s: this.hexStringToByte(c.s) }));
+                this.verify(c.msg, new PublicKey(this.hexStringToByte(c.pub)), { r: this.hexStringToByte(c.r), s: this.hexStringToByte(c.s) }));
         }
 
         let addressCases = [
@@ -138,106 +155,7 @@ export class CryptographyService {
         for (let i = 0; i < addressCases.length; i++) {
             let c = addressCases[i];
             console.log(`%ctesting: generating address [${c.address}]`, 'color:green',
-                c.address == this.getAddress(c.pub));
+                c.address == B58.toB58(new PublicKey(this.hexStringToByte(c.pub)).toAddress().data));
         }
     }
-
-    //got from: https://github.com/45678/Base58
-    private ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-    private ALPHABET_MAP = {};
-
-    private initb58() {
-        let i = 0;
-
-        while (i < this.ALPHABET.length) {
-            this.ALPHABET_MAP[this.ALPHABET.charAt(i)] = i;
-            i++;
-        }
-    }
-
-    toB58FromHex(str: string): string {
-        return this.to_b58(this.hexStringToByte(str));
-    }
-
-    to_b58(buffer: Uint8Array): string {
-        var carry, digits, j, i;
-        if (buffer.length === 0) {
-            return "";
-        }
-        i = void 0;
-        j = void 0;
-        digits = [0];
-        i = 0;
-        while (i < buffer.length) {
-            j = 0;
-            while (j < digits.length) {
-                digits[j] <<= 8;
-                j++;
-            }
-            digits[0] += buffer[i];
-            carry = 0;
-            j = 0;
-            while (j < digits.length) {
-                digits[j] += carry;
-                carry = (digits[j] / 58) | 0;
-                digits[j] %= 58;
-                ++j;
-            }
-            while (carry) {
-                digits.push(carry % 58);
-                carry = (carry / 58) | 0;
-            }
-            i++;
-        }
-        i = 0;
-        while (buffer[i] === 0 && i < buffer.length - 1) {
-            digits.push(0);
-            i++;
-        }
-        return digits.reverse().map((digit) => {
-            return this.ALPHABET[digit];
-        }).join("");
-    }
-
-    from_b58(string: string) {
-        var bytes, c, carry, j, i;
-        if (string.length === 0) {
-            return new (typeof Uint8Array !== "undefined" && Uint8Array !== null ? Uint8Array : Buffer)(0);
-        }
-        i = void 0;
-        j = void 0;
-        bytes = [0];
-        i = 0;
-        while (i < string.length) {
-            c = string[i];
-            if (!(c in this.ALPHABET_MAP)) {
-                throw "Base58.decode received unacceptable input. Character '" + c + "' is not in the Base58 alphabet.";
-            }
-            j = 0;
-            while (j < bytes.length) {
-                bytes[j] *= 58;
-                j++;
-            }
-            bytes[0] += this.ALPHABET_MAP[c];
-            carry = 0;
-            j = 0;
-            while (j < bytes.length) {
-                bytes[j] += carry;
-                carry = bytes[j] >> 8;
-                bytes[j] &= 0xff;
-                ++j;
-            }
-            while (carry) {
-                bytes.push(carry & 0xff);
-                carry >>= 8;
-            }
-            i++;
-        }
-        i = 0;
-        while (string[i] === "1" && i < string.length - 1) {
-            bytes.push(0);
-            i++;
-        }
-        return new (typeof Uint8Array !== "undefined" && Uint8Array !== null ? Uint8Array : Buffer)(bytes.reverse());
-    };
 }
