@@ -420,9 +420,9 @@ export class ChainDbService extends EndpointFactory {
     }
 
     private getSignatureB58(signature: Signature): string {
-        let sigarr = new Uint8Array(signature.r.length + signature.s.length);
+        let sigarr = new Uint8Array(64);
         sigarr.set(signature.r);
-        sigarr.set(signature.s, signature.r.length);
+        sigarr.set(signature.s, 32);
         let sig = B58.toB58(sigarr);
         return sig;
     }
