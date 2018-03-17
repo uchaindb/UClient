@@ -356,7 +356,7 @@ export class ChainDbService extends EndpointFactory {
                 let hashContent = this.getDataTransactionHashContent(initiator, witness, actions, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateDataTransaction", [initiator, sig, witness, unlockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateDataTransaction", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
             });
     }
 
@@ -371,7 +371,7 @@ export class ChainDbService extends EndpointFactory {
                 let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateSchemaTransaction", [initiator, sig, witness, unlockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateSchemaTransaction", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
             });
     }
 
@@ -386,21 +386,24 @@ export class ChainDbService extends EndpointFactory {
                 let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets, unlockScripts);
                 let sig = this.signTransaction(privateKey, hashContent);
                 let as = targets.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateLockTransaction", [initiator, sig, witness, unlockScripts, lockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateLockTransaction", [initiator.toB58String(), sig, witness, unlockScripts, lockScripts, ...as]);
             });
     }
 
     private generateUnlockScriptsForDataTransaction(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<DataAction>): string {
+        if (!privateKey) return null;
         let hashContent = this.getDataTransactionHashContent(initiator, witness, actions);
         return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
     }
 
     private generateUnlockScriptsForSchemaTransaction(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<SchemaAction>): string {
+        if (!privateKey) return null;
         let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions);
         return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
     }
 
     private generateUnlockScriptsForLockTransaction(privateKey: PrivateKey, initiator: Address, witness: string, lockScripts: string, targets: Array<LockTarget>): string {
+        if (!privateKey) return null;
         let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets);
         return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
     }
@@ -478,7 +481,7 @@ export class ChainDbService extends EndpointFactory {
         '-32603': 'Internal error'
     };
 
-    rpcCall(url: string, method: ChainDbRpcMethod, params): Observable<any> {
+    rpcCall(url: string, method: ChainDbRpcMethod, params: Array<string | number>): Observable<any> {
         let jsonParams = {
             jsonrpc: '2.0',
             id: 1,//(new Date).getTime(),

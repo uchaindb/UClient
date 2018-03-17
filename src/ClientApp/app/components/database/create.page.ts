@@ -286,6 +286,7 @@ export class DatabaseCreatePage implements OnInit {
             this.router.navigate(['database', this.db.id]);
         };
         let errCallback = (_) => {
+            isDevMode() && console.error(_);
             this.alertService.showMessage(this.translations.errorSendTitle, this.translations.errorSendContent, MessageSeverity.error);
         };
 
