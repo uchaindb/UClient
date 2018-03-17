@@ -11,7 +11,7 @@ import { CryptographyService } from '../../services/cryptography.service';
 import { PrivateKeyService } from '../../services/private-key.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { DatabaseCreatePageFunction } from './create.page.function';
-import { KeyConfiguration } from '../../models/cryptography.model';
+import { KeyConfiguration, PublicKey } from '../../models/cryptography.model';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -413,9 +413,9 @@ export class DatabaseCreatePage implements OnInit {
         }
     }
 
-    insert(pubKey: string) {
+    insert(pubKey: PublicKey) {
         let area = this.lockScriptsTextBox.nativeElement;
-        let value = pubKey;
+        let value = pubKey.toB58String();
         if (area.selectionStart || area.selectionStart == '0') {
             var startPos = area.selectionStart;
             var endPos = area.selectionEnd;
