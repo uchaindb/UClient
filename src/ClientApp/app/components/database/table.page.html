@@ -42,5 +42,27 @@
     <div class="table-responsive">
         <database-table [table]="tableData"></database-table>
     </div>
+    <div class="panel-footer">
+        <!-- pager -->
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm pull-right">
+            <li [ngClass]="{disabled:pager.currentPage === 1}">
+                <a href="javascript:void(0)" (click)="setPage(1)">{{ 'db.table.pagination.First' | translate }}</a>
+            </li>
+            <li class="hidden-xs" [ngClass]="{disabled:pager.currentPage === 1}">
+                <a href="javascript:void(0)" (click)="setPage(pager.currentPage - 1)">{{ 'db.table.pagination.Previous' | translate }}</a>
+            </li>
+            <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                <a href="javascript:void(0)" (click)="setPage(page)">{{page}}</a>
+            </li>
+            <li class="hidden-xs" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a href="javascript:void(0)" (click)="setPage(pager.currentPage + 1)">{{ 'db.table.pagination.Next' | translate }}</a>
+            </li>
+            <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                <a href="javascript:void(0)" (click)="setPage(pager.totalPages)">{{ 'db.table.pagination.Last' | translate }}</a>
+            </li>
+        </ul>
+        &nbsp;<br />
+        &nbsp;
+    </div>
 </div>
 

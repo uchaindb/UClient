@@ -314,6 +314,7 @@ export interface ListTableSchema {
     Name: string;
     Headers: string[];
     History: HistoryEntry;
+    RecordCount: number;
 }
 
 export interface QueryChainRpcRequest extends RpcRequest {

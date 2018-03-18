@@ -406,6 +406,12 @@
         "ToggleMonitorAddedTitle": "已经开始此项监控",
         "ToggleMonitorRemovedContent": "",
         "ToggleMonitorRemovedTitle": "该项监控已撤除"
+      },
+      "pagination": {
+        "First": "首页",
+        "Last": "末页",
+        "Next": "»",
+        "Previous": "«"
       }
     }
   },

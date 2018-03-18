@@ -31,3 +31,15 @@ export class Pager {
         return `${this.sinceId}|${this.maxId}|${this.count}`;
     }
 }
+
+export type PaginationType = {
+    totalItems: number,
+    currentPage: number,
+    pageSize: number,
+    totalPages: number,
+    startPage: number,
+    endPage: number,
+    startIndex: number,
+    endIndex: number,
+    pages: number[],
+}

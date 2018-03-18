@@ -5,6 +5,8 @@ import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, RowDef, ColumnDef, TableData } from '../../models/chain-db.model';
 import { AlertConfiguration, AlertType } from '../../models/alert.model';
 import { AppTranslationService } from '../../services/app-translation.service';
+import { Utilities } from '../../services/utilities';
+import { PaginationType } from '../../models/pager.model';
 
 @Component({
     selector: 'database-table-page',
@@ -22,6 +24,11 @@ export class DatabaseTablePage implements OnInit {
     alertTableSchema: AlertType = "table-schema";
     alertTableData: AlertType = "table-data-modify";
     alertConfigs: Array<AlertConfiguration>;
+
+    pager: PaginationType = <any>{};
+    pagedItems: any[];
+    totalPage: number;
+    pageSize: number = 10;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -52,11 +59,12 @@ export class DatabaseTablePage implements OnInit {
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
-                        this.dataService.getChainDbTable(this.db, this.tid)
-                            .subscribe(_ => {
-                                this.tableData = _.data;
-                                this.refreshAlerts();
+                        this.dataService.getChainDbTableNames(this.db)
+                            .subscribe(o => {
+                                this.totalPage = o.Tables.find(t => t.Name == this.tid).RecordCount;
+                                this.setPage(1);
                             });
+                        this.refreshAlerts();
                     });
             },
             err => isDevMode() && console.error(err)
@@ -67,7 +75,7 @@ export class DatabaseTablePage implements OnInit {
         this.dataService.getAlertConfigList(this.db.id)
             .subscribe(_ => {
                 this.alertConfigs = _
-                    .filter(_ => _.dbid == this.db.id && _.tableName == this.tableData.tableName);
+                    .filter(_ => _.dbid == this.db.id && _.tableName == this.tid);
                 this.monitorSchema = this.alertConfigs.findIndex(_ => _.type == "table-schema") >= 0;
                 this.monitorData = this.alertConfigs.findIndex(_ => _.type == "table-data-modify") >= 0;
                 this.dataService.getDbList()
@@ -94,4 +102,16 @@ export class DatabaseTablePage implements OnInit {
         this.refreshAlerts();
     }
 
+    setPage(page: number) {
+        if (page < 1 || page > this.totalPage) {
+            return;
+        }
+
+        this.pager = Utilities.getPager(this.totalPage, page, this.pageSize);
+
+        this.dataService.getChainDbTable(this.db, this.tid, this.pager.startIndex, this.pager.pageSize)
+            .subscribe(_ => {
+                this.tableData = _.data;
+            });
+    }
 }

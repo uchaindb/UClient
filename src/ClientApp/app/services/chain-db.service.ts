@@ -250,8 +250,8 @@ export class ChainDbService extends EndpointFactory {
         return this.rpcCall(db.address, "ListTables", []);
     }
 
-    getChainDbTable(db: ChainDb, tableName: string): Observable<QueryTableResponse> {
-        return this.rpcCall(db.address, "QueryData", [tableName, 0, 100]).
+    getChainDbTable(db: ChainDb, tableName: string, start: number = 0, size: number = 100): Observable<QueryTableResponse> {
+        return this.rpcCall(db.address, "QueryData", [tableName, start, size]).
             map((_: QueryDataRpcResponse) => {
                 let dataHist = _.DataHistories;
                 let colHist = _.HeaderHistories;
