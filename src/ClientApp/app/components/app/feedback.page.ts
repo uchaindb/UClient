@@ -7,7 +7,7 @@ import { AppTranslationService, LoadingMessage } from "../../services/app-transl
 @Component({
     selector: 'feedback-page',
     templateUrl: './feedback.page.html',
-    styles: []
+    styleUrls: ['./feedback.page.css']
 })
 export class FeedbackPage implements OnInit {
 

@@ -35,6 +35,10 @@
   },
   "app": {
     "BrandTitle": "优链数据库",
+    "contact": {
+      "MailAndSiteSectionTitle": "邮箱 及 网站",
+      "WechatSectionTitle": "微信"
+    },
     "dialog": {
       "CancelLabel": "取消",
       "OkLabel": "确定"
