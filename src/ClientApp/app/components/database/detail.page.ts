@@ -7,6 +7,7 @@ import { AlertConfiguration } from '../../models/alert.model';
 import { NotificationService } from '../../services/notification.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { Observable } from 'rxjs';
+import { AlarmService } from '../../services/alarm.service';
 
 @Component({
     selector: 'database-detail',
@@ -47,6 +48,7 @@ export class DatabaseDetailPage implements OnInit {
         private alertService: AlertService,
         private notifyService: NotificationService,
         private translationService: AppTranslationService,
+        private alarmService: AlarmService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.detail.notification.ToggleMonitorRemovedTitle");
@@ -93,7 +95,7 @@ export class DatabaseDetailPage implements OnInit {
     }
 
     refreshAlerts() {
-        this.dataService.getAlertConfigList(this.db.id)
+        this.alarmService.getAlertConfigList(this.db.id)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.db.id);
@@ -108,10 +110,10 @@ export class DatabaseDetailPage implements OnInit {
     toggleMonitor() {
         let config = this.alertConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
         if (config) {
-            this.dataService.removeAlertConfig(config);
+            this.alarmService.removeAlertConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.dataService.addAlertConfig({
+            this.alarmService.addAlertConfig({
                 type: "chain-fork",
                 dbid: this.db.id,
             })
@@ -122,13 +124,13 @@ export class DatabaseDetailPage implements OnInit {
     }
 
     remove(alert: AlertConfiguration) {
-        this.dataService.removeAlertConfig(alert);
+        this.alarmService.removeAlertConfig(alert);
         this.alertService.showMessage(this.translations.alertListItemRemovedTitle, this.translations.alertListItemRemovedContent, MessageSeverity.success);
         this.refreshAlerts();
     }
 
     refreshAlertNotification() {
-        this.dataService.refreshAlerts()
+        this.alarmService.refreshAlerts()
             .subscribe(_ => {
                 this.alertService.showMessage(this.translations.manualRefreshAlertTitle, this.translations.manualRefreshAlertContent, MessageSeverity.success);
             });

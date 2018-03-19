@@ -7,6 +7,7 @@ import { AlertConfiguration, AlertType } from '../../models/alert.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { Utilities } from '../../services/utilities';
 import { PaginationType } from '../../models/pager.model';
+import { AlarmService } from '../../services/alarm.service';
 
 @Component({
     selector: 'database-table-page',
@@ -43,6 +44,7 @@ export class DatabaseTablePage implements OnInit {
         private router: Router,
         private alertService: AlertService,
         private translationService: AppTranslationService,
+        private alarmService: AlarmService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");
@@ -72,7 +74,7 @@ export class DatabaseTablePage implements OnInit {
     }
 
     refreshAlerts() {
-        this.dataService.getAlertConfigList(this.db.id)
+        this.alarmService.getAlertConfigList(this.db.id)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.db.id && _.tableName == this.tid);
@@ -88,10 +90,10 @@ export class DatabaseTablePage implements OnInit {
     toggleMonitor(type: AlertType) {
         let config = this.alertConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
         if (config) {
-            this.dataService.removeAlertConfig(config);
+            this.alarmService.removeAlertConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.dataService.addAlertConfig({
+            this.alarmService.addAlertConfig({
                 type: type,
                 dbid: this.db.id,
                 tableName: this.tableData.tableName,

@@ -5,6 +5,7 @@ import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, ColumnDef, CellDef, TableData } from '../../models/chain-db.model';
 import { AlertType, AlertConfiguration } from '../../models/alert.model';
 import { AppTranslationService } from '../../services/app-translation.service';
+import { AlarmService } from '../../services/alarm.service';
 
 @Component({
     selector: 'database-table',
@@ -43,6 +44,7 @@ export class DatabaseTableComponent implements OnInit {
         private router: Router,
         private alertService: AlertService,
         private translationService: AppTranslationService,
+        private alarmService: AlarmService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");
@@ -54,7 +56,7 @@ export class DatabaseTableComponent implements OnInit {
     ngOnInit() { }
 
     refreshAlerts() {
-        this.dataService.getAlertConfigList(this.table.dbid)
+        this.alarmService.getAlertConfigList(this.table.dbid)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.table.dbid && _.tableName == this.table.tableName);
@@ -79,10 +81,10 @@ export class DatabaseTableComponent implements OnInit {
                 && _.primaryKeyValue == pkval
             );
         if (config) {
-            this.dataService.removeAlertConfig(config);
+            this.alarmService.removeAlertConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.dataService.addAlertConfig({
+            this.alarmService.addAlertConfig({
                 type: type,
                 dbid: this.table.dbid,
                 tableName: this.table.tableName,

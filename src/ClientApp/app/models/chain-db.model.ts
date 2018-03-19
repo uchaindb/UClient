@@ -190,6 +190,16 @@ export type LockTarget = {
     ColumnName?: string,
 }
 
+export type ChainDbRpcMethod =
+    "Status" |
+    "CreateSchemaTransaction" |
+    "CreateDataTransaction" |
+    "CreateLockTransaction" |
+    "QueryData" |
+    "QueryChain" |
+    "QueryCell" |
+    "ListTables"
+    ;
 
 export type UInt256 = string;
 export class RpcRequest { }

@@ -12,6 +12,7 @@ import { WeixinService } from "../../services/weixin.service";
 import { AnalyticService } from "../../services/analytic.service";
 import { ChainDbService } from '../../services/chain-db.service';
 import { NotificationService } from '../../services/notification.service';
+import { AlarmService } from '../../services/alarm.service';
 
 @Component({
     selector: 'app',
@@ -60,6 +61,7 @@ export class AppComponent implements OnInit {
         private analyticService: AnalyticService,
         @Inject("ALERTIFY") private alertify,
         private chainDbService: ChainDbService,
+        private alarmService: AlarmService,
         private notificationService: NotificationService,
         @Inject(PLATFORM_ID) private platformId: string,
     ) {
@@ -155,7 +157,7 @@ export class AppComponent implements OnInit {
             this.intervalCheckAlert = window.setInterval(() => {
                 if (this.isCheckingAlert) return;
                 this.isCheckingAlert = true;
-                this.chainDbService.refreshAlerts()
+                this.alarmService.refreshAlerts()
                     .subscribe(_ => {
                         this.isCheckingAlert = false;
                     });

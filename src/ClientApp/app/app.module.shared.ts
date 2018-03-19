@@ -31,6 +31,7 @@ import { AuthService } from "./services/auth.service";
 import { LocalStoreManager } from "./services/local-store-manager.service";
 import { EndpointFactory } from "./services/endpoint-factory.service";
 import { AuthGuard } from "./services/auth-guard.service";
+import { AlarmService } from './services/alarm.service';
 
 import { ToastyModule } from 'ng2-toasty';
 import { BusyModule, BusyConfig } from 'angular2-busy';
@@ -146,6 +147,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         ChainDbService,
         CryptographyService,
         PrivateKeyService,
+        AlarmService,
     ],
 })
 export class AppModuleShared {
