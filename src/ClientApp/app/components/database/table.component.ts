@@ -3,7 +3,7 @@ import { ChainDbService } from '../../services/chain-db.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, ColumnDef, CellDef, TableData } from '../../models/chain-db.model';
-import { AlertType, AlertConfiguration } from '../../models/alert.model';
+import { AlarmType, AlarmConfiguration } from '../../models/alarm.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { AlarmService } from '../../services/alarm.service';
 
@@ -27,9 +27,9 @@ export class DatabaseTableComponent implements OnInit {
     monitorColumn: { [idx: string]: boolean };
     monitorCell: { [idx: string]: boolean };
 
-    alertColumnData: AlertType = "column-data-modify";
-    alertCellData: AlertType = "cell-data-modify";
-    alertConfigs: Array<AlertConfiguration>;
+    alertColumnData: AlarmType = "column-data-modify";
+    alertCellData: AlarmType = "cell-data-modify";
+    alertConfigs: Array<AlarmConfiguration>;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -56,7 +56,7 @@ export class DatabaseTableComponent implements OnInit {
     ngOnInit() { }
 
     refreshAlerts() {
-        this.alarmService.getAlertConfigList(this.table.dbid)
+        this.alarmService.getConfigList(this.table.dbid)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.table.dbid && _.tableName == this.table.tableName);
@@ -72,7 +72,7 @@ export class DatabaseTableComponent implements OnInit {
             });
     }
 
-    toggleMonitor(type: AlertType, colName: string, pkval: string = null) {
+    toggleMonitor(type: AlarmType, colName: string, pkval: string = null) {
         let config = this.alertConfigs
             .find(_ => _.type == type
                 && _.dbid == this.table.dbid
@@ -81,10 +81,10 @@ export class DatabaseTableComponent implements OnInit {
                 && _.primaryKeyValue == pkval
             );
         if (config) {
-            this.alarmService.removeAlertConfig(config);
+            this.alarmService.removeConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.alarmService.addAlertConfig({
+            this.alarmService.addConfig({
                 type: type,
                 dbid: this.table.dbid,
                 tableName: this.table.tableName,

@@ -3,7 +3,6 @@ import { ChainDb, Block, SchemaAction, DataAction, SchemaColumnDefinition, Schem
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
-import { AlertConfiguration } from '../../models/alert.model';
 import { NotificationService } from '../../services/notification.service';
 import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';

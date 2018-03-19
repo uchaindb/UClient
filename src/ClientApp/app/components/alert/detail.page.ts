@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
 import { AlertService, DialogType, MessageSeverity } from '../../services/alert.service';
-import { InboxNotification } from '../../models/alert.model';
+import { InboxNotification } from '../../models/alarm.model';
 import { ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { AppTranslationService } from '../../services/app-translation.service';
 
@@ -28,9 +28,9 @@ export class AlertDetailPage implements OnInit {
         private translationService: AppTranslationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
-        this.translations.dismissConfirmationMessage = gT("alert.detail.notification.DismissConfirmationMessage");
-        this.translations.alertDismissedContent = gT("alert.detail.notification.AlertDismissedContent");
-        this.translations.alertDismissedTitle = gT("alert.detail.notification.AlertDismissedTitle");
+        this.translations.dismissConfirmationMessage = gT("alarm.detail.notification.DismissConfirmationMessage");
+        this.translations.alertDismissedContent = gT("alarm.detail.notification.AlertDismissedContent");
+        this.translations.alertDismissedTitle = gT("alarm.detail.notification.AlertDismissedTitle");
     }
 
     ngOnInit() {

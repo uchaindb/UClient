@@ -4,7 +4,7 @@ import { ConfigurationService } from './configuration.service';
 import { LocalStoreManager } from './local-store-manager.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { InboxNotification, AlertConfiguration } from '../models/alert.model';
+import { InboxNotification, AlarmConfiguration } from '../models/alarm.model';
 import { Subject } from 'rxjs';
 import { AppTranslationService } from './app-translation.service';
 
@@ -25,7 +25,7 @@ export class NotificationService {
         private translationService: AppTranslationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
-        this.translations.senderName = gT("alert.service.SenderName");
+        this.translations.senderName = gT("alarm.service.SenderName");
     }
 
     getNotificationList(): Observable<Array<InboxNotification>> {
@@ -45,7 +45,7 @@ export class NotificationService {
         return Observable.of(n);
     }
 
-    createNotification(summary: string, origin: AlertConfiguration = null, sender: string = null): void {
+    createNotification(summary: string, origin: AlarmConfiguration = null, sender: string = null): void {
         sender = sender || this.translations.senderName;
         var nlist: Array<InboxNotification> = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST) || [];
         var id = '_' + Math.random().toString(36).substr(2, 9);

@@ -1,5 +1,5 @@
 ﻿<ol class="breadcrumb hidden-xs">
-    <li><a [routerLink]="['/alert']">{{ 'alert.nav.HomeLinkText' | translate }}</a></li>
+    <li><a [routerLink]="['/alert']">{{ 'alarm.nav.HomeLinkText' | translate }}</a></li>
     <li class="active">{{message.sender}}</li>
 </ol>
 
@@ -16,13 +16,13 @@
     <div class="panel-footer">
         &nbsp;
         <div class="pull-right">
-            <button type="button" class="btn btn-warning btn-xs" (click)="dismiss()">{{ 'alert.detail.DismissButtonText' | translate }}</button>
+            <button type="button" class="btn btn-warning btn-xs" (click)="dismiss()">{{ 'alarm.detail.DismissButtonText' | translate }}</button>
         </div>
     </div>
 </div>
 <div class="panel panel-success">
     <div class="panel-heading">
-        <b>{{ 'alert.detail.ConfigSectionTitle' | translate }}</b>
+        <b>{{ 'alarm.detail.ConfigSectionTitle' | translate }}</b>
     </div>
     <database-alert-list [configs]="[message.origin]" [showDelete]="false"></database-alert-list>
 </div>

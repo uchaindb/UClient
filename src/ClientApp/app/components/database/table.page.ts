@@ -3,7 +3,7 @@ import { ChainDbService } from '../../services/chain-db.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
 import { ChainDb, HistoryEntry, RowDef, ColumnDef, TableData } from '../../models/chain-db.model';
-import { AlertConfiguration, AlertType } from '../../models/alert.model';
+import { AlarmConfiguration, AlarmType } from '../../models/alarm.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { Utilities } from '../../services/utilities';
 import { PaginationType } from '../../models/pager.model';
@@ -22,9 +22,9 @@ export class DatabaseTablePage implements OnInit {
 
     monitorSchema: boolean;
     monitorData: boolean;
-    alertTableSchema: AlertType = "table-schema";
-    alertTableData: AlertType = "table-data-modify";
-    alertConfigs: Array<AlertConfiguration>;
+    alertTableSchema: AlarmType = "table-schema";
+    alertTableData: AlarmType = "table-data-modify";
+    alertConfigs: Array<AlarmConfiguration>;
 
     pager: PaginationType = <any>{};
     pagedItems: any[];
@@ -74,7 +74,7 @@ export class DatabaseTablePage implements OnInit {
     }
 
     refreshAlerts() {
-        this.alarmService.getAlertConfigList(this.db.id)
+        this.alarmService.getConfigList(this.db.id)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.db.id && _.tableName == this.tid);
@@ -87,13 +87,13 @@ export class DatabaseTablePage implements OnInit {
             });
     }
 
-    toggleMonitor(type: AlertType) {
+    toggleMonitor(type: AlarmType) {
         let config = this.alertConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
         if (config) {
-            this.alarmService.removeAlertConfig(config);
+            this.alarmService.removeConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.alarmService.addAlertConfig({
+            this.alarmService.addConfig({
                 type: type,
                 dbid: this.db.id,
                 tableName: this.tableData.tableName,

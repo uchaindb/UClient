@@ -1,15 +1,15 @@
 ﻿<div class="panel panel-default">
     <div class="panel-heading">
         <button type="button" class="close" (click)="markReadAll()"
-                title="{{ 'alert.list.MarkReadAllMessageButtonTitle' | translate }}">
+                title="{{ 'alarm.list.MarkReadAllMessageButtonTitle' | translate }}">
             <span class="glyphicon glyphicon-check"></span>
         </button>
         &nbsp;
         <button type="button" class="close" (click)="dismissAll()"
-                title="{{ 'alert.list.DismissAllMessageButtonTitle' | translate }}">
+                title="{{ 'alarm.list.DismissAllMessageButtonTitle' | translate }}">
             <span class="glyphicon glyphicon-fire"></span>
         </button>
-        {{ 'alert.list.ListPanelText' | translate }}
+        {{ 'alarm.list.ListPanelText' | translate }}
     </div>
     <div class="list-group">
         <a *ngFor="let message of messages" [routerLink]="['/alert', message.id]" class="list-group-item">
@@ -19,7 +19,7 @@
             <div class="media-body">
                 <h4 class="list-group-item-heading">
                     <ng-container *ngIf="message.read">{{message.sender}}</ng-container>
-                    <b *ngIf="!message.read">{{message.sender}} <span class="text-success">{{ 'alert.list.NewItemSuffixText' | translate }}</span></b>
+                    <b *ngIf="!message.read">{{message.sender}} <span class="text-success">{{ 'alarm.list.NewItemSuffixText' | translate }}</span></b>
                 </h4>
                 <p class="list-group-item-text" innerHtml="{{message.summary | newline}}" routeTransformer></p>
             </div>

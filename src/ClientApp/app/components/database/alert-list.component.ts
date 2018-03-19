@@ -3,7 +3,7 @@ import { ChainDb, Block } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
-import { AlertConfiguration } from '../../models/alert.model';
+import { AlarmConfiguration } from '../../models/alarm.model';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
@@ -12,9 +12,9 @@ import { NotificationService } from '../../services/notification.service';
     styles: [`.list-group {margin-bottom: 0px;}`],
 })
 export class DatabaseAlertListComponent implements OnInit {
-    @Input() configs: Array<AlertConfiguration>;
+    @Input() configs: Array<AlarmConfiguration>;
 
-    @Output() onDelete: EventEmitter<AlertConfiguration> = new EventEmitter<AlertConfiguration>();
+    @Output() onDelete: EventEmitter<AlarmConfiguration> = new EventEmitter<AlarmConfiguration>();
 
     @Input() showDb: boolean = true;
     @Input() showDelete: boolean = true;
@@ -40,7 +40,7 @@ export class DatabaseAlertListComponent implements OnInit {
     ngOnInit() {
     }
 
-    remove(alert: AlertConfiguration) {
+    remove(alert: AlarmConfiguration) {
         this.onDelete.emit(alert);
     }
 }

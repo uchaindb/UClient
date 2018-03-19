@@ -1,16 +1,16 @@
-﻿export type AlertType = "chain-fork" | "table-schema" | "table-data-modify" | "column-data-modify" | "cell-data-modify";
-export type AlertData = {
+﻿export type AlarmType = "chain-fork" | "table-schema" | "table-data-modify" | "column-data-modify" | "cell-data-modify";
+export type AlarmData = {
     lastBlockId?: string,
     lastBlockHeight?: number,
     lastTransactionId?: string,
 }
-export type AlertConfiguration = {
-    type: AlertType,
+export type AlarmConfiguration = {
+    type: AlarmType,
     dbid: string,
     tableName?: string,
     columnName?: string,
     primaryKeyValue?: string,
-    data?: AlertData,
+    data?: AlarmData,
 };
 
 export type InboxNotification = {
@@ -18,5 +18,5 @@ export type InboxNotification = {
     sender: string,
     summary?: string,
     read?: boolean,
-    origin?: AlertConfiguration,
+    origin?: AlarmConfiguration,
 };

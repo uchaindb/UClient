@@ -157,7 +157,7 @@ export class AppComponent implements OnInit {
             this.intervalCheckAlert = window.setInterval(() => {
                 if (this.isCheckingAlert) return;
                 this.isCheckingAlert = true;
-                this.alarmService.refreshAlerts()
+                this.alarmService.refresh()
                     .subscribe(_ => {
                         this.isCheckingAlert = false;
                     });

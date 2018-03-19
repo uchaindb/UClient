@@ -1,5 +1,5 @@
 {
-  "alert": {
+  "alarm": {
     "detail": {
       "ConfigSectionTitle": "对应警报配置",
       "DismissButtonText": "删除该消息",

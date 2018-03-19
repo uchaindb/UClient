@@ -3,7 +3,7 @@ import { ChainDb, Block } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
-import { AlertConfiguration } from '../../models/alert.model';
+import { AlarmConfiguration } from '../../models/alarm.model';
 import { NotificationService } from '../../services/notification.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { Observable } from 'rxjs';
@@ -21,7 +21,7 @@ export class DatabaseDetailPage implements OnInit {
     tables: Array<any>;
 
     monitor: boolean;
-    alertConfigs: Array<AlertConfiguration>;
+    alertConfigs: Array<AlarmConfiguration>;
 
     loading = false;
     loadError = false;
@@ -95,7 +95,7 @@ export class DatabaseDetailPage implements OnInit {
     }
 
     refreshAlerts() {
-        this.alarmService.getAlertConfigList(this.db.id)
+        this.alarmService.getConfigList(this.db.id)
             .subscribe(_ => {
                 this.alertConfigs = _
                     .filter(_ => _.dbid == this.db.id);
@@ -110,10 +110,10 @@ export class DatabaseDetailPage implements OnInit {
     toggleMonitor() {
         let config = this.alertConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
         if (config) {
-            this.alarmService.removeAlertConfig(config);
+            this.alarmService.removeConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
         } else {
-            this.alarmService.addAlertConfig({
+            this.alarmService.addConfig({
                 type: "chain-fork",
                 dbid: this.db.id,
             })
@@ -123,14 +123,14 @@ export class DatabaseDetailPage implements OnInit {
         this.refreshAlerts();
     }
 
-    remove(alert: AlertConfiguration) {
-        this.alarmService.removeAlertConfig(alert);
+    remove(alert: AlarmConfiguration) {
+        this.alarmService.removeConfig(alert);
         this.alertService.showMessage(this.translations.alertListItemRemovedTitle, this.translations.alertListItemRemovedContent, MessageSeverity.success);
         this.refreshAlerts();
     }
 
     refreshAlertNotification() {
-        this.alarmService.refreshAlerts()
+        this.alarmService.refresh()
             .subscribe(_ => {
                 this.alertService.showMessage(this.translations.manualRefreshAlertTitle, this.translations.manualRefreshAlertContent, MessageSeverity.success);
             });

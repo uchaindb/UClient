@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
 import { AlertService, DialogType, MessageSeverity } from '../../services/alert.service';
-import { InboxNotification } from '../../models/alert.model';
+import { InboxNotification } from '../../models/alarm.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
@@ -27,12 +27,12 @@ export class AlertListPage implements OnInit {
         private translationService: AppTranslationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
-        this.translations.dismissAllConfirmationMessage = gT("alert.list.notification.DismissAllConfirmationMessage");
-        this.translations.alertDismissedContent = gT("alert.list.notification.AlertDismissedContent");
-        this.translations.alertDismissedTitle = gT("alert.list.notification.AlertDismissedTitle");
-        this.translations.markReadAllConfirmationMessage = gT("alert.list.notification.MarkReadAllConfirmationMessage");
-        this.translations.alertMarkReadContent = gT("alert.list.notification.AlertMarkReadContent");
-        this.translations.alertMarkReadTitle = gT("alert.list.notification.AlertMarkReadTitle");
+        this.translations.dismissAllConfirmationMessage = gT("alarm.list.notification.DismissAllConfirmationMessage");
+        this.translations.alertDismissedContent = gT("alarm.list.notification.AlertDismissedContent");
+        this.translations.alertDismissedTitle = gT("alarm.list.notification.AlertDismissedTitle");
+        this.translations.markReadAllConfirmationMessage = gT("alarm.list.notification.MarkReadAllConfirmationMessage");
+        this.translations.alertMarkReadContent = gT("alarm.list.notification.AlertMarkReadContent");
+        this.translations.alertMarkReadTitle = gT("alarm.list.notification.AlertMarkReadTitle");
     }
 
     ngOnInit() {

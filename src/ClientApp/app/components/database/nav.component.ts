@@ -3,7 +3,6 @@ import { ChainDb, Block } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
-import { AlertConfiguration } from '../../models/alert.model';
 
 @Component({
     selector: 'database-nav',
