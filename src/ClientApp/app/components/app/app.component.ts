@@ -43,8 +43,8 @@ export class AppComponent implements OnInit {
         defaultTitle?: string
         defaultDescription?: string
     } = {};
-    intervalCheckAlert: number;
-    isCheckingAlert = false;
+    intervalCheckAlarm: number;
+    isCheckingAlarm = false;
 
     constructor(private location: Location,
         titleService: Title,
@@ -103,8 +103,8 @@ export class AppComponent implements OnInit {
             "db.Table": gT('app.title.db.Table'),
             "db.Cell": gT('app.title.db.Cell'),
             "db.Chain": gT('app.title.db.Chain'),
-            "alert.List": gT('app.title.alert.List'),
-            "alert.Detail": gT('app.title.alert.Detail'),
+            "alarm.List": gT('app.title.alarm.List'),
+            "alarm.Detail": gT('app.title.alarm.Detail'),
             "Login": gT('app.title.Login'),
         }
         this.inWeixin = this.wxService.isInWeiXin();
@@ -154,12 +154,12 @@ export class AppComponent implements OnInit {
         });
 
         if (isPlatformBrowser(this.platformId)) {
-            this.intervalCheckAlert = window.setInterval(() => {
-                if (this.isCheckingAlert) return;
-                this.isCheckingAlert = true;
+            this.intervalCheckAlarm = window.setInterval(() => {
+                if (this.isCheckingAlarm) return;
+                this.isCheckingAlarm = true;
                 this.alarmService.refresh()
                     .subscribe(_ => {
-                        this.isCheckingAlert = false;
+                        this.isCheckingAlarm = false;
                     });
             }, 60 * 1000);
 
@@ -172,8 +172,8 @@ export class AppComponent implements OnInit {
     }
 
     ngOnDestroy() {
-        if (this.intervalCheckAlert) {
-            clearInterval(this.intervalCheckAlert);
+        if (this.intervalCheckAlarm) {
+            clearInterval(this.intervalCheckAlarm);
         }
     }
 

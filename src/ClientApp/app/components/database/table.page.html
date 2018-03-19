@@ -1,13 +1,13 @@
 ﻿<database-nav [dbid]="db.id" [dbname]="db.name" [current]="tableData?.tableName"></database-nav>
 <div class="panel panel-success">
     <div class="panel-heading">
-        <button *ngIf="false" type="button" class="close" (click)="toggleMonitor(alertTableData)"
+        <button *ngIf="false" type="button" class="close" (click)="toggleMonitor(alarmTableData)"
                 title="{{ 'db.table.MonitorTableDataTooltip' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorData"
                   [class.glyphicon-star]="monitorData"></span>
         </button>
-        <button type="button" class="close" (click)="toggleMonitor(alertTableSchema)"
+        <button type="button" class="close" (click)="toggleMonitor(alarmTableSchema)"
                 title="{{ 'db.table.MonitorTableSchemaTooltip' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorSchema"

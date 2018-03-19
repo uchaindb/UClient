@@ -19,7 +19,7 @@ export class DatabaseTableComponent implements OnInit {
     @Input() set table(value: TableData) {
         if (!value) return;
         this._table = value;
-        this.refreshAlerts();
+        this.refreshAlarms();
     }
 
     @Input() highlightColumn: string;
@@ -27,9 +27,9 @@ export class DatabaseTableComponent implements OnInit {
     monitorColumn: { [idx: string]: boolean };
     monitorCell: { [idx: string]: boolean };
 
-    alertColumnData: AlarmType = "column-data-modify";
-    alertCellData: AlarmType = "cell-data-modify";
-    alertConfigs: Array<AlarmConfiguration>;
+    alarmColumnData: AlarmType = "column-data-modify";
+    alarmCellData: AlarmType = "cell-data-modify";
+    alarmConfigs: Array<AlarmConfiguration>;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -55,25 +55,25 @@ export class DatabaseTableComponent implements OnInit {
 
     ngOnInit() { }
 
-    refreshAlerts() {
+    refreshAlarms() {
         this.alarmService.getConfigList(this.table.dbid)
             .subscribe(_ => {
-                this.alertConfigs = _
+                this.alarmConfigs = _
                     .filter(_ => _.dbid == this.table.dbid && _.tableName == this.table.tableName);
-                this.monitorColumn = this.alertConfigs.filter(_ => _.type == this.alertColumnData)
+                this.monitorColumn = this.alarmConfigs.filter(_ => _.type == this.alarmColumnData)
                     .reduce((obj, item) => { obj[item.columnName] = true; return obj; }, {});
-                this.monitorCell = this.alertConfigs.filter(_ => _.type == this.alertCellData)
+                this.monitorCell = this.alarmConfigs.filter(_ => _.type == this.alarmCellData)
                     .reduce((obj, item) => { obj[item.columnName + '-|-' + item.primaryKeyValue] = true; return obj; }, {});
 
                 this.dataService.getDbList()
                     .subscribe(_ => {
-                        this.alertConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
+                        this.alarmConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
                     });
             });
     }
 
     toggleMonitor(type: AlarmType, colName: string, pkval: string = null) {
-        let config = this.alertConfigs
+        let config = this.alarmConfigs
             .find(_ => _.type == type
                 && _.dbid == this.table.dbid
                 && _.tableName == this.table.tableName
@@ -94,7 +94,7 @@ export class DatabaseTableComponent implements OnInit {
             this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
-        this.refreshAlerts();
+        this.refreshAlarms();
     }
 
 

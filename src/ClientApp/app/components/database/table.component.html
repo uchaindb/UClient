@@ -7,7 +7,7 @@
                     {{col.name}}
                 </a>
                 <span *ngIf="col.name == table.pkname" class="label label-primary">{{ 'db.table.PkSuffix' | translate }}</span>
-                <button *ngIf="false" type="button" class="watch" (click)="toggleMonitor(alertColumnData, col.name)"
+                <button *ngIf="false" type="button" class="watch" (click)="toggleMonitor(alarmColumnData, col.name)"
                         title="{{ 'db.table.ColumnMonitorTooltip' | translate }}">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorColumn[col.name]"
@@ -43,7 +43,7 @@
                         <i class="text-muted">{{ 'db.table.EmptyCellText' | translate }}</i>
                     </ng-container>
                 </a>
-                <button type="button" class="watch" (click)="toggleMonitor(alertCellData, cell.name, cell.pkval)"
+                <button type="button" class="watch" (click)="toggleMonitor(alarmCellData, cell.name, cell.pkval)"
                         title="{{ 'db.table.CellMonitorTooltip' | translate }}">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorCell[cell.name + '-|-' + cell.pkval]"

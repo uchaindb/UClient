@@ -5,20 +5,20 @@ import { InboxNotification } from '../../models/alarm.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
-    selector: 'alert-list-page',
+    selector: 'alarm-list-page',
     templateUrl: './list.page.html',
     styleUrls: ['./common.css']
 })
-export class AlertListPage implements OnInit {
+export class AlarmListPage implements OnInit {
 
     messages: Array<InboxNotification>;
     translations: {
         dismissAllConfirmationMessage?: string,
-        alertDismissedTitle?: string,
-        alertDismissedContent?: string,
+        alarmDismissedTitle?: string,
+        alarmDismissedContent?: string,
         markReadAllConfirmationMessage?: string,
-        alertMarkReadTitle?: string,
-        alertMarkReadContent?: string,
+        alarmMarkReadTitle?: string,
+        alarmMarkReadContent?: string,
     } = {};
 
     constructor(
@@ -28,11 +28,11 @@ export class AlertListPage implements OnInit {
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.dismissAllConfirmationMessage = gT("alarm.list.notification.DismissAllConfirmationMessage");
-        this.translations.alertDismissedContent = gT("alarm.list.notification.AlertDismissedContent");
-        this.translations.alertDismissedTitle = gT("alarm.list.notification.AlertDismissedTitle");
+        this.translations.alarmDismissedContent = gT("alarm.list.notification.AlarmDismissedContent");
+        this.translations.alarmDismissedTitle = gT("alarm.list.notification.AlarmDismissedTitle");
         this.translations.markReadAllConfirmationMessage = gT("alarm.list.notification.MarkReadAllConfirmationMessage");
-        this.translations.alertMarkReadContent = gT("alarm.list.notification.AlertMarkReadContent");
-        this.translations.alertMarkReadTitle = gT("alarm.list.notification.AlertMarkReadTitle");
+        this.translations.alarmMarkReadContent = gT("alarm.list.notification.AlarmMarkReadContent");
+        this.translations.alarmMarkReadTitle = gT("alarm.list.notification.AlarmMarkReadTitle");
     }
 
     ngOnInit() {
@@ -52,7 +52,7 @@ export class AlertListPage implements OnInit {
                     this.refresh();
                 });
 
-            this.alertService.showMessage(this.translations.alertMarkReadTitle, this.translations.alertMarkReadContent, MessageSeverity.success);
+            this.alertService.showMessage(this.translations.alarmMarkReadTitle, this.translations.alarmMarkReadContent, MessageSeverity.success);
         });
     }
 
@@ -63,7 +63,7 @@ export class AlertListPage implements OnInit {
                     list.forEach(_ => this.notifyService.removeNotification(_.id));
                     this.refresh();
                 });
-            this.alertService.showMessage(this.translations.alertDismissedTitle, this.translations.alertDismissedContent, MessageSeverity.success);
+            this.alertService.showMessage(this.translations.alarmDismissedTitle, this.translations.alarmDismissedContent, MessageSeverity.success);
         });
     }
 }

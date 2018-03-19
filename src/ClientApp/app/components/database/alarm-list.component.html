@@ -1,0 +1,43 @@
+﻿<ul class="list-group">
+    <li *ngFor="let alarm of configs" class="list-group-item">
+        <button *ngIf="showDelete" type="button" (click)="remove(alarm)" class="pull-right btn btn-primary btn-xs">{{ 'db.alarm.RemoveButtonText' | translate }}</button>
+        <ng-container [ngSwitch]="alarm.type">
+            <ng-template [ngSwitchCase]="'chain-fork'">
+                <span class="glyphicon glyphicon-random"></span>
+                &nbsp;<span innerHtml="{{ 'db.alarm.detail.ChainFork' | translate }}"></span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'table-schema'">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                &nbsp;<span innerHtml="{{ 'db.alarm.detail.TableSchema' | translate }}"></span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'table-data-modify'">
+                <span class="glyphicon glyphicon-list"></span>
+                &nbsp;<span innerHtml="{{ 'db.alarm.detail.TableDataModify' | translate }}"></span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'column-data-modify'">
+                <span class="glyphicon glyphicon-option-vertical"></span>
+                &nbsp;<span innerHtml="{{ 'db.alarm.detail.ColumnDataModify' | translate }}"></span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'cell-data-modify'">
+                <span class="glyphicon glyphicon-unchecked"></span>
+                &nbsp;<span innerHtml="{{ 'db.alarm.detail.CellDataModify' | translate }}"></span>
+            </ng-template>
+        </ng-container>
+        <ul class="alarm-detail-list">
+            <li *ngIf="dblist && dblist[alarm.dbid] && showDb">
+                {{ 'db.alarm.detail.DatabaseName' | translate }}
+                <mark><a [routerLink]="['/database', alarm.dbid]">{{dblist[alarm.dbid]}}</a></mark>
+            </li>
+            <li *ngIf="alarm.tableName">
+                {{ 'db.alarm.detail.TableName' | translate }}
+                <mark><a [routerLink]="['/database', alarm.dbid, 'table', alarm.tableName]">{{alarm.tableName}}</a></mark>
+            </li>
+            <li *ngIf="alarm.columnName">
+                {{ 'db.alarm.detail.ColumnName' | translate }} <mark>{{alarm.columnName}}</mark>
+            </li>
+            <li *ngIf="alarm.primaryKeyValue">
+                {{ 'db.alarm.detail.PrimaryKeyValue' | translate }} <mark>{{alarm.primaryKeyValue}}</mark>
+            </li>
+        </ul>
+    </li>
+</ul>

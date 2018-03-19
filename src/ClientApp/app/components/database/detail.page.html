@@ -66,7 +66,7 @@
                     </div>
                 </ng-container>
                 <p>
-                    <button type="button" (click)="refreshAlertNotification()" class="btn btn-primary pull-right">Refresh</button>
+                    <button type="button" (click)="refreshAlarmNotification()" class="btn btn-primary pull-right">Refresh</button>
                 </p>
             </div>
         </ng-container>
@@ -98,7 +98,7 @@
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ 'db.detail.AlertListTitle' | translate }}</h3>
+        <h3 class="panel-title">{{ 'db.detail.AlarmListTitle' | translate }}</h3>
     </div>
-    <database-alert-list [configs]="alertConfigs" [showDb]="false" (onDelete)="remove($event)"></database-alert-list>
+    <database-alarm-list [configs]="alarmConfigs" [showDb]="false" (onDelete)="remove($event)"></database-alarm-list>
 </div>

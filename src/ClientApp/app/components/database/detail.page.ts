@@ -21,7 +21,7 @@ export class DatabaseDetailPage implements OnInit {
     tables: Array<any>;
 
     monitor: boolean;
-    alertConfigs: Array<AlarmConfiguration>;
+    alarmConfigs: Array<AlarmConfiguration>;
 
     loading = false;
     loadError = false;
@@ -31,10 +31,10 @@ export class DatabaseDetailPage implements OnInit {
         toggleMonitorRemovedContent?: string,
         toggleMonitorAddedTitle?: string,
         toggleMonitorAddedContent?: string,
-        alertListItemRemovedTitle?: string,
-        alertListItemRemovedContent?: string,
-        manualRefreshAlertTitle?: string,
-        manualRefreshAlertContent?: string,
+        alarmListItemRemovedTitle?: string,
+        alarmListItemRemovedContent?: string,
+        manualRefreshAlarmTitle?: string,
+        manualRefreshAlarmContent?: string,
         toggleEditModeOnTitle?: string,
         toggleEditModeOnContent?: string,
         toggleEditModeOffTitle?: string,
@@ -55,10 +55,10 @@ export class DatabaseDetailPage implements OnInit {
         this.translations.toggleMonitorRemovedContent = gT("db.detail.notification.ToggleMonitorRemovedContent");
         this.translations.toggleMonitorAddedTitle = gT("db.detail.notification.ToggleMonitorAddedTitle");
         this.translations.toggleMonitorAddedContent = gT("db.detail.notification.ToggleMonitorAddedContent");
-        this.translations.alertListItemRemovedTitle = gT("db.detail.notification.AlertListItemRemovedTitle");
-        this.translations.alertListItemRemovedContent = gT("db.detail.notification.AlertListItemRemovedContent");
-        this.translations.manualRefreshAlertTitle = gT("db.detail.notification.ManualRefreshAlertTitle");
-        this.translations.manualRefreshAlertContent = gT("db.detail.notification.ManualRefreshAlertContent");
+        this.translations.alarmListItemRemovedTitle = gT("db.detail.notification.AlarmListItemRemovedTitle");
+        this.translations.alarmListItemRemovedContent = gT("db.detail.notification.AlarmListItemRemovedContent");
+        this.translations.manualRefreshAlarmTitle = gT("db.detail.notification.ManualRefreshAlarmTitle");
+        this.translations.manualRefreshAlarmContent = gT("db.detail.notification.ManualRefreshAlarmContent");
         this.translations.toggleEditModeOffTitle = gT("db.detail.notification.ToggleEditModeOffTitle");
         this.translations.toggleEditModeOffContent = gT("db.detail.notification.ToggleEditModeOffContent");
         this.translations.toggleEditModeOnTitle = gT("db.detail.notification.ToggleEditModeOnTitle");
@@ -90,25 +90,25 @@ export class DatabaseDetailPage implements OnInit {
                                 this.loading = false;
                             }, errCallback);
                     });
-                this.refreshAlerts();
+                this.refreshAlarms();
             }, errCallback);
     }
 
-    refreshAlerts() {
+    refreshAlarms() {
         this.alarmService.getConfigList(this.db.id)
             .subscribe(_ => {
-                this.alertConfigs = _
+                this.alarmConfigs = _
                     .filter(_ => _.dbid == this.db.id);
-                this.monitor = this.alertConfigs.findIndex(_ => _.type == "chain-fork") >= 0;
+                this.monitor = this.alarmConfigs.findIndex(_ => _.type == "chain-fork") >= 0;
                 this.dataService.getDbList()
                     .subscribe(_ => {
-                        this.alertConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
+                        this.alarmConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
                     });
             });
     }
 
     toggleMonitor() {
-        let config = this.alertConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
+        let config = this.alarmConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
         if (config) {
             this.alarmService.removeConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
@@ -120,19 +120,19 @@ export class DatabaseDetailPage implements OnInit {
             this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
-        this.refreshAlerts();
+        this.refreshAlarms();
     }
 
-    remove(alert: AlarmConfiguration) {
-        this.alarmService.removeConfig(alert);
-        this.alertService.showMessage(this.translations.alertListItemRemovedTitle, this.translations.alertListItemRemovedContent, MessageSeverity.success);
-        this.refreshAlerts();
+    remove(alarm: AlarmConfiguration) {
+        this.alarmService.removeConfig(alarm);
+        this.alertService.showMessage(this.translations.alarmListItemRemovedTitle, this.translations.alarmListItemRemovedContent, MessageSeverity.success);
+        this.refreshAlarms();
     }
 
-    refreshAlertNotification() {
+    refreshAlarmNotification() {
         this.alarmService.refresh()
             .subscribe(_ => {
-                this.alertService.showMessage(this.translations.manualRefreshAlertTitle, this.translations.manualRefreshAlertContent, MessageSeverity.success);
+                this.alertService.showMessage(this.translations.manualRefreshAlarmTitle, this.translations.manualRefreshAlarmContent, MessageSeverity.success);
             });
     }
 

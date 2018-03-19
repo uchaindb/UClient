@@ -22,9 +22,9 @@ export class DatabaseTablePage implements OnInit {
 
     monitorSchema: boolean;
     monitorData: boolean;
-    alertTableSchema: AlarmType = "table-schema";
-    alertTableData: AlarmType = "table-data-modify";
-    alertConfigs: Array<AlarmConfiguration>;
+    alarmTableSchema: AlarmType = "table-schema";
+    alarmTableData: AlarmType = "table-data-modify";
+    alarmConfigs: Array<AlarmConfiguration>;
 
     pager: PaginationType = <any>{};
     pagedItems: any[];
@@ -66,29 +66,29 @@ export class DatabaseTablePage implements OnInit {
                                 this.totalPage = o.Tables.find(t => t.Name == this.tid).RecordCount;
                                 this.setPage(1);
                             });
-                        this.refreshAlerts();
+                        this.refreshAlarms();
                     });
             },
             err => isDevMode() && console.error(err)
             );
     }
 
-    refreshAlerts() {
+    refreshAlarms() {
         this.alarmService.getConfigList(this.db.id)
             .subscribe(_ => {
-                this.alertConfigs = _
+                this.alarmConfigs = _
                     .filter(_ => _.dbid == this.db.id && _.tableName == this.tid);
-                this.monitorSchema = this.alertConfigs.findIndex(_ => _.type == "table-schema") >= 0;
-                this.monitorData = this.alertConfigs.findIndex(_ => _.type == "table-data-modify") >= 0;
+                this.monitorSchema = this.alarmConfigs.findIndex(_ => _.type == "table-schema") >= 0;
+                this.monitorData = this.alarmConfigs.findIndex(_ => _.type == "table-data-modify") >= 0;
                 this.dataService.getDbList()
                     .subscribe(_ => {
-                        this.alertConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
+                        this.alarmConfigs.forEach(a => (<any>a).dbname = _.find(d => d.id == a.dbid).name);
                     });
             });
     }
 
     toggleMonitor(type: AlarmType) {
-        let config = this.alertConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
+        let config = this.alarmConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
         if (config) {
             this.alarmService.removeConfig(config);
             this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
@@ -101,7 +101,7 @@ export class DatabaseTablePage implements OnInit {
             this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
         }
 
-        this.refreshAlerts();
+        this.refreshAlarms();
     }
 
     setPage(page: number) {

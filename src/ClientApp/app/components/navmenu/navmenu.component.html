@@ -23,9 +23,9 @@
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
-                <a [routerLink]="['/alert']">
+                <a [routerLink]="['/alarm']">
                     <i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i>
-                    {{ 'app.nav.desktop.AlertTitle' | translate }}
+                    {{ 'app.nav.desktop.AlarmTitle' | translate }}
                 </a>
             </li>
             <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">

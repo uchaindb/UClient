@@ -7,11 +7,11 @@ import { AlarmConfiguration } from '../../models/alarm.model';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-    selector: 'database-alert-list',
-    templateUrl: './alert-list.component.html',
+    selector: 'database-alarm-list',
+    templateUrl: './alarm-list.component.html',
     styles: [`.list-group {margin-bottom: 0px;}`],
 })
-export class DatabaseAlertListComponent implements OnInit {
+export class DatabaseAlarmListComponent implements OnInit {
     @Input() configs: Array<AlarmConfiguration>;
 
     @Output() onDelete: EventEmitter<AlarmConfiguration> = new EventEmitter<AlarmConfiguration>();
@@ -40,7 +40,7 @@ export class DatabaseAlertListComponent implements OnInit {
     ngOnInit() {
     }
 
-    remove(alert: AlarmConfiguration) {
-        this.onDelete.emit(alert);
+    remove(alarm: AlarmConfiguration) {
+        this.onDelete.emit(alarm);
     }
 }

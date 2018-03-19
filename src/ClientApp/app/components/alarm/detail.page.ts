@@ -6,18 +6,18 @@ import { ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { AppTranslationService } from '../../services/app-translation.service';
 
 @Component({
-    selector: 'alert-list-page',
+    selector: 'alarm-list-page',
     templateUrl: './detail.page.html',
     styleUrls: ['./common.css']
 })
-export class AlertDetailPage implements OnInit {
+export class AlarmDetailPage implements OnInit {
 
     id: string;
     message: InboxNotification;
     translations: {
         dismissConfirmationMessage?: string,
-        alertDismissedTitle?: string,
-        alertDismissedContent?: string,
+        alarmDismissedTitle?: string,
+        alarmDismissedContent?: string,
     } = {};
 
     constructor(
@@ -29,8 +29,8 @@ export class AlertDetailPage implements OnInit {
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.dismissConfirmationMessage = gT("alarm.detail.notification.DismissConfirmationMessage");
-        this.translations.alertDismissedContent = gT("alarm.detail.notification.AlertDismissedContent");
-        this.translations.alertDismissedTitle = gT("alarm.detail.notification.AlertDismissedTitle");
+        this.translations.alarmDismissedContent = gT("alarm.detail.notification.AlarmDismissedContent");
+        this.translations.alarmDismissedTitle = gT("alarm.detail.notification.AlarmDismissedTitle");
     }
 
     ngOnInit() {
@@ -45,8 +45,8 @@ export class AlertDetailPage implements OnInit {
     dismiss() {
         this.alertService.showDialog(this.translations.dismissConfirmationMessage, DialogType.confirm, _ => {
             this.notifyService.removeNotification(this.id);
-            this.alertService.showMessage(this.translations.alertDismissedTitle, this.translations.alertDismissedContent, MessageSeverity.success);
-            this.router.navigate(["/alert"]);
+            this.alertService.showMessage(this.translations.alarmDismissedTitle, this.translations.alarmDismissedContent, MessageSeverity.success);
+            this.router.navigate(["/alarm"]);
         });
     }
 

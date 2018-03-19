@@ -1,5 +1,5 @@
 ﻿<ol class="breadcrumb hidden-xs">
-    <li><a [routerLink]="['/alert']">{{ 'alarm.nav.HomeLinkText' | translate }}</a></li>
+    <li><a [routerLink]="['/alarm']">{{ 'alarm.nav.HomeLinkText' | translate }}</a></li>
     <li class="active">{{message.sender}}</li>
 </ol>
 
@@ -24,5 +24,5 @@
     <div class="panel-heading">
         <b>{{ 'alarm.detail.ConfigSectionTitle' | translate }}</b>
     </div>
-    <database-alert-list [configs]="[message.origin]" [showDelete]="false"></database-alert-list>
+    <database-alarm-list [configs]="[message.origin]" [showDelete]="false"></database-alarm-list>
 </div>

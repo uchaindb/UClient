@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { MobileNavMenuComponent } from "./components/navmenu/mobile-navmenu.component";
-import { AlertListPage } from "./components/alert/list.page";
-import { AlertDetailPage } from "./components/alert/detail.page";
+import { AlarmListPage } from "./components/alarm/list.page";
+import { AlarmDetailPage } from "./components/alarm/detail.page";
 import { UserMenuPage } from "./components/user/menu.page";
 import { LoginPage } from "./components/user/login.page";
 import { DiscoverPage } from "./components/app/discover.page";
@@ -51,7 +51,7 @@ import { CryptographyService } from './services/cryptography.service';
 import { DatabaseActionComponent } from './components/database/action.component';
 import { DatabaseNavComponent } from './components/database/nav.component';
 import { KeyManagePage } from './components/user/key.page';
-import { DatabaseAlertListComponent } from './components/database/alert-list.component';
+import { DatabaseAlarmListComponent } from './components/database/alarm-list.component';
 import { DatabaseCreatePage } from './components/database/create.page';
 import { PrivateKeyService } from './services/private-key.service';
 import { RouteTransformerDirective } from './directives/route-transformer.directive';
@@ -63,8 +63,8 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         AppComponent,
         NavMenuComponent,
         MobileNavMenuComponent,
-        AlertListPage,
-        AlertDetailPage,
+        AlarmListPage,
+        AlarmDetailPage,
         DiscoverPage,
         ArticlePage,
         UserMenuPage,
@@ -83,7 +83,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         KeyManagePage,
         HtmlModalComponent,
         DatabaseActionComponent,
-        DatabaseAlertListComponent,
+        DatabaseAlarmListComponent,
         OnlyNumberDirective,
         NewlinePipe,
         HashBeautyPipe,
@@ -107,8 +107,8 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
             { path: 'database/:dbid/table/:tid', component: DatabaseTablePage, canActivate: [AuthGuard], data: { title: "db.Table", } },
             { path: 'database/:dbid/table/:tid/cell/:pk/:col', component: DatabaseCellPage, canActivate: [AuthGuard], data: { title: "db.Cell", } },
             { path: 'database/:dbid/chain/:id', component: DatabaseChainPage, canActivate: [AuthGuard], data: { title: "db.Chain", } },
-            { path: 'alert', component: AlertListPage, canActivate: [AuthGuard], data: { title: "alert.List", backlink: false, } },
-            { path: 'alert/:id', component: AlertDetailPage, canActivate: [AuthGuard], data: { title: "alert.Detail", } },
+            { path: 'alarm', component: AlarmListPage, canActivate: [AuthGuard], data: { title: "alarm.List", backlink: false, } },
+            { path: 'alarm/:id', component: AlarmDetailPage, canActivate: [AuthGuard], data: { title: "alarm.Detail", } },
             { path: 'user', component: UserMenuPage, canActivate: [AuthGuard], data: { title: "me.Menu", backlink: false } },
             { path: 'user/keys', component: KeyManagePage, canActivate: [AuthGuard], data: { title: "me.Keys" } },
             { path: 'login', component: LoginPage, data: { title: "Login" } },

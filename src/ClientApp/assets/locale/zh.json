@@ -4,8 +4,8 @@
       "ConfigSectionTitle": "对应警报配置",
       "DismissButtonText": "删除该消息",
       "notification": {
-        "AlertDismissedContent": "",
-        "AlertDismissedTitle": "该条消息已经成功删除",
+        "AlarmDismissedContent": "",
+        "AlarmDismissedTitle": "该条消息已经成功删除",
         "DismissConfirmationMessage": "是否确定要彻底删除该条消息？"
       }
     },
@@ -15,10 +15,10 @@
       "MarkReadAllMessageButtonTitle": "将所有消息标记为已读",
       "NewItemSuffixText": "【新】",
       "notification": {
-        "AlertDismissedContent": "",
-        "AlertDismissedTitle": "所有消息删除成功",
-        "AlertMarkReadContent": "",
-        "AlertMarkReadTitle": "所有消息已经成功标记为已读",
+        "AlarmDismissedContent": "",
+        "AlarmDismissedTitle": "所有消息删除成功",
+        "AlarmMarkReadContent": "",
+        "AlarmMarkReadTitle": "所有消息已经成功标记为已读",
         "DismissAllConfirmationMessage": "是否要删除所有的消息？（此步骤不可撤销）",
         "MarkReadAllConfirmationMessage": "是否要将所有消息设为已读？（此步骤不可撤销）"
       }
@@ -48,14 +48,14 @@
     },
     "nav": {
       "desktop": {
-        "AlertTitle": "消息",
+        "AlarmTitle": "消息",
         "DatabaseTitle": "链库",
         "DiscoverTitle": "发现",
         "LoginTitle": "登陆",
         "PersonalTitle": "个人"
       },
       "mobile": {
-        "AlertTitle": "消息",
+        "AlarmTitle": "消息",
         "DatabaseTitle": "链库",
         "DiscoverTitle": "发现",
         "PersonalTitle": "个人"
@@ -75,7 +75,7 @@
       "Default": "优链数据库",
       "Discover": "发现",
       "Login": "登陆",
-      "alert": {
+      "alarm": {
         "Detail": "消息内容",
         "List": "消息列表"
       },
@@ -121,7 +121,7 @@
         "ManualAddEmptyAddressTitle": "数据有错"
       }
     },
-    "alert": {
+    "alarm": {
       "RemoveButtonText": "取消监控",
       "detail": {
         "CellDataModify": "监控 <b>单元格的<abbr title='数据修改详解'>数据修改</abbr></b>",
@@ -342,7 +342,7 @@
     },
     "detail": {
       "Address": "远端地址：",
-      "AlertListTitle": "报警列表",
+      "AlarmListTitle": "报警列表",
       "BasicInfoTitle": "基本信息",
       "CreateTransactionButton": "创建事务",
       "DatabaseToggleButtonTitle": "监控数据库的硬分叉",
@@ -356,10 +356,10 @@
       "SwitchToEditModeButtonText": "开启修改模式",
       "TablesTitle": "数据表",
       "notification": {
-        "AlertListItemRemovedContent": "",
-        "AlertListItemRemovedTitle": "该项监控已被成功删除",
-        "ManualRefreshAlertContent": "",
-        "ManualRefreshAlertTitle": "成功完成手动刷新",
+        "AlarmListItemRemovedContent": "",
+        "AlarmListItemRemovedTitle": "该项监控已被成功删除",
+        "ManualRefreshAlarmContent": "",
+        "ManualRefreshAlarmTitle": "成功完成手动刷新",
         "ToggleEditModeOffContent": "",
         "ToggleEditModeOffTitle": "已经关闭修改模式",
         "ToggleEditModeOnContent": "",

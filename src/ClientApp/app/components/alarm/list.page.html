@@ -12,7 +12,7 @@
         {{ 'alarm.list.ListPanelText' | translate }}
     </div>
     <div class="list-group">
-        <a *ngFor="let message of messages" [routerLink]="['/alert', message.id]" class="list-group-item">
+        <a *ngFor="let message of messages" [routerLink]="['/alarm', message.id]" class="list-group-item">
             <div class="media-left">
                 <span class="media-object glyphicon glyphicon-bell" style="font-size: 48px;"></span>
             </div>
