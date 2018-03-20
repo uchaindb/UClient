@@ -89,19 +89,18 @@ export class DatabaseTablePage implements OnInit {
 
     toggleMonitor(type: AlarmType) {
         let config = this.alarmConfigs.find(_ => _.type == type && _.dbid == this.db.id && _.tableName == this.tableData.tableName);
-        if (config) {
-            this.alarmService.removeConfig(config);
-            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
-        } else {
-            this.alarmService.addConfig({
+        let obs = config
+            ? this.alarmService.removeConfig(config)
+                .map(() => this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success))
+            : this.alarmService.addConfig({
                 type: type,
                 dbid: this.db.id,
                 tableName: this.tableData.tableName,
-            })
-            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
-        }
+            }).map(() => this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success));
 
-        this.refreshAlarms();
+        obs.subscribe(() => {
+            this.refreshAlarms();
+        });
     }
 
     setPage(page: number) {

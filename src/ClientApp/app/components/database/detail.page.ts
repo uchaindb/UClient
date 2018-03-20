@@ -109,18 +109,17 @@ export class DatabaseDetailPage implements OnInit {
 
     toggleMonitor() {
         let config = this.alarmConfigs.find(_ => _.type == "chain-fork" && _.dbid == this.db.id);
-        if (config) {
-            this.alarmService.removeConfig(config);
-            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
-        } else {
-            this.alarmService.addConfig({
+        let obs = config
+            ? this.alarmService.removeConfig(config)
+                .map(() => this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success))
+            : this.alarmService.addConfig({
                 type: "chain-fork",
                 dbid: this.db.id,
-            })
-            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
-        }
+            }).map(() => this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success));
 
-        this.refreshAlarms();
+        obs.subscribe(() => {
+            this.refreshAlarms();
+        });
     }
 
     remove(alarm: AlarmConfiguration) {

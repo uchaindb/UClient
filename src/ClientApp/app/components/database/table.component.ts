@@ -80,22 +80,20 @@ export class DatabaseTableComponent implements OnInit {
                 && _.columnName == colName
                 && _.primaryKeyValue == pkval
             );
-        if (config) {
-            this.alarmService.removeConfig(config);
-            this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success);
-        } else {
-            this.alarmService.addConfig({
+
+        let obs = config
+            ? this.alarmService.removeConfig(config)
+                .map(() => this.alertService.showMessage(this.translations.toggleMonitorRemovedTitle, this.translations.toggleMonitorRemovedContent, MessageSeverity.success))
+            : this.alarmService.addConfig({
                 type: type,
                 dbid: this.table.dbid,
                 tableName: this.table.tableName,
                 columnName: colName,
                 primaryKeyValue: pkval,
-            })
-            this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success);
-        }
+            }).map(() => this.alertService.showMessage(this.translations.toggleMonitorAddedTitle, this.translations.toggleMonitorAddedContent, MessageSeverity.success));
 
-        this.refreshAlarms();
+        obs.subscribe(() => {
+            this.refreshAlarms();
+        });
     }
-
-
 }

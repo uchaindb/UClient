@@ -10,7 +10,10 @@ import { NotificationService } from './notification.service';
 import { AlarmConfiguration } from '../models/alarm.model';
 import { AppTranslationService } from './app-translation.service';
 import { ChainDbService } from './chain-db.service';
-import { ListTablesRpcResponse } from '../models/chain-db.model';
+import { ListTablesRpcResponse, ChainDb, StatusRpcResponse } from '../models/chain-db.model';
+import { observableToBeFn } from 'rxjs/testing/TestScheduler';
+import { observeOn } from 'rxjs/operator/observeOn';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Injectable()
 export class AlarmService {
@@ -40,6 +43,16 @@ export class AlarmService {
         return this.localStoreManager.getData(AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS) as Array<AlarmConfiguration> || [];
     }
 
+    private findAlarmIndexInList(arr: Array<AlarmConfiguration>, alarm: AlarmConfiguration) {
+        return arr.findIndex(
+            (_) => _.type == alarm.type
+                && _.tableName == alarm.tableName
+                && _.columnName == alarm.columnName
+                && _.dbid == alarm.dbid
+                && _.primaryKeyValue == alarm.primaryKeyValue
+        );
+    }
+
     getConfigList(dbid: string): Observable<Array<AlarmConfiguration>> {
         var list = this.getSavedList();
         var dblist = list.filter(_ => _.dbid == dbid);
@@ -47,116 +60,154 @@ export class AlarmService {
         return Observable.of(dblist);
     }
 
-    addConfig(config: AlarmConfiguration): void {
-        var list = this.getSavedList();
-        list.push(config);
-        this.localStoreManager.savePermanentData(list, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
+    addConfig(config: AlarmConfiguration): Observable<AlarmConfiguration> {
+        return this.generateNotification([config])
+            .map((array) => {
+                var updatedConfig = array[0];
+                var list = this.getSavedList();
+                var index = this.findAlarmIndexInList(list, config);
+                if (index == -1) {
+                    list.push(updatedConfig);
+                    this.localStoreManager.savePermanentData(list, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
+                }
+
+                return updatedConfig;
+            });
     }
 
-    removeConfig(config: AlarmConfiguration): void {
+    removeConfig(config: AlarmConfiguration): Observable<AlarmConfiguration> {
         var list = this.getSavedList();
-        var idx = list
-            .findIndex(_ => _.type == config.type
-                && _.dbid == config.dbid
-                && _.tableName == config.tableName
-                && _.columnName == config.columnName
-                && _.primaryKeyValue == config.primaryKeyValue
-            );
-        list.splice(idx, 1);
+        var idx = this.findAlarmIndexInList(list, config);
+        var removedConfig = list.splice(idx, 1)[0];
         this.localStoreManager.savePermanentData(list, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
+        return Observable.of(removedConfig);
     }
 
     refresh(): Observable<boolean> {
         var list = this.getSavedList();
-        let obsList = list
-            .map(_ => this.generateNotification(_));
+        return this.generateNotification(list)
+            .map(_ => {
+                this.localStoreManager.savePermanentData(_, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
+                return true;
+            });
+    }
 
+    private generateNotification(alarms: Array<AlarmConfiguration>): Observable<Array<AlarmConfiguration>> {
+        var dbArray = alarms
+            .map(_ => _.dbid)
+            .filter((v, i, a) => a.indexOf(v) === i);
+        for (var i = 0; i < dbArray.length; i++) {
+            let dbid = dbArray[i];
+        }
+
+        let obsList = dbArray
+            .map(dbid => this.chainService.getChainDb(dbid)
+                .map(db => this.chainService.getChainDbStatus(db)
+                    .map(sts => {
+                        var als = alarms.filter(_ => _.dbid == dbid);
+                        var alobsList: Array<Observable<AlarmConfiguration>> = [];
+                        for (var i = 0; i < als.length; i++) {
+                            let alarm = als[i];
+                            if (alarm.data && alarm.data.lastBlockId && sts.Tail.Hash == alarm.data.lastBlockId) {
+                                alobsList.push(Observable.of(alarm));
+                                break;
+                            }
+
+                            if (alarm.type == "chain-fork") {
+                                alobsList.push(this.updateChainForkAlarm(alarm, db, sts));
+                            } else if (alarm.type == "table-schema") {
+                                alobsList.push(this.updateTableSchemaAlarm(alarm, db, sts));
+                            } else if (alarm.type == "table-data-modify") {
+                                // TODO: consider once again how this function implemented
+                            } else if (alarm.type == "column-data-modify") {
+                                // TODO: consider once again if this type is needed
+                            } else if (alarm.type == "cell-data-modify") {
+                                alobsList.push(this.updateCellDataModifyAlarm(alarm, db, sts));
+                            }
+                            else {
+                                alobsList.push(Observable.empty<AlarmConfiguration>());
+                            }
+                        }
+                        return Observable.forkJoin(alobsList);
+                    })
+                    .concatAll()
+                )
+                .concatAll()
+
+            );
         return Observable.forkJoin(obsList)
             .map(_ => {
-                this.localStoreManager.savePermanentData(list, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
-                return true;
+                //return [].concat.apply([], _);
+                return _.reduce((a, b) => a.concat(b), []);
             });
 
     }
 
-    private generateNotification(alarm: AlarmConfiguration): Observable<any> {
-        return this.chainService.getChainDb(alarm.dbid)
-            .map(db => {
-                let result: Observable<any> = Observable.of({});
-
-                if (alarm.type == "chain-fork") {
-                    // detect change if data exist
-                    if (alarm.data && alarm.data.lastBlockId) {
-                        result = result.concat(
-                            this.chainService.getQueryChain(db, alarm.data.lastBlockId)
-                                .map(resp => {
-                                    //console.log("detecting change", resp, alarm.data);
-                                    if (!(resp.Block && resp.Block.Hash == alarm.data.lastBlockId && resp.Block.Height == alarm.data.lastBlockHeight)) {
-                                        this.notificationService.createNotification(this.translations.chainForkMessage(db), alarm);
-                                    }
-                                }));
+    private updateChainForkAlarm(alarm: AlarmConfiguration, db: ChainDb, sts: StatusRpcResponse): Observable<AlarmConfiguration> {
+        let result: Observable<any> = Observable.empty();
+        // detect change if data exist
+        if (alarm.data && alarm.data.lastBlockId) {
+            result = result.concat(this.chainService.getQueryChain(db, alarm.data.lastBlockId)
+                .map(resp => {
+                    //console.log("detecting change", resp, alarm.data);
+                    if (!(resp.Block && resp.Block.Hash == alarm.data.lastBlockId && resp.Block.Height == alarm.data.lastBlockHeight)) {
+                        this.notificationService.createNotification(this.translations.chainForkMessage(db), alarm);
                     }
+                }));
+        }
+        // update data using fresh server data
+        alarm.data = { lastBlockHeight: sts.Tail.Height, lastBlockId: sts.Tail.Hash };
+        result = result.concat(Observable.of(alarm));
+        return result;
+    }
 
-                    // update data using fresh server data
-                    result = result.concat(this.chainService.getChainDbStatus(db)
-                        .map(sts => {
-                            alarm.data = { lastBlockHeight: sts.Tail.Height, lastBlockId: sts.Tail.Hash };
-                            //console.log("update data", sts);
-                        }));
-                } else if (alarm.type == "table-schema") {
-                    let query = this.chainService.getChainDbTableNames(db)
-                        .map((resp: ListTablesRpcResponse) => resp.Tables.filter(_ => _.Name == alarm.tableName)[0]);
-                    // detect change if data exist
-                    if (alarm.data && alarm.data.lastTransactionId) {
-                        query = query
-                            .map(table => {
-                                if (!table) return null;
-                                if (table.History.TransactionHash != alarm.data.lastTransactionId) {
-                                    let data = Object.assign({}, alarm, table);
-                                    this.notificationService.createNotification(this.translations.tableSchemaMessage(data), alarm);
-                                }
-                                //console.log("generate noti.. from data", table);
-                                return table;
-                            });
+    private updateTableSchemaAlarm(alarm: AlarmConfiguration, db: ChainDb, sts: StatusRpcResponse): Observable<AlarmConfiguration> {
+        let query: Observable<any> = this.chainService.getChainDbTableNames(db)
+            .map((resp: ListTablesRpcResponse) => resp.Tables.filter(_ => _.Name == alarm.tableName)[0]);
+        // detect change if data exist
+        if (alarm.data && alarm.data.lastTransactionId) {
+            query = query
+                .map(table => {
+                    if (!table)
+                        return null;
+                    if (table.History.TransactionHash != alarm.data.lastTransactionId) {
+                        let data = Object.assign({}, alarm, table);
+                        this.notificationService.createNotification(this.translations.tableSchemaMessage(data), alarm);
                     }
+                    //console.log("generate noti.. from data", table);
+                    return table;
+                });
+        }
+        // update data using fresh server data
+        query = query.map(table => {
+            if (!table)
+                return null;
+            //console.log("update data", table);
+            alarm.data = { lastTransactionId: table.History.TransactionHash, lastBlockId: sts.Tail.Hash };
+            return alarm;
+        });
+        return query;
+    }
 
-                    // update data using fresh server data
-                    query = query.map(table => {
-                        if (!table) return null;
-                        //console.log("update data", table);
-                        alarm.data = { lastTransactionId: table.History.TransactionHash };
-                        return table;
-                    })
-                    result = result.concat(query);
-                } else if (alarm.type == "table-data-modify") {
-                    // TODO: consider once again how this function implemented
-                } else if (alarm.type == "column-data-modify") {
-                    // TODO: consider once again if this type is needed
-                } else if (alarm.type == "cell-data-modify") {
-                    let query = this.chainService.getQueryCell(db, alarm.tableName, alarm.primaryKeyValue, alarm.columnName, [alarm.columnName])
-                        .map(_ => _.transactions.slice(-1)[0].Hash);
-                    // detect change if data exist
-                    if (alarm.data && alarm.data.lastTransactionId) {
-                        query = query
-                            .map(hash => {
-                                if (hash != alarm.data.lastTransactionId) {
-                                    let data = Object.assign({ hash: hash }, alarm);
-                                    this.notificationService.createNotification(this.translations.cellDataModifyMessage(data), alarm);
-                                }
-                                return hash;
-                            });
+    private updateCellDataModifyAlarm(alarm: AlarmConfiguration, db: ChainDb, sts: StatusRpcResponse): Observable<AlarmConfiguration> {
+        let query: Observable<any> = this.chainService.getQueryCell(db, alarm.tableName, alarm.primaryKeyValue, alarm.columnName, [alarm.columnName])
+            .map(_ => _.transactions.slice(-1)[0].Hash);
+        // detect change if data exist
+        if (alarm.data && alarm.data.lastTransactionId) {
+            query = query
+                .map(hash => {
+                    if (hash != alarm.data.lastTransactionId) {
+                        let data = Object.assign({ hash: hash }, alarm);
+                        this.notificationService.createNotification(this.translations.cellDataModifyMessage(data), alarm);
                     }
-
-                    // update data using fresh server data
-                    query = query.map(hash => {
-                        alarm.data = { lastTransactionId: hash };
-                        return hash;
-                    })
-                    result = result.concat(query);
-                }
-
-                return result;
-            })
-            .concatAll();
+                    return hash;
+                });
+        }
+        // update data using fresh server data
+        query = query.map(hash => {
+            alarm.data = { lastTransactionId: hash, lastBlockId: sts.Tail.Hash };
+            return alarm;
+        });
+        return query;
     }
 }
