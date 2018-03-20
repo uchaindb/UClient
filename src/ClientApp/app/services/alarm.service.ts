@@ -18,6 +18,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 @Injectable()
 export class AlarmService {
     public static readonly DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS = "alarm_config";
+    public static readonly DBKEY_CHAIN_DB_ALARM_LAST_REFRESH_TIME = "alarm_refresh_time";
 
     translations: {
         chainForkMessage?: any,
@@ -88,8 +89,14 @@ export class AlarmService {
         return this.generateNotification(list)
             .map(_ => {
                 this.localStoreManager.savePermanentData(_, AlarmService.DBKEY_CHAIN_DB_ALARM_CONFIGURATIONS);
+                this.localStoreManager.savePermanentData(Date.now(), AlarmService.DBKEY_CHAIN_DB_ALARM_LAST_REFRESH_TIME);
                 return true;
             });
+    }
+
+    getLastRefreshTime(): Date {
+        var lastRefreshTimeStr = this.localStoreManager.getData(AlarmService.DBKEY_CHAIN_DB_ALARM_LAST_REFRESH_TIME);
+        return lastRefreshTimeStr ? new Date(lastRefreshTimeStr) : null;
     }
 
     private generateNotification(alarms: Array<AlarmConfiguration>): Observable<Array<AlarmConfiguration>> {

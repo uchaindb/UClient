@@ -65,9 +65,6 @@
                         </button>
                     </div>
                 </ng-container>
-                <p>
-                    <button type="button" (click)="refreshAlarmNotification()" class="btn btn-primary pull-right">Refresh</button>
-                </p>
             </div>
         </ng-container>
     </div>
@@ -98,6 +95,9 @@
 
 <div class="panel panel-primary">
     <div class="panel-heading">
+        <span *ngIf="refreshTime" class="pull-right">
+            <small>{{ 'db.detail.LastRefreshTimeLeadText' | translate }} {{ refreshTime | date: "yyyy-MM-dd HH:mm:ss" }}</small>
+        </span>
         <h3 class="panel-title">{{ 'db.detail.AlarmListTitle' | translate }}</h3>
     </div>
     <database-alarm-list [configs]="alarmConfigs" [showDb]="false" (onDelete)="remove($event)"></database-alarm-list>

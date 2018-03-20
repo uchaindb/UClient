@@ -22,9 +22,12 @@ export class DatabaseDetailPage implements OnInit {
 
     monitor: boolean;
     alarmConfigs: Array<AlarmConfiguration>;
+    refreshTime: Date;
 
     loading = false;
     loadError = false;
+
+    intervalCheckLastAlarmTime: number;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -67,6 +70,15 @@ export class DatabaseDetailPage implements OnInit {
 
     ngOnInit() {
         this.refresh();
+        this.intervalCheckLastAlarmTime = window.setInterval(() => {
+            this.refreshTime = this.alarmService.getLastRefreshTime();
+        }, 1 * 1000);
+    }
+
+    ngOnDestroy() {
+        if (this.intervalCheckLastAlarmTime) {
+            clearInterval(this.intervalCheckLastAlarmTime);
+        }
     }
 
     refresh() {
