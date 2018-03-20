@@ -11,6 +11,7 @@ import { PrivateKeyService } from '../../services/private-key.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { DatabaseCreatePageFunction } from './create.page.function';
 import { KeyConfiguration, PublicKey } from '../../models/cryptography.model';
+import { DatabaseCreatePageTranslationType, DatabaseCreatePageTranslation, DatabaseCreatePagePermissionListType } from './create.page.translation';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -38,11 +39,6 @@ export type LockTargetCreationType = {
     pkval?: string
     col?: string
 };
-export type PermissionCheckBoxType = {
-    value: LockPermissionEnum,
-    name: string,
-    desc: string,
-};
 
 @Component({
     selector: 'database-create',
@@ -69,7 +65,6 @@ export class DatabaseCreatePage implements OnInit {
     inputPrivateKey: string;
     lockScripts: string;
     keyList: Array<KeyConfiguration>;
-    permissionList: Array<PermissionCheckBoxType>;
     enableUnlockScripts = false;
     selectedUnlockKey: string;
 
@@ -120,24 +115,9 @@ export class DatabaseCreatePage implements OnInit {
         },
     }, this.baseActionDef);
 
-    translations: {
-        dataActionExceedsMessage?: string,
-        schemaActionExceedsMessage?: string,
-        lockTargetExceedsMessage?: string,
-        lackPrivateKeyTitle?: string,
-        lackPrivateKeyContent?: string,
-        successSendTitle?: string,
-        successSendContent?: string,
-        errorSendTitle?: string,
-        errorSendContent?: string,
-        unknownTransactionTypeTitle?: string,
-        unknownTransactionTypeContent?: string,
-        gotoCodeConfirmation?: string,
-        gotoGuiConfirmation?: string,
-        exampleOverwrittenConfirmation?: string,
-        parseCodeExceptionMessage?: string,
-        forbidSubmitInCodeModeMessage?: string,
-    } = {};
+    translations: DatabaseCreatePageTranslationType = {};
+    permissionList: DatabaseCreatePagePermissionListType;
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
@@ -148,33 +128,8 @@ export class DatabaseCreatePage implements OnInit {
         private privateKeyService: PrivateKeyService,
         private translationService: AppTranslationService,
     ) {
-        let gT = (key: string) => this.translationService.getTranslation(key);
-        this.translations.dataActionExceedsMessage = gT("db.create.notification.DataActionExceedsMessage");
-        this.translations.schemaActionExceedsMessage = gT("db.create.notification.SchemaActionExceedsMessage");
-        this.translations.lockTargetExceedsMessage = gT("db.create.notification.LockTargetExceedsMessage");
-        this.translations.lackPrivateKeyTitle = gT("db.create.notification.LackPrivateKeyTitle");
-        this.translations.lackPrivateKeyContent = gT("db.create.notification.LackPrivateKeyContent");
-        this.translations.successSendTitle = gT("db.create.notification.SuccessSendTitle");
-        this.translations.successSendContent = gT("db.create.notification.SuccessSendContent");
-        this.translations.errorSendTitle = gT("db.create.notification.ErrorSendTitle");
-        this.translations.errorSendContent = gT("db.create.notification.ErrorSendContent");
-        this.translations.unknownTransactionTypeTitle = gT("db.create.notification.UnknownTransactionTypeTitle");
-        this.translations.unknownTransactionTypeContent = gT("db.create.notification.UnknownTransactionTypeContent");
-        this.translations.gotoCodeConfirmation = gT("db.create.notification.GotoCodeConfirmation");
-        this.translations.gotoGuiConfirmation = gT("db.create.notification.GotoGuiConfirmation");
-        this.translations.exampleOverwrittenConfirmation = gT("db.create.notification.ExampleOverwrittenConfirmation");
-        this.translations.parseCodeExceptionMessage = gT("db.create.notification.ParseCodeExceptionMessage");
-        this.translations.forbidSubmitInCodeModeMessage = gT("db.create.notification.ForbidSubmitInCodeModeMessage");
-
-        this.permissionList = [
-            { value: "None", name: gT("db.create.lock.permission.None"), desc: gT("db.create.lock.permissionDesc.None") },
-            { value: "ReadOnly", name: gT("db.create.lock.permission.ReadOnly"), desc: gT("db.create.lock.permissionDesc.ReadOnly") },
-            { value: "Insert", name: gT("db.create.lock.permission.Insert"), desc: gT("db.create.lock.permissionDesc.Insert") },
-            { value: "Update", name: gT("db.create.lock.permission.Update"), desc: gT("db.create.lock.permissionDesc.Update") },
-            { value: "Delete", name: gT("db.create.lock.permission.Delete"), desc: gT("db.create.lock.permissionDesc.Delete") },
-            { value: "AlterLock", name: gT("db.create.lock.permission.AlterLock"), desc: gT("db.create.lock.permissionDesc.AlterLock") },
-            { value: "AlterSchema", name: gT("db.create.lock.permission.AlterSchema"), desc: gT("db.create.lock.permissionDesc.AlterSchema") },
-        ];
+        this.translations = DatabaseCreatePageTranslation.getTranslations(this.translationService);
+        this.permissionList = DatabaseCreatePageTranslation.getPermissionList(this.translationService); 
     }
 
     ngOnInit() {
