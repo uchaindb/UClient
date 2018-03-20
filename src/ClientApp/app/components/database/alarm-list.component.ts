@@ -20,6 +20,7 @@ export class DatabaseAlarmListComponent implements OnInit {
     @Input() showDelete: boolean = true;
 
     dblist: { [index: string]: string } = {};
+    showDebugInfo = isDevMode();
 
     constructor(
         private dataService: ChainDbService,

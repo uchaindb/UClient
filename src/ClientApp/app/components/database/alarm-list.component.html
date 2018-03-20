@@ -39,5 +39,6 @@
                 {{ 'db.alarm.detail.PrimaryKeyValue' | translate }} <mark>{{alarm.primaryKeyValue}}</mark>
             </li>
         </ul>
+        <div *ngIf="showDebugInfo"><code>{{alarm.data | json}}</code></div>
     </li>
 </ul>
