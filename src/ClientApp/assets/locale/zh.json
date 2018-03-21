@@ -327,7 +327,28 @@
         "ModifyAction": "修改动作",
         "TableNameLabel": "数据表名",
         "TableNamePlaceholder": "填写数据表名...",
-        "TypeLabel": "动作类型"
+        "TypeLabel": "动作类型",
+        "table": {
+          "columns": {
+            "IsPk": "主键",
+            "Name": "列名",
+            "Type": "类型"
+          },
+          "text": {
+            "AddButtonContent": "添加",
+            "CancelButtonContent": "取消",
+            "ColumnTitle": "",
+            "CreateButtonContent": "创建",
+            "DeleteButtonContent": "删除",
+            "EditButtonContent": "编辑",
+            "NoDataMessage": "尚无数据",
+            "SaveButtonContent": "保存"
+          },
+          "type": {
+            "Number": "数字类型",
+            "String": "文本类型"
+          }
+        }
       },
       "unlock": {
         "TabManualTitle": "手动编写脚本",

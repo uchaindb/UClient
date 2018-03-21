@@ -70,50 +70,11 @@ export class DatabaseCreatePage implements OnInit {
 
     @ViewChild('lockScriptsTextBox') lockScriptsTextBox: ElementRef;
 
-    baseActionDef = {
-        filter: { inputClass: "hidden" },
-        attr: { class: "table table-bordered table-reset" },
-    };
-
-
     dataActionColumns = {};
-    updateDropSchemaActionDef = Object.assign({
-        columns: {
-            name: {
-                title: 'Name'
-            },
-        },
-    }, this.baseActionDef);
-    updateModifySchemaActionDef = Object.assign({
-        columns: {
-            name: {
-                title: 'Name'
-            },
-            type: {
-                title: 'Type',
-                editor: { type: 'list', config: { list: [{ value: "string", title: "string" }, { value: "number", title: "number" }] } }
-            },
-            ispk: {
-                title: 'IsPK',
-                editor: { type: 'checkbox' }
-            },
-        },
-    }, this.baseActionDef);
-    createSchemaActionDef = Object.assign({
-        columns: {
-            name: {
-                title: 'Name'
-            },
-            type: {
-                title: 'Type',
-                editor: { type: 'list', config: { list: [{ value: "string", title: "string" }, { value: "number", title: "number" }] } }
-            },
-            ispk: {
-                title: 'IsPK',
-                editor: { type: 'checkbox' }
-            },
-        },
-    }, this.baseActionDef);
+
+    updateDropSchemaActionDef: any;
+    updateModifySchemaActionDef : any;
+    createSchemaActionDef : any;
 
     translations: DatabaseCreatePageTranslationType = {};
     permissionList: DatabaseCreatePagePermissionListType;
@@ -130,6 +91,10 @@ export class DatabaseCreatePage implements OnInit {
     ) {
         this.translations = DatabaseCreatePageTranslation.getTranslations(this.translationService);
         this.permissionList = DatabaseCreatePageTranslation.getPermissionList(this.translationService); 
+        let defs = DatabaseCreatePageTranslation.getActionDefinitions(this.translationService);
+        this.updateDropSchemaActionDef = defs.updateDropSchemaActionDef;
+        this.updateModifySchemaActionDef = defs.updateModifySchemaActionDef;
+        this.createSchemaActionDef = defs.createSchemaActionDef;
     }
 
     ngOnInit() {

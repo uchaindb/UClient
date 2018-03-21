@@ -66,4 +66,70 @@ export class DatabaseCreatePageTranslation {
 
         return permissionList;
     }
+
+    static getActionDefinitions(translationService: AppTranslationService) {
+        let gT = (key: string) => translationService.getTranslation(key);
+        let baseActionDef = {
+            filter: { inputClass: "hidden" },
+            attr: { class: "table table-bordered table-reset" },
+            edit: {
+                editButtonContent: gT("db.create.schema.table.text.EditButtonContent"),
+                saveButtonContent: gT("db.create.schema.table.text.SaveButtonContent"),
+                cancelButtonContent: gT("db.create.schema.table.text.CancelButtonContent"),
+            },
+            add: {
+                addButtonContent: gT("db.create.schema.table.text.AddButtonContent"),
+                createButtonContent: gT("db.create.schema.table.text.CreateButtonContent"),
+                cancelButtonContent: gT("db.create.schema.table.text.CancelButtonContent"),
+            },
+            delete: {
+                deleteButtonContent: gT("db.create.schema.table.text.DeleteButtonContent"),
+            },
+            actions: {
+                columnTitle: gT("db.create.schema.table.text.ColumnTitle"),
+            },
+            noDataMessage: gT("db.create.schema.table.text.NoDataMessage"),
+        };
+        let updateDropSchemaActionDef = Object.assign({
+            columns: {
+                name: {
+                    title: gT("db.create.schema.table.columns.Name")
+                },
+            },
+        }, baseActionDef);
+        let schemaBaseActionDef = Object.assign({
+            columns: {
+                name: {
+                    title: gT("db.create.schema.table.columns.Name")
+                },
+                type: {
+                    title: gT("db.create.schema.table.columns.Type"),
+                    editor: {
+                        type: 'list', config: {
+                            list: [
+                                {
+                                    value: "string",
+                                    title: gT("db.create.schema.table.type.String"),
+                                }, {
+                                    value: "number",
+                                    title: gT("db.create.schema.table.type.Number"),
+                                }]
+                        }
+                    }
+                },
+                ispk: {
+                    title: gT("db.create.schema.table.columns.IsPk"),
+                    editor: { type: 'checkbox' }
+                },
+            },
+        }, baseActionDef);
+        let updateModifySchemaActionDef = Object.assign({}, schemaBaseActionDef);
+        let createSchemaActionDef = Object.assign({}, schemaBaseActionDef);
+
+        return {
+            updateDropSchemaActionDef: updateDropSchemaActionDef,
+            updateModifySchemaActionDef: updateModifySchemaActionDef,
+            createSchemaActionDef: createSchemaActionDef,
+        };
+    }
 }
