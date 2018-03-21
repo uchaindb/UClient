@@ -10,7 +10,7 @@ import { CryptographyService } from '../../services/cryptography.service';
 import { PrivateKeyService } from '../../services/private-key.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { DatabaseCreatePageFunction } from './create.page.function';
-import { KeyConfiguration, PublicKey } from '../../models/cryptography.model';
+import { KeyConfiguration, PublicKey, PrivateKey } from '../../models/cryptography.model';
 import { DatabaseCreatePageTranslationType, DatabaseCreatePageTranslation, DatabaseCreatePagePermissionListType } from './create.page.translation';
 
 export type TransactionType = "schema" | "data" | "lock";
@@ -73,8 +73,8 @@ export class DatabaseCreatePage implements OnInit {
     dataActionColumns = {};
 
     updateDropSchemaActionDef: any;
-    updateModifySchemaActionDef : any;
-    createSchemaActionDef : any;
+    updateModifySchemaActionDef: any;
+    createSchemaActionDef: any;
 
     translations: DatabaseCreatePageTranslationType = {};
     permissionList: DatabaseCreatePagePermissionListType;
@@ -90,7 +90,7 @@ export class DatabaseCreatePage implements OnInit {
         private translationService: AppTranslationService,
     ) {
         this.translations = DatabaseCreatePageTranslation.getTranslations(this.translationService);
-        this.permissionList = DatabaseCreatePageTranslation.getPermissionList(this.translationService); 
+        this.permissionList = DatabaseCreatePageTranslation.getPermissionList(this.translationService);
         let defs = DatabaseCreatePageTranslation.getActionDefinitions(this.translationService);
         this.updateDropSchemaActionDef = defs.updateDropSchemaActionDef;
         this.updateModifySchemaActionDef = defs.updateModifySchemaActionDef;
@@ -168,16 +168,10 @@ export class DatabaseCreatePage implements OnInit {
         }
     }
 
-    getPrivateKey() {
-        let privKey;
-        if (this.selectedPrivateKey == "import") {
-            privKey = this.inputPrivateKey;
-        }
-        else {
-            privKey = this.privateKeyService.getPrivateKeyDirectly(this.selectedPrivateKey);
-        }
-
-        return privKey;
+    getPrivateKey(): PrivateKey {
+        return this.selectedPrivateKey == "import"
+            ? PrivateKey.Parse(this.inputPrivateKey)
+            : this.privateKeyService.getPrivateKeyDirectly(this.selectedPrivateKey);
     }
 
     submit() {
