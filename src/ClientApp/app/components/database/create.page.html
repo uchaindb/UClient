@@ -179,22 +179,49 @@
                     <div class="form-group">
                         <label for="inputLockScripts" class="col-sm-2 control-label">{{ 'db.create.lock.LockScriptsLabel' | translate }}</label>
                         <div class="col-sm-10">
-                            <textarea #lockScriptsTextBox class="form-control" rows="7" [(ngModel)]="lockScripts"></textarea>
-                            <div class="help-block">
-                                <a href="javascript:void(0)" (click)="example('single')">{{ 'db.create.lock.SingleUserLockExample' | translate }}</a>
-                                |
-                                <a href="javascript:void(0)" (click)="example('multiple')">{{ 'db.create.lock.MultipleUserLockExample' | translate }}</a>
-                                |
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {{ 'db.create.lock.InsertAddressButtonText' | translate }}
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li *ngFor="let key of keyList">
-                                            <a href="javascript:void(0)" (click)="insert(key.pubKey)">{{key.name}}</a>
-                                        </li>
-                                    </ul>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#lockSelect" role="tab" data-toggle="tab">{{ 'db.create.lock.TabSelectTitle' | translate }}</a></li>
+                                <li role="presentation"><a href="#lockManual" role="tab" data-toggle="tab">{{ 'db.create.lock.TabManualTitle' | translate }}</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade in active" id="lockSelect">
+                                    <div class="help-block"></div>
+                                    <div class="col-xs-6">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">{{ 'db.create.lock.LockEnableKeyListTitle' | translate }}</div>
+                                            <div class="list-group drag-list-group" [dragula]="'lock-drag-bag'" [dragulaModel]="lockEnableKeys">
+                                                <div class="list-group-item" *ngFor="let text of lockEnableKeys" [innerHtml]="text.name"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="panel panel-warning">
+                                            <div class="panel-heading">{{ 'db.create.lock.LockCandidateKeyListTitle' | translate }}</div>
+                                            <div class="list-group drag-list-group" [dragula]="'lock-drag-bag'" [dragulaModel]="lockCandidateKeys">
+                                                <div class="list-group-item" *ngFor="let text of lockCandidateKeys" [innerHtml]="text.name"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="lockManual">
+                                    <textarea #lockScriptsTextBox class="form-control" rows="7" [(ngModel)]="lockScripts"></textarea>
+                                    <div class="help-block">
+                                        <a href="javascript:void(0)" (click)="example('single')">{{ 'db.create.lock.SingleUserLockExample' | translate }}</a>
+                                        |
+                                        <a href="javascript:void(0)" (click)="example('multiple')">{{ 'db.create.lock.MultipleUserLockExample' | translate }}</a>
+                                        |
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {{ 'db.create.lock.InsertAddressButtonText' | translate }}
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li *ngFor="let key of keyList">
+                                                    <a href="javascript:void(0)" (click)="insert(key.pubKey)">{{key.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -293,34 +320,36 @@
                     </ng-container>
                 </button>
             </div>
+        </div>
+    </div>
 
-            <hr />
-            <div class="form-group">
-                <label class="col-sm-2 control-label">
-                    <input type="checkbox" [(ngModel)]="enableUnlockScripts">
-                    {{ 'db.create.unlock.UnlockScriptsLabel' | translate }}
-                </label>
-                <div class="col-sm-10">
-                    <ng-container *ngIf="enableUnlockScripts">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#unlockSelect" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabSelectTitle' | translate }}</a></li>
-                            <li role="presentation"><a href="#unlockManual" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabManualTitle' | translate }}</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade in active" id="unlockSelect">
-                                <select class="form-control" [(ngModel)]="selectedUnlockKey">
-                                    <option *ngFor="let key of keyList" value="{{key.name}}">{{key.name}}</option>
-                                </select>
-                            </div>
-                            <div role="tabpanel" class="tab-pane fade" id="unlockManual">
-                                <textarea #lockScriptsTextBox class="form-control" rows="7" [(ngModel)]="unlockScripts"></textarea>
-                            </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                <input type="checkbox" [(ngModel)]="enableUnlockScripts">
+                {{ 'db.create.unlock.UnlockScriptsLabel' | translate }}
+            </label>
+            <div class="col-sm-10">
+                <ng-container *ngIf="enableUnlockScripts">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#unlockSelect" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabSelectTitle' | translate }}</a></li>
+                        <li role="presentation"><a href="#unlockManual" role="tab" data-toggle="tab">{{ 'db.create.unlock.TabManualTitle' | translate }}</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="unlockSelect">
+                            <select class="form-control" [(ngModel)]="selectedUnlockKey">
+                                <option *ngFor="let key of keyList" value="{{key.name}}">{{key.name}}</option>
+                            </select>
                         </div>
-                    </ng-container>
-                </div>
+                        <div role="tabpanel" class="tab-pane fade" id="unlockManual">
+                            <textarea #unlockScriptsTextBox class="form-control" rows="7" [(ngModel)]="unlockScripts"></textarea>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </div>
+
     <div class="panel-footer text-right text-center-xs">
         <div class="form-inline">
             <div class="form-group">

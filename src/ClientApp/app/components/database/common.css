@@ -55,3 +55,11 @@ img.chaindb-image {
     overflow-y: auto;
     max-height: calc(100vh - 240px);
 }
+
+.drag-list-group {
+    min-height: 40px;
+}
+
+.drag-list-group .list-group-item {
+    cursor: move;
+}

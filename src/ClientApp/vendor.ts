@@ -21,3 +21,5 @@ import 'alertify.js/dist/css/alertify.css';
 import 'elliptic';
 import 'sha.js';
 import 'ripemd160';
+import 'ng2-dragula';
+import 'dragula/dist/dragula.css';

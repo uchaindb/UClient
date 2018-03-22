@@ -12,6 +12,7 @@ import { AppTranslationService } from '../../services/app-translation.service';
 import { DatabaseCreatePageFunction } from './create.page.function';
 import { KeyConfiguration, PublicKey, PrivateKey } from '../../models/cryptography.model';
 import { DatabaseCreatePageTranslationType, DatabaseCreatePageTranslation, DatabaseCreatePagePermissionListType } from './create.page.translation';
+import { DragulaService } from 'ng2-dragula';
 
 export type TransactionType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
@@ -79,6 +80,9 @@ export class DatabaseCreatePage implements OnInit {
     translations: DatabaseCreatePageTranslationType = {};
     permissionList: DatabaseCreatePagePermissionListType;
 
+    public lockEnableKeys: Array<KeyConfiguration> = [];
+    public lockCandidateKeys: Array<KeyConfiguration> = [];
+
     constructor(
         private dataService: ChainDbService,
         private route: ActivatedRoute,
@@ -88,6 +92,7 @@ export class DatabaseCreatePage implements OnInit {
         private cryptoService: CryptographyService,
         private privateKeyService: PrivateKeyService,
         private translationService: AppTranslationService,
+        private dragulaService: DragulaService,
     ) {
         this.translations = DatabaseCreatePageTranslation.getTranslations(this.translationService);
         this.permissionList = DatabaseCreatePageTranslation.getPermissionList(this.translationService);
@@ -129,7 +134,13 @@ export class DatabaseCreatePage implements OnInit {
                 }
             });
         this.privateKeyService.getKeyList()
-            .subscribe(_ => this.keyList = _);
+            .subscribe(_ => {
+                this.keyList = _;
+                this.lockCandidateKeys = this.keyList.slice(0);
+            });
+        this.dragulaService.dropModel.subscribe((value) => {
+            this.generateLockScripts();
+        });
     }
 
     prepareData() {
@@ -218,6 +229,18 @@ export class DatabaseCreatePage implements OnInit {
         } else {
             this.alertService.showMessage(this.translations.unknownTransactionTypeTitle, this.translations.unknownTransactionTypeContent, MessageSeverity.warn);
         }
+    }
+
+    generateLockScripts() {
+        let s: string;
+        if (this.lockEnableKeys.length == 1) {
+            s = this.lockEnableKeys[0].pubKey.toB58String() + "\nOC_CheckSignature";
+        } else if (this.lockEnableKeys.length > 1) {
+            s = `${this.lockEnableKeys.map(_ => _.pubKey.toB58String()).join("\n")}\n${this.lockEnableKeys.length}\nOC_CheckOneOfMultiSignature`;
+        } else {
+            s = "";
+        }
+        this.lockScripts = s;
     }
 
     removeAction(actions: Array<any>, idx) {

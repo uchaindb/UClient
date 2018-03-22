@@ -50,5 +50,5 @@ export type KeyConfiguration = {
     key: PrivateKey,
     displayKey?: string,
     address?: Address,
-    pubkey?: PublicKey,
+    pubKey?: PublicKey,
 };

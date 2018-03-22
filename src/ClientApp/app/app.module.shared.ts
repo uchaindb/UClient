@@ -57,6 +57,7 @@ import { PrivateKeyService } from './services/private-key.service';
 import { RouteTransformerDirective } from './directives/route-transformer.directive';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { DragulaModule } from 'ng2-dragula';
 
 @NgModule({
     declarations: [
@@ -130,6 +131,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
         }),
         LightboxModule,
         Ng2SmartTableModule,
+        DragulaModule,
     ],
     providers: [
         NotificationService,
