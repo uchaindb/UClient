@@ -45,6 +45,7 @@ import { WeixinService } from "./services/weixin.service";
 import { UiTextService } from "./services/uitext.service";
 import { NewlinePipe } from "./pipe/newline.pipe";
 import { HashBeautyPipe } from "./pipe/hashbeauty.pipe";
+import { TruncatePipe } from './pipe/truncate.pipe';
 import { AnalyticService } from "./services/analytic.service";
 import { ChainDbService } from './services/chain-db.service';
 import { CryptographyService } from './services/cryptography.service';
@@ -88,6 +89,7 @@ import { DragulaModule } from 'ng2-dragula';
         OnlyNumberDirective,
         NewlinePipe,
         HashBeautyPipe,
+        TruncatePipe,
         RouteTransformerDirective,
     ],
     imports: [
