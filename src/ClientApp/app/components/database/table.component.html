@@ -34,10 +34,25 @@
                 [class.info]="cell.history > 5 && cell.history <= 10"
                 [class.warning]="cell.history > 10 && cell.history <= 100"
                 [class.danger]="cell.history > 100">
-                <a [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]"
+                <a class="hidden-xs"
+                   [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]"
                    title="{{ 'db.table.CellHistoryTooltip' | translate: {number: cell.history} }}">
                     <ng-container *ngIf="cell.data">
-                        {{cell.data}}
+                        {{cell.data | truncate }}
+                    </ng-container>
+                    <ng-container *ngIf="!cell.data">
+                        <i class="text-muted">{{ 'db.table.EmptyCellText' | translate }}</i>
+                    </ng-container>
+                </a>
+                <a (click)="popover($event)"
+                   class="hidden-sm hidden-md hidden-lg"
+                   tabindex="0" role="button"
+                   data-toggle="popover" data-trigger="focus" data-placement="bottom"
+                   data-html="true"
+                   attr.data-content="{{ cell.data | truncate: 100}}"
+                   title="<a href='/database/{{table.dbid}}/table/{{table.tableName}}/cell/{{cell.pkval}}/{{cell.name}}'>{{ 'db.table.CellHistoryTooltip' | translate: {number: cell.history} }} &gt;&gt;</a>">
+                    <ng-container *ngIf="cell.data">
+                        {{cell.data | truncate }}
                     </ng-container>
                     <ng-container *ngIf="!cell.data">
                         <i class="text-muted">{{ 'db.table.EmptyCellText' | translate }}</i>
