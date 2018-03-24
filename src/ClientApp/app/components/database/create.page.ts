@@ -299,7 +299,7 @@ export class DatabaseCreatePage implements OnInit {
         };
 
         let data = getRequestObject();
-        let fullobj = data ? Object.assign({ type: this.selectedType }, data) : {};
+        let fullobj = data ? Object.assign({ type: this.selectedType, version: 1, }, data) : {};
         this.code = JSON.stringify(fullobj, replacer, 2);
     }
 
