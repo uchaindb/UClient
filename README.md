@@ -4,6 +4,7 @@
 [![Gitter](https://badges.gitter.im/uchaindb/UClient.svg)](https://gitter.im/uchaindb/UClient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status](https://travis-ci.org/uchaindb/UClient.svg?branch=master)](https://travis-ci.org/uchaindb/UClient)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6bb89e19a87ded0e27ff/maintainability)](https://codeclimate.com/github/uchaindb/UClient/maintainability)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuchaindb%2FUClient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuchaindb%2FUClient?ref=badge_shield)
 
 UClient is Universal Client for [UChainDb](https://www.uchaindb.com) that enables:
 
