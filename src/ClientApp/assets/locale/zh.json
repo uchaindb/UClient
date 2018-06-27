@@ -425,6 +425,7 @@
       "DeleteTableButtonText": "删除数据表",
       "EmptyCellText": "<空>",
       "InsertDataButtonText": "插入数据",
+      "LoadMoreButtonText": "载入更多数据",
       "LockTableButtonText": "锁定数据表",
       "ModifyTableButtonText": "修改数据表",
       "MonitorTableDataTooltip": "监控数据表数据变化",
