@@ -109,7 +109,7 @@ export class AlarmService {
 
         let obsList = dbArray
             .map(dbid => this.chainService.getChainDb(dbid)
-                .map(db => this.chainService.getChainDbStatus(db)
+                .map(db => (db && this.chainService.getChainDbStatus(db)
                     .map(sts => {
                         var als = alarms.filter(_ => _.dbid == dbid);
                         var alobsList: Array<Observable<AlarmConfiguration>> = [];
@@ -137,7 +137,7 @@ export class AlarmService {
                         }
                         return Observable.forkJoin(alobsList);
                     })
-                    .concatAll()
+                    .concatAll() || Observable.empty<Array<AlarmConfiguration>>())
                 )
                 .concatAll()
 
