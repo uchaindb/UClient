@@ -157,7 +157,7 @@ export type CellDef = { name: string, pkval: string, data: string, tran: string,
 export type ColumnDef = { name: string, tran: string, history: number };
 export type RowDef = Array<CellDef>;
 export type TableData = { rows: Array<RowDef>, columns: Array<ColumnDef>, pkname: string, tableName: string, dbid: string }
-export type QueryTableResponse = { data: TableData }
+export type QueryTableResponse = { data: TableData, cursorId: number, }
 export type QueryCellResponse = { data: TableData, transactions: Array<Transaction> }
 
 export type DataActionEnum = "InsertDataAction" | "UpdateDataAction" | "DeleteDataAction";
@@ -302,9 +302,10 @@ export interface QueryDataRpcResponse extends RpcResponse {
     PrimaryKeyName: string;
     Headers: string[];
     Data: string[];
-    HeaderHistories: HistoryEntry[];
-    DataHistories: HistoryEntry[];
-
+    HeaderHistories: number[];
+    DataHistories: number[];
+    Histories: HistoryEntry[];
+    CursorId: number;
 }
 
 export interface HistoryEntry {

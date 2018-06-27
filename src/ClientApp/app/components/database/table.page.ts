@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, isDevMode } from '@angular/core';
+﻿import { Component, OnInit, Input, isDevMode } from '@angular/core';
 import { ChainDbService } from '../../services/chain-db.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
@@ -29,7 +29,9 @@ export class DatabaseTablePage implements OnInit {
     pager: PaginationType = <any>{};
     pagedItems: any[];
     totalPage: number;
-    pageSize: number = 10;
+    pageSize: number = 20;
+    enablePager: boolean = false;
+    lastCursorId: number = 0;
 
     translations: {
         toggleMonitorRemovedTitle?: string,
@@ -63,8 +65,12 @@ export class DatabaseTablePage implements OnInit {
                         this.db = _;
                         this.dataService.getChainDbTableNames(this.db)
                             .subscribe(o => {
-                                this.totalPage = o.Tables.find(t => t.Name == this.tid).RecordCount;
-                                this.setPage(1);
+                                if (this.enablePager) {
+                                    this.totalPage = o.Tables.find(t => t.Name == this.tid).RecordCount;
+                                    this.setPage(1);
+                                } else {
+                                    this.loadMore();
+                                }
                             });
                         this.refreshAlarms();
                     });
@@ -113,6 +119,21 @@ export class DatabaseTablePage implements OnInit {
         this.dataService.getChainDbTable(this.db, this.tid, this.pager.startIndex, this.pager.pageSize)
             .subscribe(_ => {
                 this.tableData = _.data;
+            });
+    }
+
+    loadMore() {
+        this.dataService.getChainDbTable(this.db, this.tid, this.lastCursorId, this.pageSize)
+            .subscribe(_ => {
+                var rows = this.tableData && this.tableData.rows || [];
+                this.tableData = {
+                    dbid: _.data.dbid,
+                    pkname: _.data.pkname,
+                    columns: _.data.columns,
+                    tableName: _.data.tableName,
+                    rows: rows.concat(_.data.rows)
+                };
+                this.lastCursorId = _.cursorId;
             });
     }
 }

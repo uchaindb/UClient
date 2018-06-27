@@ -16,12 +16,12 @@
         <h3 class="panel-title">
             {{ 'db.table.TableTitle' | translate: {name: tid} }}
             <span *ngIf="db?.editmode" class="btn-group btn-group-xs" role="group">
-                <button type="button" class="btn btn-danger" 
+                <button type="button" class="btn btn-danger"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'schema', action: 'drop', name: tid}">
                     <span class="glyphicon glyphicon-minus"></span> {{ 'db.table.DeleteTableButtonText' | translate }}
                 </button>
-                <button type="button" class="btn btn-primary" 
+                <button type="button" class="btn btn-primary"
                         [routerLink]="['/database', db.id, 'create']"
                         [queryParams]="{type: 'schema', action: 'modify', name: tid}">
                     <span class="glyphicon glyphicon-edit"></span> {{ 'db.table.ModifyTableButtonText' | translate }}
@@ -42,7 +42,11 @@
     <div class="table-responsive">
         <database-table [table]="tableData"></database-table>
     </div>
-    <div class="panel-footer">
+    <button type="button" *ngIf="!enablePager && lastCursorId != 0" (click)="loadMore()" class="btn btn-block btn-primary">
+        <span class="glyphicon glyphicon-download"></span>
+        {{ 'db.table.LoadMoreButtonText' | translate }}
+    </button>
+    <div *ngIf="enablePager" class="panel-footer">
         <!-- pager -->
         <ul *ngIf="pager.pages && pager.pages.length" class="pagination pagination-sm pull-right">
             <li [ngClass]="{disabled:pager.currentPage === 1}">
