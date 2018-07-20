@@ -78,7 +78,7 @@ export class NotificationService {
 
     private getNewNotificationIdentityInternal(): boolean {
         var nlist = this.localStoreManager.getData(NotificationService.DBKEY_NOTIFICATION_LIST) as Array<InboxNotification>;
-        if (nlist.filter(_ => !_.read).length > 0) {
+        if (nlist && nlist.filter(_ => !_.read).length > 0) {
             return true;
         } else {
             return false;

@@ -1,4 +1,4 @@
-{
+﻿{
   "alarm": {
     "detail": {
       "ConfigSectionTitle": "对应警报配置",
@@ -139,6 +139,7 @@
       "ActionsTitle": "相关动作",
       "DataDetailTitle": "相关数据",
       "DataRelatedTransactionsTitle": "相关事务",
+      "NoDataMessage": "未找到相关数据",
       "TransactionSuffix": "（包含{{length}}项动作）"
     },
     "chain": {

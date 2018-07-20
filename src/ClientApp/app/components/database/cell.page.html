@@ -1,5 +1,8 @@
-﻿<database-nav [dbid]="db.id" [dbname]="db.name" [tableName]="tableData?.tableName" [current]="pkval + ' | ' + column"></database-nav>
-<div class="panel panel-info">
+﻿<database-nav *ngIf="db" [dbid]="db.id" [dbname]="db.name" [tableName]="tableData?.tableName" [current]="pkval + ' | ' + column"></database-nav>
+<div *ngIf="!tableData && ! transactions" class="alert alert-warning">
+    {{ 'db.cell.NoDataMessage' | translate }}
+</div>
+<div *ngIf="tableData" class="panel panel-info">
     <div class="panel-heading">
         <h3 class="panel-title">{{ 'db.cell.DataDetailTitle' | translate }}</h3>
     </div>

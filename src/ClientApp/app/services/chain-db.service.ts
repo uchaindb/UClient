@@ -77,8 +77,9 @@ export class ChainDbService extends EndpointFactory {
     }
 
     addChainDb(db: ChainDb): Observable<boolean> {
+        if (!db) throw 'db not exist calling addChainDb';
         var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
-        if (dblist.findIndex(_ => _.id == db.id) > -1) return;
+        if (dblist.findIndex(_ => _.id == db.id) > -1) return Observable.of(false);
         dblist.push(db);
         this.localStoreManager.savePermanentData(dblist, ChainDbService.DBKEY_CHAIN_DB_DATA);
 
@@ -86,6 +87,7 @@ export class ChainDbService extends EndpointFactory {
     }
 
     removeChainDb(db: ChainDb): void {
+        if (!db) throw 'db not exist calling removeChainDb';
         var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
         var idx = dblist
             .findIndex(_ => _.id == db.id);
@@ -99,7 +101,19 @@ export class ChainDbService extends EndpointFactory {
 
     getChainDb(dbid: string): Observable<ChainDb> {
         var dblist = this.localStoreManager.getData(ChainDbService.DBKEY_CHAIN_DB_DATA) as Array<ChainDb>;
-        return Observable.of(dblist.find(_ => _.id == dbid));
+        var cdb = dblist && dblist.find(_ => _.id == dbid);
+        if (cdb) return Observable.of(cdb);
+        // add db from recommend list if not exist
+        return this.getRecommendDbList()
+            .switchMap(cdblist => {
+                var ncdb = cdblist.find(_ => _.id == dbid);
+                if (ncdb) {
+                    return this.addChainDb(ncdb)
+                        .map(result => result ? ncdb : null);
+                }
+
+                return Observable.of(null);
+            });
     }
 
     getChainDbTableNames(db: ChainDb): Observable<ListTablesRpcResponse> {
@@ -160,16 +174,19 @@ export class ChainDbService extends EndpointFactory {
     }
 
     getQueryChain(db: ChainDb, mixId: string): Observable<QueryChainRpcResponse> {
+        if (!db) throw 'db not exist calling getQueryChain';
         return this.rpcCall(db.address, "QueryChain", [mixId]);
     }
 
     getQueryCell(db: ChainDb, tableName: string, primaryKeyValue: string, columnName: string, columns: string[]): Observable<QueryCellResponse> {
+        if (!db) throw 'db not exist calling getQueryCell';
         columns = columns || [];
         return this.rpcCall(db.address, "QueryCell", [tableName, primaryKeyValue, columnName, ...columns])
             .map((_: QueryCellRpcResponse) => {
                 let row: RowDef = [];
                 let headers = _.Headers;
                 let data = _.Row;
+                if (!data) throw "unexpected data";
                 let datahist = _.RowHistories;
                 let pkname = _.PrimaryKeyName;
                 let pkidx = headers.findIndex(_ => _ == pkname);
