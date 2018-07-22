@@ -7,7 +7,7 @@
                   [class.glyphicon-star-empty]="!monitorData"
                   [class.glyphicon-star]="monitorData"></span>
         </button>
-        <button type="button" class="close" (click)="toggleMonitor(alarmTableSchema)"
+        <button *ngIf="efEnabled" type="button" class="close" (click)="toggleMonitor(alarmTableSchema)"
                 title="{{ 'db.table.MonitorTableSchemaTooltip' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitorSchema"

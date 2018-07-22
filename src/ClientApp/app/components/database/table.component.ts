@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, isDevMode, PLATFORM_ID, Inject } from '@angular/core';
+﻿import { Component, OnInit, Input, isDevMode, PLATFORM_ID, Inject } from '@angular/core';
 import { ChainDbService } from '../../services/chain-db.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AlertService, MessageSeverity } from '../../services/alert.service';
@@ -7,6 +7,7 @@ import { AlarmType, AlarmConfiguration } from '../../models/alarm.model';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { AlarmService } from '../../services/alarm.service';
 import { isPlatformBrowser } from '@angular/common';
+import { ConfigurationService } from '../../services/configuration.service';
 
 declare var $;
 
@@ -27,6 +28,8 @@ export class DatabaseTableComponent implements OnInit {
     }
 
     @Input() highlightColumn: string;
+
+    get efEnabled(): boolean { return this.configuration.experimentMode; }
 
     monitorColumn: { [idx: string]: boolean };
     monitorCell: { [idx: string]: boolean };
@@ -50,6 +53,7 @@ export class DatabaseTableComponent implements OnInit {
         private translationService: AppTranslationService,
         private alarmService: AlarmService,
         @Inject(PLATFORM_ID) private platformId: string,
+        private configuration: ConfigurationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");

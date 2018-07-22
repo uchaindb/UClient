@@ -58,7 +58,7 @@
                         <i class="text-muted">{{ 'db.table.EmptyCellText' | translate }}</i>
                     </ng-container>
                 </a>
-                <button type="button" class="watch" (click)="toggleMonitor(alarmCellData, cell.name, cell.pkval)"
+                <button *ngIf="efEnabled" type="button" class="watch" (click)="toggleMonitor(alarmCellData, cell.name, cell.pkval)"
                         title="{{ 'db.table.CellMonitorTooltip' | translate }}">
                     <span class="glyphicon"
                           [class.glyphicon-star-empty]="!monitorCell[cell.name + '-|-' + cell.pkval]"

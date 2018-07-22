@@ -8,6 +8,7 @@ import { AppTranslationService } from '../../services/app-translation.service';
 import { Utilities } from '../../services/utilities';
 import { PaginationType } from '../../models/pager.model';
 import { AlarmService } from '../../services/alarm.service';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
     selector: 'database-table-page',
@@ -15,6 +16,7 @@ import { AlarmService } from '../../services/alarm.service';
     styleUrls: ['./common.css']
 })
 export class DatabaseTablePage implements OnInit {
+    get efEnabled(): boolean { return this.configuration.experimentMode; }
     db: ChainDb;
     tid: string;
 
@@ -47,6 +49,7 @@ export class DatabaseTablePage implements OnInit {
         private alertService: AlertService,
         private translationService: AppTranslationService,
         private alarmService: AlarmService,
+        private configuration: ConfigurationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.table.notification.ToggleMonitorRemovedTitle");
@@ -63,6 +66,7 @@ export class DatabaseTablePage implements OnInit {
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
+                        if (!this.efEnabled) this.db.editmode = false;
                         this.dataService.getChainDbTableNames(this.db)
                             .subscribe(o => {
                                 if (this.enablePager) {

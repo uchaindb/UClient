@@ -1,7 +1,7 @@
 ﻿<database-nav [current]="db.name"></database-nav>
 <div *ngIf="db" class="panel panel-default">
     <div class="panel-heading">
-        <button *ngIf="!loadError && !loading" type="button" class="close" (click)="toggleMonitor()"
+        <button *ngIf="!loadError && !loading && efEnabled" type="button" class="close" (click)="toggleMonitor()"
                 title="{{ 'db.detail.DatabaseToggleButtonTitle' | translate }}">
             <span class="glyphicon"
                   [class.glyphicon-star-empty]="!monitor"
@@ -93,7 +93,7 @@
     </ul>
 </div>
 
-<div class="panel panel-primary">
+<div *ngIf="efEnabled" class="panel panel-primary">
     <div class="panel-heading">
         <span *ngIf="refreshTime" class="pull-right">
             <small>{{ 'db.detail.LastRefreshTimeLeadText' | translate }} {{ refreshTime | date: "yyyy-MM-dd HH:mm:ss" }}</small>

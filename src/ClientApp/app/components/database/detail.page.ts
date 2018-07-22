@@ -96,6 +96,8 @@ export class DatabaseDetailPage implements OnInit {
                 this.dataService.getChainDb(dbid)
                     .subscribe(_ => {
                         this.db = _;
+                        // actively disable db edit mode if experiment function disabled
+                        if (!this.efEnabled) this.db.editmode = false;
                         let obStatus = this.dataService.getChainDbStatus(this.db);
                         let obTable = this.dataService.getChainDbTableNames(this.db);
                         Observable.forkJoin(obStatus, obTable)
