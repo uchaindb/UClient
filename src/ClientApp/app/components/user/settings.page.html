@@ -1,0 +1,9 @@
+﻿<div class="list-group">
+    <a href="javascript:void(0)" (click)="toggleExperimentFunction()" class="list-group-item">
+        <h4>
+            <span class="glyphicon glyphicon-certificate"></span>
+            <span *ngIf="!efEnabled">{{ 'me.settings.EnableExperimentFunctionButtonText' | translate }}</span>
+            <span *ngIf="efEnabled">{{ 'me.settings.DisableExperimentFunctionButtonText' | translate }}</span>
+        </h4>
+    </a>
+</div>

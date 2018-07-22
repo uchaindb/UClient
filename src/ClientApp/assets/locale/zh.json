@@ -1,4 +1,4 @@
-﻿{
+{
   "alarm": {
     "detail": {
       "ConfigSectionTitle": "对应警报配置",
@@ -92,7 +92,8 @@
         "About": "关于",
         "Feedback": "联系我们",
         "Keys": "私钥管理",
-        "Menu": "个人中心"
+        "Menu": "个人中心",
+        "Settings": "应用设置"
       }
     }
   },
@@ -546,8 +547,13 @@
         "Feedback": "联系我们",
         "Logout": "解除登录",
         "OtherTitle": "其他",
-        "PrivateKeyManager": "私钥管理"
+        "PrivateKeyManager": "私钥管理",
+        "Settings": "应用设置"
       }
+    },
+    "settings": {
+      "DisableExperimentFunctionButtonText": "禁用实验功能",
+      "EnableExperimentFunctionButtonText": "启用实验功能"
     }
   }
 }

@@ -96,6 +96,7 @@ export class AppComponent implements OnInit {
             "me.Feedback": gT('app.title.me.Feedback'),
             "me.Menu": gT('app.title.me.Menu'),
             "me.Keys": gT('app.title.me.Keys'),
+            "me.Settings": gT('app.title.me.Settings'),
             "db.List": gT('app.title.db.List'),
             "db.Connect": gT('app.title.db.Connect'),
             "db.Create": gT('app.title.db.Create'),

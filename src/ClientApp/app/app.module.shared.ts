@@ -59,6 +59,7 @@ import { RouteTransformerDirective } from './directives/route-transformer.direct
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { DragulaModule } from 'ng2-dragula';
+import { SettingsPage } from './components/user/settings.page';
 
 @NgModule({
     declarations: [
@@ -83,6 +84,7 @@ import { DragulaModule } from 'ng2-dragula';
         AboutPage,
         FeedbackPage,
         KeyManagePage,
+        SettingsPage,
         HtmlModalComponent,
         DatabaseActionComponent,
         DatabaseAlarmListComponent,
@@ -114,6 +116,7 @@ import { DragulaModule } from 'ng2-dragula';
             { path: 'alarm/:id', component: AlarmDetailPage, canActivate: [AuthGuard], data: { title: "alarm.Detail", } },
             { path: 'user', component: UserMenuPage, canActivate: [AuthGuard], data: { title: "me.Menu", backlink: false } },
             { path: 'user/keys', component: KeyManagePage, canActivate: [AuthGuard], data: { title: "me.Keys" } },
+            { path: 'user/settings', component: SettingsPage, canActivate: [AuthGuard], data: { title: "me.Settings" } },
             { path: 'login', component: LoginPage, data: { title: "Login" } },
 
             { path: '**', redirectTo: '' }

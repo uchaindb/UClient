@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, isDevMode } from '@angular/core';
+﻿import { Component, OnInit, Input, isDevMode } from '@angular/core';
 import { ChainDb, Block } from '../../models/chain-db.model';
 import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
@@ -8,6 +8,7 @@ import { NotificationService } from '../../services/notification.service';
 import { AppTranslationService } from '../../services/app-translation.service';
 import { Observable } from 'rxjs';
 import { AlarmService } from '../../services/alarm.service';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
     selector: 'database-detail',
@@ -16,6 +17,8 @@ import { AlarmService } from '../../services/alarm.service';
 })
 export class DatabaseDetailPage implements OnInit {
     db: ChainDb;
+
+    get efEnabled(): boolean { return this.configuration.experimentMode; }
 
     lastBlock: Block;
     tables: Array<any>;
@@ -52,6 +55,7 @@ export class DatabaseDetailPage implements OnInit {
         private notifyService: NotificationService,
         private translationService: AppTranslationService,
         private alarmService: AlarmService,
+        private configuration: ConfigurationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
         this.translations.toggleMonitorRemovedTitle = gT("db.detail.notification.ToggleMonitorRemovedTitle");

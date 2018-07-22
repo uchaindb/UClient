@@ -22,7 +22,7 @@
                     {{ 'app.nav.desktop.DatabaseTitle' | translate }}
                 </a>
             </li>
-            <li *ngIf="isUserLoggedIn" [routerLinkActive]="['link-active']">
+            <li *ngIf="isUserLoggedIn && efEnabled" [routerLinkActive]="['link-active']">
                 <a [routerLink]="['/alarm']">
                     <i class='glyphicon glyphicon-inbox' [class.newinfo]="medot"></i>
                     {{ 'app.nav.desktop.AlarmTitle' | translate }}

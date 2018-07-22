@@ -1,7 +1,8 @@
-import { Injectable, Inject } from '@angular/core';
+﻿import { Injectable, Inject, isDevMode } from '@angular/core';
 import { LocalStoreManager } from './local-store-manager.service';
 import { DBkeys } from './db-keys';
 import { Utilities } from './utilities';
+import { LocalSettings } from '../models/settings.model';
 
 type UserConfiguration = {
     theme: string,
@@ -16,6 +17,7 @@ export class ConfigurationService {
     public baseUrl: string = this.apiBaseUrl || this.rawBaseUrl.replace(/\/$/, '');
     public fallbackBaseUrl: string = "http://uchaindb.com/ucdb/api";
     public loginUrl: string = "/login";
+    public experimentMode: boolean = false;
 
     private _theme: string = null;
 
@@ -24,6 +26,8 @@ export class ConfigurationService {
     public static readonly defaultHomeUrl: string = "/";
     //***End of defaults***  
 
+    public static readonly DBKEY_SETTINGS_KEY_DATA = "settings_key";
+
     constructor(
         private localStorage: LocalStoreManager,
         @Inject("GLOBAL_API_BASE_URL") private apiBaseUrl,
@@ -31,6 +35,24 @@ export class ConfigurationService {
         @Inject("ORIGIN_URL") private origin_url,
     ) {
         this.loadLocalChanges();
+        this.getSettingsFromStore();
+    }
+
+    getSettingsFromStore(): LocalSettings {
+        try {
+            var settings = this.localStorage.getData(ConfigurationService.DBKEY_SETTINGS_KEY_DATA) as LocalSettings || {};
+            this.experimentMode = settings.enableExperimentFunction;
+            return settings;
+        }
+        catch (err) {
+            isDevMode() && console.error(err);
+            return { enableExperimentFunction: false };
+        }
+    }
+
+    saveSettingsToStore(settings: LocalSettings): void {
+        this.localStorage.savePermanentData(settings, ConfigurationService.DBKEY_SETTINGS_KEY_DATA);
+        this.experimentMode = settings.enableExperimentFunction;
     }
 
     public get rawBaseUrl() {

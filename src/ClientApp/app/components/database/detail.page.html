@@ -10,7 +10,7 @@
         <h3 class="panel-title">
             {{ 'db.detail.BasicInfoTitle' | translate }}
             <ng-container *ngIf="!loadError && !loading">
-                <button type="button" (click)="toggleEditMode()"
+                <button *ngIf="efEnabled" type="button" (click)="toggleEditMode()"
                         class="btn btn-xs"
                         [class.btn-danger]="db.editmode"
                         [class.btn-primary]="!db.editmode">

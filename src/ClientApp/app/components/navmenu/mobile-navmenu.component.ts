@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+﻿import { Component, OnInit, Input } from '@angular/core';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
     selector: 'mobile-nav-menu',
@@ -7,8 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MobileNavMenuComponent implements OnInit {
     @Input() medot: boolean = false;
+    get efEnabled(): boolean { return this.configuration.experimentMode; }
 
-    constructor() { }
+    constructor(
+        private configuration: ConfigurationService,
+    ) { }
 
     ngOnInit() {
     }
