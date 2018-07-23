@@ -146,14 +146,19 @@
     "chain": {
       "block": {
         "ActionTransactionSuffix": "（包含{{length}}项动作）",
+        "BookKeeper": "记账者",
         "DetailTitle": "相关动作",
+        "GenesisBlockEmptyField": "<创世区块无此属性>",
         "Hash": "哈希(Hash)",
         "Height": "块高度",
         "Next": "下一块 >",
+        "PrevHash": "前一区块哈希",
         "Previous": "< 前一块",
+        "StateRoot": "状态树根",
         "SummaryTitle": "块信息",
         "TargetTransactionSuffix": "（包含{{length}}项对象）",
         "Time": "时间",
+        "TransactionRoot": "交易树根",
         "TransactionsTitle": "相关事务"
       },
       "dataAction": {

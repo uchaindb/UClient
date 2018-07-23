@@ -33,8 +33,27 @@
                     <td><a [routerLink]="['/database', db.id, 'chain', block.Hash]">{{block.Hash | hashbeauty}}</a></td>
                 </tr>
                 <tr>
+                    <td><strong>{{ 'db.chain.block.PrevHash' | translate }}</strong></td>
+                    <td>
+                        <span class="text-muted" *ngIf="!block.PreviousBlockHash">{{ 'db.chain.block.GenesisBlockEmptyField' | translate }}</span>
+                        <a *ngIf="block.PreviousBlockHash" [routerLink]="['/database', db.id, 'chain', block.PreviousBlockHash]">{{block.PreviousBlockHash | hashbeauty}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>{{ 'db.chain.block.StateRoot' | translate }}</strong></td>
+                    <td>{{block.StateRoot | hashbeauty}}</td>
+                </tr>
+                <tr>
+                    <td><strong>{{ 'db.chain.block.TransactionRoot' | translate }}</strong></td>
+                    <td>{{block.TransactionRoot | hashbeauty}}</td>
+                </tr>
+                <tr>
                     <td><strong>{{ 'db.chain.block.Time' | translate }}</strong></td>
                     <td>{{block.Time | date: "yyyy-MM-dd HH:mm:ss"}}</td>
+                </tr>
+                <tr>
+                    <td><strong>{{ 'db.chain.block.BookKeeper' | translate }}</strong></td>
+                    <td>{{block.BookKeeper | hashbeauty}}</td>
                 </tr>
                 <tr>
                     <td><strong>{{ 'db.chain.block.Height' | translate }}</strong></td>
