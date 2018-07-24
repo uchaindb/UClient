@@ -558,7 +558,14 @@
     },
     "settings": {
       "DisableExperimentFunctionButtonText": "禁用实验功能",
-      "EnableExperimentFunctionButtonText": "启用实验功能"
+      "EnableExperimentFunctionButtonText": "启用实验功能",
+      "notification": {
+        "EnableExperimentFunctionConfirm": "实验性功能尚未正式发布，通常是具有探索性的前沿功能，但功能可能尚不稳定，您未来仍可以再次关闭实验功能，您是否确定要启用实验性功能？",
+        "ExperimentFunctionDisabledContent": "",
+        "ExperimentFunctionDisabledTitle": "实验性功能已关闭",
+        "ExperimentFunctionEnabledContent": "",
+        "ExperimentFunctionEnabledTitle": "实验性功能已开启"
+      }
     }
   }
 }

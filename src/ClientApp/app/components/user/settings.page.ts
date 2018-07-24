@@ -16,16 +16,11 @@ export class SettingsPage implements OnInit {
     set efEnabled(value: boolean) { this.settings.enableExperimentFunction = value; }
 
     translations: {
-        importNameTakenTitle?: string,
-        importNameTakenContent?: string,
-        importNamePromptMessage?: string,
-        importInvalidKeyTitle?: string,
-        importInvalidKeyContent?: string,
-        importKeyPromptMessage?: string,
-        createNameTakenTitle?: string,
-        createNameTakenContent?: string,
-        createNamePromptMessage?: string,
-        exportMessage?: string,
+        enableExperimentFunctionConfirm?: string,
+        experimentFunctionDisabledTitle?: string,
+        experimentFunctionDisabledContent?: string,
+        experimentFunctionEnabledTitle?: string,
+        experimentFunctionEnabledContent?: string,
     } = {};
 
     constructor(
@@ -34,16 +29,11 @@ export class SettingsPage implements OnInit {
         private translationService: AppTranslationService,
     ) {
         let gT = (key: string) => this.translationService.getTranslation(key);
-        this.translations.importNameTakenTitle = gT("me.key.notification.ImportNameTakenTitle");
-        this.translations.importNameTakenContent = gT("me.key.notification.ImportNameTakenContent");
-        this.translations.importNamePromptMessage = gT("me.key.notification.ImportNamePromptMessage");
-        this.translations.importInvalidKeyTitle = gT("me.key.notification.ImportInvalidKeyTitle");
-        this.translations.importInvalidKeyContent = gT("me.key.notification.ImportInvalidKeyContent");
-        this.translations.importKeyPromptMessage = gT("me.key.notification.ImportKeyPromptMessage");
-        this.translations.createNameTakenTitle = gT("me.key.notification.CreateNameTakenTitle");
-        this.translations.createNameTakenContent = gT("me.key.notification.CreateNameTakenContent");
-        this.translations.createNamePromptMessage = gT("me.key.notification.CreateNamePromptMessage");
-        this.translations.exportMessage = gT("me.key.notification.ExportMessage");
+        this.translations.enableExperimentFunctionConfirm = gT("me.settings.notification.EnableExperimentFunctionConfirm");
+        this.translations.experimentFunctionDisabledTitle = gT("me.settings.notification.ExperimentFunctionDisabledTitle");
+        this.translations.experimentFunctionDisabledContent = gT("me.settings.notification.ExperimentFunctionDisabledContent");
+        this.translations.experimentFunctionEnabledTitle = gT("me.settings.notification.ExperimentFunctionEnabledTitle");
+        this.translations.experimentFunctionEnabledContent = gT("me.settings.notification.ExperimentFunctionEnabledContent");
 
         this.settings = this.dataService.getSettingsFromStore();
     }
@@ -52,6 +42,18 @@ export class SettingsPage implements OnInit {
     }
 
     toggleExperimentFunction() {
+        if (!this.efEnabled) {
+            this.alertService.showDialog(this.translations.enableExperimentFunctionConfirm, DialogType.confirm, name => {
+                this.toggleExperimentFunctionInternal();
+                this.alertService.showMessage(this.translations.experimentFunctionEnabledTitle, this.translations.experimentFunctionEnabledContent, MessageSeverity.success);
+            });
+        } else {
+            this.toggleExperimentFunctionInternal();
+            this.alertService.showMessage(this.translations.experimentFunctionDisabledTitle, this.translations.experimentFunctionDisabledContent, MessageSeverity.success);
+        }
+    }
+
+    toggleExperimentFunctionInternal() {
         this.efEnabled = !this.efEnabled;
         this.dataService.saveSettingsToStore(this.settings);
     }
