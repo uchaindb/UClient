@@ -186,8 +186,8 @@ export class ChainDbService extends EndpointFactory {
                 let row: RowDef = [];
                 let headers = _.Headers;
                 let data = _.Row;
-                if (!data) throw "unexpected data";
                 let datahist = _.RowHistories;
+                if (!data || !datahist) throw "unexpected data";
                 let pkname = _.PrimaryKeyName;
                 let pkidx = headers.findIndex(_ => _ == pkname);
                 let pkval = data[pkidx];
@@ -205,7 +205,7 @@ export class ChainDbService extends EndpointFactory {
                 let rows = [row];
                 let columns = row.map(r => ({ name: r.name, tran: null, history: null }));
 
-                let transactions = _.Transactions
+                let transactions = (_.Transactions || [])
                     .map(_ => new Transaction({ Hash: _ }));
                 return {
                     data: {
