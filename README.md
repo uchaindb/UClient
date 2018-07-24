@@ -89,3 +89,6 @@ We hope you'll get involved! Read our [Contributors' Guide](CONTRIBUTING.md) for
 ## License
 
 Licensed under the [MIT license](LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuchaindb%2FUClient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuchaindb%2FUClient?ref=badge_large)
