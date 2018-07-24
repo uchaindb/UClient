@@ -2,10 +2,11 @@
     <thead>
         <tr>
             <th *ngFor="let col of table.columns" [class.danger]="col.name==highlightColumn">
-                <a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']"
+                <!--<a [routerLink]="['/database', table.dbid, 'chain', col.tran?col.tran:'']"
                    title="{{ 'db.table.ColumnHistoryTooltip' | translate: {number: col.history} }}">
                     {{col.name}}
-                </a>
+                </a>-->
+                {{col.name}}
                 <span *ngIf="col.name == table.pkname" class="label label-primary">{{ 'db.table.PkSuffix' | translate }}</span>
                 <button *ngIf="false" type="button" class="watch" (click)="toggleMonitor(alarmColumnData, col.name)"
                         title="{{ 'db.table.ColumnMonitorTooltip' | translate }}">

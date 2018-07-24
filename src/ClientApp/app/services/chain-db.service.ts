@@ -123,9 +123,7 @@ export class ChainDbService extends EndpointFactory {
     getChainDbTable(db: ChainDb, tableName: string, start: number = 0, size: number = 100): Observable<QueryTableResponse> {
         return this.rpcCall(db.address, "QueryData", [tableName, start, size, "", ""]).
             map((_: QueryDataRpcResponse) => {
-                let allHist = _.Histories || [];
                 let dataHist = _.DataHistories || [];
-                let colHist = _.HeaderHistories || [];
                 let pkname = _.PrimaryKeyName;
 
                 let columns: Array<ColumnDef> = [];
@@ -133,11 +131,11 @@ export class ChainDbService extends EndpointFactory {
                 let pkidx = headers.findIndex(_ => _ == pkname);
                 let colCount = headers.length;
                 for (let i = 0; i < colCount; i++) {
-                    let hist = allHist[colHist[i]];
+                    //let hist = allHist[colHist[i]];
                     columns.push({
                         name: headers[i],
-                        tran: hist && hist.TransactionHash,
-                        history: hist && hist.HistoryLength,
+                        //tran: hist && hist.TransactionHash,
+                        //history: hist && hist.HistoryLength,
                     });
                 }
 
@@ -147,14 +145,13 @@ export class ChainDbService extends EndpointFactory {
                 for (let i = 0; i < rowCount; i++) {
                     let row: RowDef = [];
                     for (let j = 0; j < colCount; j++) {
-                        let hist = allHist[dataHist[i * colCount + j]];
+                        let hist = dataHist[i * colCount + j];
                         let pkval = data[i * colCount + pkidx];
                         row.push({
                             name: headers[j],
                             pkval: pkval,
                             data: data[i * colCount + j],
-                            tran: hist && hist.TransactionHash,
-                            history: hist && hist.HistoryLength,
+                            history: hist,
                         });
                     }
                     rows.push(row);

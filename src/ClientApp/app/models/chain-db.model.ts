@@ -153,8 +153,8 @@ export class HistoryEntry {
 
 }
 
-export type CellDef = { name: string, pkval: string, data: string, tran: string, history: number };
-export type ColumnDef = { name: string, tran: string, history: number };
+export type CellDef = { name: string, pkval: string, data: string, tran?: string, history: number };
+export type ColumnDef = { name: string, tran?: string, history?: number };
 export type RowDef = Array<CellDef>;
 export type TableData = { rows: Array<RowDef>, columns: Array<ColumnDef>, pkname: string, tableName: string, dbid: string }
 export type QueryTableResponse = { data: TableData, cursorId: number, }
@@ -302,9 +302,8 @@ export interface QueryDataRpcResponse extends RpcResponse {
     PrimaryKeyName: string;
     Headers: string[];
     Data: string[];
-    HeaderHistories: number[];
+    HeaderHistories: HistoryEntry[];
     DataHistories: number[];
-    Histories: HistoryEntry[];
     CursorId: number;
 }
 
