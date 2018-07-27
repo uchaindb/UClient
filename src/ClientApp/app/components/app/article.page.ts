@@ -12,9 +12,9 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
     selector: 'article',
     templateUrl: './article.page.html',
     styles: [
-        `.modal-dialog { overflow-y: initial !important }`,
-        `.modal-body { max-height: calc(100vh - 200px); overflow-y: auto; }`,
-    ]
+        `.article-content /deep/ img { max-width: 100%; }`,
+        `.well { background-color: white !important; }`,
+    ],
 })
 export class ArticlePage implements OnInit {
     _url: string;

@@ -40,6 +40,8 @@ export class DiscoverPage implements OnInit {
 
     genLink(article: ArticleType) {
         var segments = article.url.split("/").filter(_ => _);
+        var last = segments.length - 1;
+        segments[last] = segments[last].replace(/.html$/, '');
         return ['/discover', ...segments];
     }
 }

@@ -35,9 +35,10 @@ export class UiTextService extends EndpointFactory {
         return this.cacheUrlContent[key];
     }
 
-    getUrlContent(url:string, forceUpdate?: boolean): Observable<string> {
+    getUrlContent(url: string, forceUpdate?: boolean): Observable<string> {
         return this.getUrlContentEndpoint(url, forceUpdate)
-            .map((response: Response) => response.text());
+            .map((response: Response) => response.text())
+            .map(_ => _.replace(/(<img.+src=")(?!http:\/\/)(.*?)"/g, '$1' + this.baseUrl + '$2"'));
     }
 
     private cacheArticleList: Observable<Response>;
