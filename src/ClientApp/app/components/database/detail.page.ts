@@ -107,8 +107,8 @@ export class DatabaseDetailPage implements OnInit {
                                 this.tables = tables.Tables;
                                 this.loading = false;
                             }, errCallback);
+                        this.refreshAlarms();
                     });
-                this.refreshAlarms();
             }, errCallback);
     }
 
