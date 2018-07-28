@@ -422,6 +422,7 @@
       "CellDeleteTooltip": "发起删除事务",
       "CellEditTooltip": "发起修改事务",
       "CellHistoryTooltip": "该数据单元已发生{{number}}次修改",
+      "CellHistoryForOneTooltip": "该数据单元仅有创建操作，尚无修改",
       "CellLockPkTooltip": "发起锁定数据行事务",
       "CellLockTooltip": "发起锁定数据单元事务",
       "CellMonitorTooltip": "监控该单元格变化",

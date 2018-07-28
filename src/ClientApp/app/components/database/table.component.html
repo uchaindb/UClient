@@ -37,7 +37,7 @@
                 [class.danger]="cell.history > 100">
                 <a class="hidden-xs"
                    [routerLink]="['/database', table.dbid, 'table', table.tableName, 'cell', cell.pkval, cell.name]"
-                   title="{{ 'db.table.CellHistoryTooltip' | translate: {number: cell.history} }}">
+                   title="{{cell.history == 1 ? ('db.table.CellHistoryForOneTooltip' | translate) : ('db.table.CellHistoryTooltip' | translate: {number: cell.history - 1}) }}">
                     <ng-container *ngIf="cell.data">
                         {{cell.data | truncate }}
                     </ng-container>
