@@ -195,8 +195,8 @@ export class ChainDbService extends EndpointFactory {
                         name: headers[i],
                         pkval: pkval,
                         data: data[i],
-                        tran: hist.TransactionHash,
-                        history: hist.HistoryLength,
+                        tran: hist && hist.TransactionHash,
+                        history: hist && hist.HistoryLength,
                     });
                 }
                 let rows = [row];
