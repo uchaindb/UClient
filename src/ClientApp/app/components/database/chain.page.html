@@ -134,11 +134,21 @@
                 </tr>
                 <tr>
                     <td><strong>{{ 'db.chain.transaction.Block' | translate }}</strong></td>
-                    <td><a [routerLink]="['/database', db.id, 'chain', transaction.Block]">{{transaction.Block | hashbeauty}}</a></td>
+                    <td>
+                        <a *ngIf="transaction.Block"
+                           [routerLink]="['/database', db.id, 'chain', transaction.Block]">
+                            {{transaction.Block | hashbeauty}}
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td><strong>{{ 'db.chain.transaction.WitnessBlock' | translate }}</strong></td>
-                    <td><a [routerLink]="['/database', db.id, 'chain', transaction.WitnessBlock]">{{transaction.WitnessBlock | hashbeauty}}</a></td>
+                    <td>
+                        <a *ngIf="transaction.WitnessBlock"
+                           [routerLink]="['/database', db.id, 'chain', transaction.WitnessBlock]">
+                            {{transaction.WitnessBlock | hashbeauty}}
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td><strong>{{ 'db.chain.transaction.Initiator' | translate }}</strong></td>
