@@ -18,7 +18,7 @@
                     </ng-template>
                 </ng-container>
                 {{action.Name}}
-                <a [routerLink]="['/database', dbid, 'chain', action.transaction.Hash]">{{action.transaction.Hash}}</a>
+                <a [routerLink]="['/database', dbid, 'chain', action.tx.Hash]">{{action.tx.Hash}}</a>
             </h3>
         </div>
         <div class="panel-body">
@@ -83,7 +83,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>{{ 'db.chain.dataAction.TransactionColumnName' | translate }}</th>
+                        <th>{{ 'db.chain.dataAction.TxColumnName' | translate }}</th>
                         <th>{{ 'db.chain.dataAction.OperationColumnName' | translate }}</th>
                         <th *ngFor="let col of table.columns">
                             {{col}}
@@ -96,7 +96,7 @@
                         <tr [class.success]="action.Type == 'InsertDataAction'"
                             [class.warning]="action.Type == 'UpdateDataAction'"
                             [class.danger]="action.Type == 'DeleteDataAction'">
-                            <td><a [routerLink]="['/database', dbid, 'chain', action.transaction.Hash]">{{action.transaction.Hash | hashbeauty}}</a></td>
+                            <td><a [routerLink]="['/database', dbid, 'chain', action.tx.Hash]">{{action.tx.Hash | hashbeauty}}</a></td>
                             <td>
                                 <i>
                                     <b>
@@ -142,16 +142,16 @@
     </div>
 </ng-container>
 <!--for lock targets-->
-<ng-container *ngFor="let tran of lockTransactions">
+<ng-container *ngFor="let tran of lockTxs">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                {{ 'db.chain.lockTransaction.Name' | translate }}
+                {{ 'db.chain.lockTx.Name' | translate }}
                 <a [routerLink]="['/database', dbid, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a>
             </h3>
         </div>
         <div class="panel-body">
-            <div class="alert alert-info" *ngIf="!tran.code">{{ 'db.chain.lockTransaction.NoLockScriptText' | translate }}</div>
+            <div class="alert alert-info" *ngIf="!tran.code">{{ 'db.chain.lockTx.NoLockScriptText' | translate }}</div>
             <pre *ngIf="tran.code">{{tran.code}}</pre>
         </div>
         <ul class="list-group">
@@ -159,59 +159,59 @@
                 <ng-container [ngSwitch]="target.TargetType">
                     <ng-template [ngSwitchCase]="'Database'">
                         <span class="glyphicon glyphicon-tasks"></span>
-                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.Database' | translate }}"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTx.type.Database' | translate }}"></span>
                     </ng-template>
                     <ng-template [ngSwitchCase]="'TableSchema'">
                         <span class="glyphicon glyphicon-list-alt"></span>
-                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableSchema' | translate }}"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTx.type.TableSchema' | translate }}"></span>
                     </ng-template>
                     <ng-template [ngSwitchCase]="'TableRowData'">
                         <span class="glyphicon glyphicon-list"></span>
-                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableRowData' | translate }}"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTx.type.TableRowData' | translate }}"></span>
                     </ng-template>
                     <ng-template [ngSwitchCase]="'TableCellData'">
                         <span class="glyphicon glyphicon-option-vertical"></span>
-                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableCellData' | translate }}"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTx.type.TableCellData' | translate }}"></span>
                     </ng-template>
                     <ng-template [ngSwitchCase]="'TableColumnData'">
                         <span class="glyphicon glyphicon-unchecked"></span>
-                        &nbsp;<span innerHtml="{{ 'db.chain.lockTransaction.type.TableColumnData' | translate }}"></span>
+                        &nbsp;<span innerHtml="{{ 'db.chain.lockTx.type.TableColumnData' | translate }}"></span>
                     </ng-template>
                 </ng-container>
                 <ng-container *ngFor="let permission of target.PublicPermission">
                     <ng-container [ngSwitch]="permission">
                         <ng-template [ngSwitchCase]="'None'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.None' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.None' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'ReadOnly'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.ReadOnly' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.ReadOnly' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'Insert'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Insert' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.Insert' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'Update'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Update' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.Update' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'Delete'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.Delete' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.Delete' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'AlterLock'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.AlterLock' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.AlterLock' | translate }}"></span>
                         </ng-template>
                         <ng-template [ngSwitchCase]="'AlterSchema'">
-                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTransaction.permission.AlterSchema' | translate }}"></span>
+                            <span class="label label-default" innerHtml="{{ 'db.chain.lockTx.permission.AlterSchema' | translate }}"></span>
                         </ng-template>
                     </ng-container>
                 </ng-container>
                 <ul class="alert-detail-list">
                     <li *ngIf="target.TableName">
-                        {{ 'db.chain.lockTransaction.TableName' | translate }} <mark>{{target.TableName}}</mark>
+                        {{ 'db.chain.lockTx.TableName' | translate }} <mark>{{target.TableName}}</mark>
                     </li>
                     <li *ngIf="target.ColumnName">
-                        {{ 'db.chain.lockTransaction.ColumnName' | translate }} <mark>{{target.ColumnName}}</mark>
+                        {{ 'db.chain.lockTx.ColumnName' | translate }} <mark>{{target.ColumnName}}</mark>
                     </li>
                     <li *ngIf="target.PrimaryKey">
-                        {{ 'db.chain.lockTransaction.PrimaryKeyValue' | translate }} <mark>{{target.PrimaryKey}}</mark>
+                        {{ 'db.chain.lockTx.PrimaryKeyValue' | translate }} <mark>{{target.PrimaryKey}}</mark>
                     </li>
                 </ul>
             </li>

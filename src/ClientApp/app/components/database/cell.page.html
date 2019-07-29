@@ -1,5 +1,5 @@
 ﻿<database-nav *ngIf="db" [dbid]="db.id" [dbname]="db.name" [tableName]="tableData?.tableName" [current]="pkval + ' | ' + column"></database-nav>
-<div *ngIf="!tableData && ! transactions" class="alert alert-warning">
+<div *ngIf="!tableData && ! txs" class="alert alert-warning">
     {{ 'db.cell.NoDataMessage' | translate }}
 </div>
 <div *ngIf="tableData" class="panel panel-info">
@@ -10,27 +10,27 @@
         <database-table [table]="tableData" [highlightColumn]="column"></database-table>
     </div>
 </div>
-<div *ngIf="transactions" class="panel panel-info">
+<div *ngIf="txs" class="panel panel-info">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ 'db.cell.DataRelatedTransactionsTitle' | translate }}</h3>
+        <h3 class="panel-title">{{ 'db.cell.DataRelatedTxsTitle' | translate }}</h3>
     </div>
     <table class="table">
         <tbody>
-            <tr *ngFor="let tran of transactions">
+            <tr *ngFor="let tran of txs">
                 <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
                 <td>
                     <ng-container [ngSwitch]="tran.Type">
-                        <ng-template [ngSwitchCase]="'DataTransaction'">
-                            {{ 'db.def.DataTransactionName' | translate }}
+                        <ng-template [ngSwitchCase]="'DataTx'">
+                            {{ 'db.def.DataTxName' | translate }}
                         </ng-template>
-                        <ng-template [ngSwitchCase]="'SchemaTransaction'">
-                            {{ 'db.def.SchemaTransactionName' | translate }}
+                        <ng-template [ngSwitchCase]="'SchemaTx'">
+                            {{ 'db.def.SchemaTxName' | translate }}
                         </ng-template>
-                        <ng-template [ngSwitchCase]="'LockTransaction'">
-                            {{ 'db.def.LockTransactionName' | translate }}
+                        <ng-template [ngSwitchCase]="'LockTx'">
+                            {{ 'db.def.LockTxName' | translate }}
                         </ng-template>
                     </ng-container>
-                    {{ 'db.cell.TransactionSuffix' | translate: {length: tran.Actions?.length} }}
+                    {{ 'db.cell.TxSuffix' | translate: {length: tran.Actions?.length} }}
                 </td>
             </tr>
         </tbody>
@@ -39,6 +39,6 @@
         <h3 class="panel-title">{{ 'db.cell.ActionsTitle' | translate }}</h3>
     </div>
     <div class="table-responsive">
-        <database-action [dbid]="db.id" [transactions]="transactions"></database-action>
+        <database-action [dbid]="db.id" [txs]="txs"></database-action>
     </div>
 </div>

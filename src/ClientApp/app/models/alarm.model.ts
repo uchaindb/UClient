@@ -2,7 +2,7 @@
 export type AlarmData = {
     lastBlockId?: string,
     lastBlockHeight?: number,
-    lastTransactionId?: string,
+    lastTxId?: string,
 }
 export type AlarmConfiguration = {
     type: AlarmType,

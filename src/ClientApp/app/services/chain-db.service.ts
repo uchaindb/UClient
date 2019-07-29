@@ -6,7 +6,7 @@ import { EndpointFactory } from "./endpoint-factory.service";
 import { Http, Headers, Response, RequestOptions } from "@angular/http";
 import { Router } from "@angular/router";
 import { Pager } from "../models/pager.model";
-import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Transaction, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTransactionRpcResponse, ListTableSchema, ColumnData, SchemaAction, SchemaColumnDefinition, LockTarget, ChainDbRpcMethod } from '../models/chain-db.model';
+import { ChainDb, HistoryEntry, QueryTableResponse, RowDef, ColumnDef, Tx, QueryCellResponse, DataAction, StatusRpcResponse, ListTablesRpcResponse, QueryDataRpcResponse, QueryChainRpcResponse, QueryCellRpcResponse, CreateTxRpcResponse, ListTableSchema, ColumnData, SchemaAction, SchemaColumnDefinition, LockTarget, ChainDbRpcMethod } from '../models/chain-db.model';
 import { LocalStoreManager } from './local-store-manager.service';
 import { CryptographyService } from './cryptography.service';
 import { NotificationService } from './notification.service';
@@ -134,7 +134,7 @@ export class ChainDbService extends EndpointFactory {
                     //let hist = allHist[colHist[i]];
                     columns.push({
                         name: headers[i],
-                        //tran: hist && hist.TransactionHash,
+                        //tran: hist && hist.TxHash,
                         //history: hist && hist.HistoryLength,
                     });
                 }
@@ -195,15 +195,15 @@ export class ChainDbService extends EndpointFactory {
                         name: headers[i],
                         pkval: pkval,
                         data: data[i],
-                        tran: hist && hist.TransactionHash,
+                        tran: hist && hist.TxHash,
                         history: hist && hist.HistoryLength,
                     });
                 }
                 let rows = [row];
                 let columns = row.map(r => ({ name: r.name, tran: null, history: null }));
 
-                let transactions = (_.Transactions || [])
-                    .map(_ => new Transaction({ Hash: _ }));
+                let txs = (_.Txs || [])
+                    .map(_ => new Tx({ Hash: _ }));
                 return {
                     data: {
                         rows: rows,
@@ -212,81 +212,81 @@ export class ChainDbService extends EndpointFactory {
                         dbid: db.id,
                         tableName: tableName,
                     },
-                    transactions: transactions,
+                    txs: txs,
                 }
             });
     }
 
-    createDataTransaction(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, actions: Array<DataAction>): Observable<CreateTransactionRpcResponse> {
+    createDataTx(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, actions: Array<DataAction>): Observable<CreateTxRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = pubKey.toAddress();
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let unlockScripts = this.generateUnlockScriptsForDataTransaction(unlockPrivateKey, initiator, witness, actions);
-                let hashContent = this.getDataTransactionHashContent(initiator, witness, actions, unlockScripts);
-                let sig = this.signTransaction(privateKey, hashContent);
+                let unlockScripts = this.generateUnlockScriptsForDataTx(unlockPrivateKey, initiator, witness, actions);
+                let hashContent = this.getDataTxHashContent(initiator, witness, actions, unlockScripts);
+                let sig = this.signTx(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateDataTransaction", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateDataTx", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
             });
     }
 
-    createSchemaTransaction(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, actions: Array<SchemaAction>): Observable<CreateTransactionRpcResponse> {
+    createSchemaTx(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, actions: Array<SchemaAction>): Observable<CreateTxRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = pubKey.toAddress();
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let unlockScripts = this.generateUnlockScriptsForSchemaTransaction(unlockPrivateKey, initiator, witness, actions);
-                let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions, unlockScripts);
-                let sig = this.signTransaction(privateKey, hashContent);
+                let unlockScripts = this.generateUnlockScriptsForSchemaTx(unlockPrivateKey, initiator, witness, actions);
+                let hashContent = this.getSchemaTxHashContent(initiator, witness, actions, unlockScripts);
+                let sig = this.signTx(privateKey, hashContent);
                 let as = actions.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateSchemaTransaction", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateSchemaTx", [initiator.toB58String(), sig, witness, unlockScripts, ...as]);
             });
     }
 
-    createLockTransaction(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, lockScripts: string, targets: Array<LockTarget>): Observable<CreateTransactionRpcResponse> {
+    createLockTx(db: ChainDb, privateKey: PrivateKey, unlockPrivateKey: PrivateKey, lockScripts: string, targets: Array<LockTarget>): Observable<CreateTxRpcResponse> {
         let pubKey = this.cryptoService.getPublicKey(privateKey);
         let initiator = pubKey.toAddress();
 
         return this.getChainDbStatus(db)
             .flatMap(result => {
                 let witness = result.Tail.Hash;
-                let unlockScripts = this.generateUnlockScriptsForLockTransaction(unlockPrivateKey, initiator, witness, lockScripts, targets);
-                let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets, unlockScripts);
-                let sig = this.signTransaction(privateKey, hashContent);
+                let unlockScripts = this.generateUnlockScriptsForLockTx(unlockPrivateKey, initiator, witness, lockScripts, targets);
+                let hashContent = this.getLockTxHashContent(initiator, witness, lockScripts, targets, unlockScripts);
+                let sig = this.signTx(privateKey, hashContent);
                 let as = targets.map(_ => JSON.stringify(_));
-                return this.rpcCall(db.address, "CreateLockTransaction", [initiator.toB58String(), sig, witness, unlockScripts, lockScripts, ...as]);
+                return this.rpcCall(db.address, "CreateLockTx", [initiator.toB58String(), sig, witness, unlockScripts, lockScripts, ...as]);
             });
     }
 
-    private generateUnlockScriptsForDataTransaction(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<DataAction>): string {
+    private generateUnlockScriptsForDataTx(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<DataAction>): string {
         if (!privateKey) return null;
-        let hashContent = this.getDataTransactionHashContent(initiator, witness, actions);
-        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+        let hashContent = this.getDataTxHashContent(initiator, witness, actions);
+        return this.generateUnlockScriptsForTx(privateKey, hashContent);
     }
 
-    private generateUnlockScriptsForSchemaTransaction(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<SchemaAction>): string {
+    private generateUnlockScriptsForSchemaTx(privateKey: PrivateKey, initiator: Address, witness: string, actions: Array<SchemaAction>): string {
         if (!privateKey) return null;
-        let hashContent = this.getSchemaTransactionHashContent(initiator, witness, actions);
-        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+        let hashContent = this.getSchemaTxHashContent(initiator, witness, actions);
+        return this.generateUnlockScriptsForTx(privateKey, hashContent);
     }
 
-    private generateUnlockScriptsForLockTransaction(privateKey: PrivateKey, initiator: Address, witness: string, lockScripts: string, targets: Array<LockTarget>): string {
+    private generateUnlockScriptsForLockTx(privateKey: PrivateKey, initiator: Address, witness: string, lockScripts: string, targets: Array<LockTarget>): string {
         if (!privateKey) return null;
-        let hashContent = this.getLockTransactionHashContent(initiator, witness, lockScripts, targets);
-        return this.generateUnlockScriptsForTransaction(privateKey, hashContent);
+        let hashContent = this.getLockTxHashContent(initiator, witness, lockScripts, targets);
+        return this.generateUnlockScriptsForTx(privateKey, hashContent);
     }
 
-    private generateUnlockScriptsForTransaction(privateKey: PrivateKey, hashContent: string): string {
+    private generateUnlockScriptsForTx(privateKey: PrivateKey, hashContent: string): string {
         let tosign = this.cryptoService.hash(hashContent);
         let signature = this.cryptoService.sign(tosign, privateKey);
         return this.getSignatureB58(signature);
     }
 
-    private signTransaction(privateKey: PrivateKey, hashContent: string): string {
+    private signTx(privateKey: PrivateKey, hashContent: string): string {
         let signature = this.cryptoService.sign(hashContent, privateKey);
         return this.getSignatureB58(signature);
     }
@@ -299,7 +299,7 @@ export class ChainDbService extends EndpointFactory {
         return sig;
     }
 
-    private getDataTransactionHashContent(initiator: Address, witness: string, actions: Array<DataAction>, unlockScripts: string = null): string {
+    private getDataTxHashContent(initiator: Address, witness: string, actions: Array<DataAction>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<ColumnData>): Array<string> =>
             columns.map(_ => `${_.Name}:${_.Data}`);
         let acts = actions
@@ -318,7 +318,7 @@ export class ChainDbService extends EndpointFactory {
         return `${unlockContent}${initiator.toB58String()}|${witness}|${acts.join(",")}`
     }
 
-    private getSchemaTransactionHashContent(initiator: Address, witness: string, actions: Array<SchemaAction>, unlockScripts: string = null): string {
+    private getSchemaTxHashContent(initiator: Address, witness: string, actions: Array<SchemaAction>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<SchemaColumnDefinition>): Array<string> =>
             !columns ? []
                 : columns.map(_ => `${(_.PrimaryKey ? '[P]' : '')}${_.Name}:${_.Type}`);
@@ -338,7 +338,7 @@ export class ChainDbService extends EndpointFactory {
         return `${unlockContent}${initiator.toB58String()}|${witness}|${acts.join(",")}`
     }
 
-    private getLockTransactionHashContent(initiator: Address, witness: string, lockScripts: string, targets: Array<LockTarget>, unlockScripts: string = null): string {
+    private getLockTxHashContent(initiator: Address, witness: string, lockScripts: string, targets: Array<LockTarget>, unlockScripts: string = null): string {
         let mapColumns = (columns: Array<LockTarget>): Array<string> =>
             columns.map(_ => `[${_.TargetType}][${_.PublicPermission}]${(!_.TableName ? '' : _.TableName)}:${(!_.PrimaryKey ? '' : _.PrimaryKey)}:${(!_.ColumnName ? '' : _.ColumnName)}`);
         let unlockContent = unlockScripts ? unlockScripts + "|" : "";

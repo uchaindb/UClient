@@ -172,12 +172,12 @@ export class AlarmService {
         let query: Observable<any> = this.chainService.getChainDbTableNames(db)
             .map((resp: ListTablesRpcResponse) => resp.Tables.filter(_ => _.Name == alarm.tableName)[0]);
         // detect change if data exist
-        if (alarm.data && alarm.data.lastTransactionId) {
+        if (alarm.data && alarm.data.lastTxId) {
             query = query
                 .map(table => {
                     if (!table)
                         return null;
-                    if (table.History.TransactionHash != alarm.data.lastTransactionId) {
+                    if (table.History.TxHash != alarm.data.lastTxId) {
                         let data = Object.assign({}, alarm, table);
                         this.notificationService.createNotification(this.translations.tableSchemaMessage(data), alarm);
                     }
@@ -190,7 +190,7 @@ export class AlarmService {
             if (!table)
                 return null;
             //console.log("update data", table);
-            alarm.data = { lastTransactionId: table.History.TransactionHash, lastBlockId: sts.Tail.Hash };
+            alarm.data = { lastTxId: table.History.TxHash, lastBlockId: sts.Tail.Hash };
             return alarm;
         });
         return query;
@@ -198,12 +198,12 @@ export class AlarmService {
 
     private updateCellDataModifyAlarm(alarm: AlarmConfiguration, db: ChainDb, sts: StatusRpcResponse): Observable<AlarmConfiguration> {
         let query: Observable<any> = this.chainService.getQueryCell(db, alarm.tableName, alarm.primaryKeyValue, alarm.columnName, [alarm.columnName])
-            .map(_ => _.transactions.slice(-1)[0].Hash);
+            .map(_ => _.txs.slice(-1)[0].Hash);
         // detect change if data exist
-        if (alarm.data && alarm.data.lastTransactionId) {
+        if (alarm.data && alarm.data.lastTxId) {
             query = query
                 .map(hash => {
-                    if (hash != alarm.data.lastTransactionId) {
+                    if (hash != alarm.data.lastTxId) {
                         let data = Object.assign({ hash: hash }, alarm);
                         this.notificationService.createNotification(this.translations.cellDataModifyMessage(data), alarm);
                     }
@@ -212,7 +212,7 @@ export class AlarmService {
         }
         // update data using fresh server data
         query = query.map(hash => {
-            alarm.data = { lastTransactionId: hash, lastBlockId: sts.Tail.Hash };
+            alarm.data = { lastTxId: hash, lastBlockId: sts.Tail.Hash };
             return alarm;
         });
         return query;

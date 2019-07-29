@@ -11,8 +11,8 @@ export type DatabaseCreatePageTranslationType = {
     successSendContent?: string,
     errorSendTitle?: string,
     errorSendContent?: string,
-    unknownTransactionTypeTitle?: string,
-    unknownTransactionTypeContent?: string,
+    unknownTxTypeTitle?: string,
+    unknownTxTypeContent?: string,
     gotoCodeConfirmation?: string,
     gotoGuiConfirmation?: string,
     exampleOverwrittenConfirmation?: string,
@@ -41,8 +41,8 @@ export class DatabaseCreatePageTranslation {
         translations.successSendContent = gT("db.create.notification.SuccessSendContent");
         translations.errorSendTitle = gT("db.create.notification.ErrorSendTitle");
         translations.errorSendContent = gT("db.create.notification.ErrorSendContent");
-        translations.unknownTransactionTypeTitle = gT("db.create.notification.UnknownTransactionTypeTitle");
-        translations.unknownTransactionTypeContent = gT("db.create.notification.UnknownTransactionTypeContent");
+        translations.unknownTxTypeTitle = gT("db.create.notification.UnknownTxTypeTitle");
+        translations.unknownTxTypeContent = gT("db.create.notification.UnknownTxTypeContent");
         translations.gotoCodeConfirmation = gT("db.create.notification.GotoCodeConfirmation");
         translations.gotoGuiConfirmation = gT("db.create.notification.GotoGuiConfirmation");
         translations.exampleOverwrittenConfirmation = gT("db.create.notification.ExampleOverwrittenConfirmation");

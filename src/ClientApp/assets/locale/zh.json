@@ -27,10 +27,10 @@
       "HomeLinkText": "消息"
     },
     "service": {
-      "CellDataModifyMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的单元格 <a href='/database/{{dbid}}/table/{{tableName}}/cell/{{primaryKeyValue}}/{{columnName}}'>[{{primaryKeyValue}}-{{columnName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTransactionId}}'>[{{data.lastTransactionId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{hash}}'>[{{hash}}]</a>",
+      "CellDataModifyMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的单元格 <a href='/database/{{dbid}}/table/{{tableName}}/cell/{{primaryKeyValue}}/{{columnName}}'>[{{primaryKeyValue}}-{{columnName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTxId}}'>[{{data.lastTxId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{hash}}'>[{{hash}}]</a>",
       "ChainForkMessage": "检测到链库<a href='/database/{{id}}'>[{{name}}]</a>的分叉。",
       "SenderName": "系统消息",
-      "TableSchemaMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTransactionId}}'>[{{data.lastTransactionId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{History.TransactionHash}}'>[{{History.TransactionHash}}]</a>"
+      "TableSchemaMessage": "数据表 <a href='/database/{{dbid}}/table/{{tableName}}'>[{{tableName}}]</a> 的结构或数据发生变化。\n原事务：<a href='/database/{{dbid}}/chain/{{data.lastTxId}}'>[{{data.lastTxId}}]</a>\n新事务：<a href='/database/{{dbid}}/chain/{{History.TxHash}}'>[{{History.TxHash}}]</a>"
     }
   },
   "app": {
@@ -139,13 +139,13 @@
     "cell": {
       "ActionsTitle": "相关动作",
       "DataDetailTitle": "相关数据",
-      "DataRelatedTransactionsTitle": "相关事务",
+      "DataRelatedTxsTitle": "相关事务",
       "NoDataMessage": "未找到相关数据",
-      "TransactionSuffix": "（包含{{length}}项动作）"
+      "TxSuffix": "（包含{{length}}项动作）"
     },
     "chain": {
       "block": {
-        "ActionTransactionSuffix": "（包含{{length}}项动作）",
+        "ActionTxSuffix": "（包含{{length}}项动作）",
         "BookKeeper": "记账者",
         "DetailTitle": "相关动作",
         "GenesisBlockEmptyField": "<创世区块无此属性>",
@@ -156,10 +156,10 @@
         "Previous": "< 前一块",
         "StateRoot": "状态树根",
         "SummaryTitle": "块信息",
-        "TargetTransactionSuffix": "（包含{{length}}项对象）",
+        "TargetTxSuffix": "（包含{{length}}项对象）",
         "Time": "时间",
-        "TransactionRoot": "交易树根",
-        "TransactionsTitle": "相关事务"
+        "TxRoot": "交易树根",
+        "TxsTitle": "相关事务"
       },
       "dataAction": {
         "ActionTitle": "对表[{{name}}]的数据修改",
@@ -168,7 +168,7 @@
         "InsertName": "插入",
         "OperationColumnName": "类型",
         "PkSuffix": "主键",
-        "TransactionColumnName": "事务",
+        "TxColumnName": "事务",
         "UpdateName": "更新"
       },
       "general": {
@@ -189,7 +189,7 @@
           "WarningText": "您所请求的链信息并不存在。"
         }
       },
-      "lockTransaction": {
+      "lockTx": {
         "ColumnName": "列名",
         "Name": "锁定事务",
         "NoLockScriptText": "此事务中不包含锁定脚本",
@@ -224,7 +224,7 @@
         "NewRowNameText": "创建",
         "PkSuffix": "主键"
       },
-      "transaction": {
+      "tx": {
         "ActionsTitle": "相关动作",
         "Block": "所在区块",
         "Hash": "哈希(Hash)",
@@ -236,14 +236,14 @@
       }
     },
     "create": {
-      "DataTransaction": "数据事务",
+      "DataTx": "数据事务",
       "GotoCode": "转至代码模式",
       "GotoGui": "转至编辑器模式",
-      "LockTransaction": "锁定事务",
+      "LockTx": "锁定事务",
       "PageTitle": "创建事务",
-      "SchemaTransaction": "结构事务",
-      "SubmitTransaction": "提交事务",
-      "TransactionType": "事务类型",
+      "SchemaTx": "结构事务",
+      "SubmitTx": "提交事务",
+      "TxType": "事务类型",
       "data": {
         "AppendButtonText": "添加动作",
         "DeleteAction": "删除动作",
@@ -322,8 +322,8 @@
         "SchemaActionExceedsMessage": "最多10个动作",
         "SuccessSendContent": "",
         "SuccessSendTitle": "已将该事务成功发送至链库",
-        "UnknownTransactionTypeContent": "",
-        "UnknownTransactionTypeTitle": "未知的事务类型，请重新选择事务类型"
+        "UnknownTxTypeContent": "",
+        "UnknownTxTypeTitle": "未知的事务类型，请重新选择事务类型"
       },
       "schema": {
         "AddOrModifyColumns": "添加或修改列",
@@ -368,15 +368,15 @@
       }
     },
     "def": {
-      "DataTransactionName": "数据事务",
-      "LockTransactionName": "锁定事务",
-      "SchemaTransactionName": "结构事务"
+      "DataTxName": "数据事务",
+      "LockTxName": "锁定事务",
+      "SchemaTxName": "结构事务"
     },
     "detail": {
       "Address": "远端地址：",
       "AlarmListTitle": "报警列表",
       "BasicInfoTitle": "基本信息",
-      "CreateTransactionButton": "创建事务",
+      "CreateTxButton": "创建事务",
       "DatabaseToggleButtonTitle": "监控数据库的硬分叉",
       "Height": "区块高度：",
       "LastBlock": "最后区块：",
@@ -413,7 +413,7 @@
     },
     "nav": {
       "ChainBlock": "区块： {{hash}}",
-      "ChainTransaction": "事务： {{hash}}",
+      "ChainTx": "事务： {{hash}}",
       "CreatePage": "新建事务",
       "HomeTitle": "链库",
       "List": "列表"

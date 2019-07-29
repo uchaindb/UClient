@@ -13,18 +13,18 @@
     <div *ngIf="!codeMode" class="panel-body panel-container">
         <div class="form-horizontal">
             <div class="form-group">
-                <label for="inputTransactionType" class="col-sm-2 control-label">{{ 'db.create.TransactionType' | translate }}</label>
+                <label for="inputTxType" class="col-sm-2 control-label">{{ 'db.create.TxType' | translate }}</label>
                 <div class="col-sm-10">
-                    <select id="inputTransactionType" [(ngModel)]="selectedType" class="form-control">
-                        <option value="schema">{{ 'db.create.SchemaTransaction' | translate }}</option>
-                        <option value="data">{{ 'db.create.DataTransaction' | translate }}</option>
-                        <option value="lock">{{ 'db.create.LockTransaction' | translate }}</option>
+                    <select id="inputTxType" [(ngModel)]="selectedType" class="form-control">
+                        <option value="schema">{{ 'db.create.SchemaTx' | translate }}</option>
+                        <option value="data">{{ 'db.create.DataTx' | translate }}</option>
+                        <option value="lock">{{ 'db.create.LockTx' | translate }}</option>
                     </select>
                 </div>
             </div>
 
             <div *ngIf="loaded" class="list-group">
-                <!--schema transaction-->
+                <!--schema tx-->
                 <ng-container *ngIf="selectedType=='schema'">
                     <div class="list-group-item" *ngFor="let action of schemaActions; let idx = index">
                         <small>
@@ -101,7 +101,7 @@
                     </div>
                 </ng-container>
 
-                <!--data transaction-->
+                <!--data tx-->
                 <ng-container *ngIf="selectedType=='data'">
                     <div class="list-group-item" *ngFor="let action of dataActions; let idx = index">
                         <small>
@@ -174,7 +174,7 @@
                     </div>
                 </ng-container>
 
-                <!--lock transaction-->
+                <!--lock tx-->
                 <ng-container *ngIf="selectedType=='lock'">
                     <div class="form-group">
                         <label for="inputLockScripts" class="col-sm-2 control-label">{{ 'db.create.lock.LockScriptsLabel' | translate }}</label>
@@ -365,7 +365,7 @@
                 </select>
             </div>
             <input *ngIf="selectedPrivateKey == 'import'" [(ngModel)]="inputPrivateKey" type="text" class="form-control">
-            <button type="button" class="btn btn-primary btn-block-xs" [class.disabled]="codeMode" (click)="submit()">{{ 'db.create.SubmitTransaction' | translate }}</button>
+            <button type="button" class="btn btn-primary btn-block-xs" [class.disabled]="codeMode" (click)="submit()">{{ 'db.create.SubmitTx' | translate }}</button>
         </div>
     </div>
 </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, isDevMode } from '@angular/core';
 import { ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { ChainDbService } from '../../services/chain-db.service';
-import { ChainDb, Transaction, Block, ScriptToken } from '../../models/chain-db.model';
+import { ChainDb, Tx, Block, ScriptToken } from '../../models/chain-db.model';
 
 @Component({
     selector: 'database-action',
@@ -10,10 +10,10 @@ import { ChainDb, Transaction, Block, ScriptToken } from '../../models/chain-db.
 })
 export class DatabaseActionComponent implements OnInit {
 
-    private _originTransactions = [];
-    @Input() set transactions(value: Array<Transaction>) {
-        if (this._originTransactions == value) return;
-        this._originTransactions == value;
+    private _originTxs = [];
+    @Input() set txs(value: Array<Tx>) {
+        if (this._originTxs == value) return;
+        this._originTxs == value;
         this.generateActions(value);
     }
 
@@ -21,7 +21,7 @@ export class DatabaseActionComponent implements OnInit {
 
     schemaActions: Array<any>;
     dataActions: Array<{ actions: Array<any>, pkname: string, tableName: string, columns: Array<string> }>;
-    lockTransactions: Array<Transaction>;
+    lockTxs: Array<Tx>;
 
     constructor(
         private route: ActivatedRoute,
@@ -40,17 +40,17 @@ export class DatabaseActionComponent implements OnInit {
         return null;
     }
 
-    generateActions(transactions: Array<Transaction>) {
-        if (!transactions) {
+    generateActions(txs: Array<Tx>) {
+        if (!txs) {
             this.dataActions = [];
             this.schemaActions = [];
-            this.lockTransactions = [];
+            this.lockTxs = [];
             return;
         }
 
-        transactions.forEach(t => t.Actions && t.Actions.forEach(a => (<any>a).transaction = t));
-        let dacts = transactions
-            .filter(_ => _.Type == "DataTransaction")
+        txs.forEach(t => t.Actions && t.Actions.forEach(a => (<any>a).tx = t));
+        let dacts = txs
+            .filter(_ => _.Type == "DataTx")
             .map(_ => _.Actions)
             .reduce((a, b) => a.concat(b), []);
 
@@ -93,14 +93,14 @@ export class DatabaseActionComponent implements OnInit {
             this.dataActions.forEach(_ => _.pkname = "Id");
         }, 1000);
 
-        this.schemaActions = transactions
-            .filter(_ => _.Type == "SchemaTransaction")
+        this.schemaActions = txs
+            .filter(_ => _.Type == "SchemaTx")
             .map(_ => _.Actions)
             .reduce((a, b) => a.concat(b), []);
 
-        this.lockTransactions = transactions
-            .filter(_ => _.Type == "LockTransaction");
-        transactions.forEach(t => (<any>t).code = this.generateCode(t.LockScripts));
+        this.lockTxs = txs
+            .filter(_ => _.Type == "LockTx");
+        txs.forEach(t => (<any>t).code = this.generateCode(t.LockScripts));
     }
 
     generateCode(tokens: Array<ScriptToken>):string {

@@ -39,7 +39,7 @@
             <div class="media-body">
                 <h4 class="list-group-item-heading">
                     {{db.name}}
-                    <a *ngIf="db?.editmode" [routerLink]="['/database', db.id, 'create']" class="btn btn-success btn-sm">{{ 'db.detail.CreateTransactionButton' | translate }}</a>
+                    <a *ngIf="db?.editmode" [routerLink]="['/database', db.id, 'create']" class="btn btn-success btn-sm">{{ 'db.detail.CreateTxButton' | translate }}</a>
                 </h4>
                 <p class="text-muted">{{db.description}}</p>
                 <p>{{ 'db.detail.Address' | translate }}<span class="text-success">{{db.address}}</span></p>

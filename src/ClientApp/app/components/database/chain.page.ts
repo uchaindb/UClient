@@ -2,7 +2,7 @@ import { Component, OnInit, Input, isDevMode } from '@angular/core';
 import { Location } from '@angular/common';
 import { ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { ChainDbService } from '../../services/chain-db.service';
-import { ChainDb, Transaction, Block } from '../../models/chain-db.model';
+import { ChainDb, Tx, Block } from '../../models/chain-db.model';
 
 @Component({
     selector: 'database-chain',
@@ -14,7 +14,7 @@ export class DatabaseChainPage implements OnInit {
     mixid: string;
     db: ChainDb;
     block: Block;
-    transaction: Transaction;
+    tx: Tx;
     error = false;
     loading = true;
 
@@ -45,13 +45,13 @@ export class DatabaseChainPage implements OnInit {
         setTimeout(() => {
             if (this.loading) {
                 this.block = null;
-                this.transaction = null;
+                this.tx = null;
             }
         }, 500);
         this.dataService.getQueryChain(this.db, this.mixid)
             .subscribe(_ => {
                 this.block = _.Block;
-                this.transaction = _.Transaction;
+                this.tx = _.Tx;
                 this.loading = false;
             },
             err => {

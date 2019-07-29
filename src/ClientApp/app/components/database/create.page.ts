@@ -14,7 +14,7 @@ import { KeyConfiguration, PublicKey, PrivateKey } from '../../models/cryptograp
 import { DatabaseCreatePageTranslationType, DatabaseCreatePageTranslation, DatabaseCreatePagePermissionListType } from './create.page.translation';
 import { DragulaService } from 'ng2-dragula';
 
-export type TransactionType = "schema" | "data" | "lock";
+export type TxType = "schema" | "data" | "lock";
 export type SchemaActionCreationTypeEnum = "create" | "modify" | "drop";
 export type SchemaActionCreationType = {
     type: SchemaActionCreationTypeEnum,
@@ -57,7 +57,7 @@ export class DatabaseCreatePage implements OnInit {
     lockTargets: Array<LockTargetCreationType> = [];
     //schemaActions: Array<any> = [{ type: "create", tableName: "table", columns: new LocalDataSource([{ name: "Id", type: "string" }]) }];
     //dataActions: Array<any> = [{ type: "insert", tableName: "Donation", columns: { Id: "hello" }, }];
-    selectedType: TransactionType = "schema";
+    selectedType: TxType = "schema";
 
     codeMode = false;
     code: string;
@@ -120,7 +120,7 @@ export class DatabaseCreatePage implements OnInit {
             );
         this.route.queryParamMap
             .subscribe((params: ParamMap) => {
-                let type = params.get('type') as TransactionType;// || this.selectedType;
+                let type = params.get('type') as TxType;// || this.selectedType;
                 let action = params.get('action');
                 let target = params.get('target');
                 let name = params.get('name');
@@ -216,18 +216,18 @@ export class DatabaseCreatePage implements OnInit {
 
         if (this.selectedType == "data") {
             var da = DatabaseCreatePageFunction.getDataActions(this.dataActions);
-            this.dataService.createDataTransaction(this.db, privKey, unlockPrivateKey, da)
+            this.dataService.createDataTx(this.db, privKey, unlockPrivateKey, da)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "schema") {
             var sa = DatabaseCreatePageFunction.getSchemaActions(this.schemaActions);
-            this.dataService.createSchemaTransaction(this.db, privKey, unlockPrivateKey, sa)
+            this.dataService.createSchemaTx(this.db, privKey, unlockPrivateKey, sa)
                 .subscribe(rpcCallback, errCallback);
         } else if (this.selectedType == "lock") {
             var lt = DatabaseCreatePageFunction.getLockTargets(this.lockTargets);
-            this.dataService.createLockTransaction(this.db, privKey, unlockPrivateKey, this.lockScripts, lt)
+            this.dataService.createLockTx(this.db, privKey, unlockPrivateKey, this.lockScripts, lt)
                 .subscribe(rpcCallback, errCallback);
         } else {
-            this.alertService.showMessage(this.translations.unknownTransactionTypeTitle, this.translations.unknownTransactionTypeContent, MessageSeverity.warn);
+            this.alertService.showMessage(this.translations.unknownTxTypeTitle, this.translations.unknownTxTypeContent, MessageSeverity.warn);
         }
     }
 
@@ -306,7 +306,7 @@ export class DatabaseCreatePage implements OnInit {
     parseCode() {
         try {
             let obj = JSON.parse(this.code);
-            let type = obj.type as TransactionType;
+            let type = obj.type as TxType;
             this.selectedType = type;
             if (type == "schema") {
                 this.schemaActions = DatabaseCreatePageFunction.getSchemaActionCreationTypes(obj.actions as SchemaAction[]);

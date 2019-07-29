@@ -75,7 +75,7 @@ export class Block extends HashBase {
             Time = null,
             BookKeeper = null,
             Signature = null,
-            Transactions = [],
+            Txs = [],
         } = obj;
         super({ Hash: Hash });
 
@@ -85,7 +85,7 @@ export class Block extends HashBase {
         this.Time = Time;
         this.BookKeeper = BookKeeper;
         this.Signature = Signature;
-        this.Transactions = Transactions;
+        this.Txs = Txs;
     }
 
     public PreviousBlockHash: string;
@@ -94,14 +94,14 @@ export class Block extends HashBase {
     public Time: string;
     public BookKeeper: string;
     public Signature: string;
-    public Transactions: Array<Transaction>;
+    public Txs: Array<Tx>;
 
 }
 
-export type TransactionTypeEnum = "SchemaTransaction" | "DataTransaction" | "LockTransaction";
+export type TxTypeEnum = "SchemaTx" | "DataTx" | "LockTx";
 
-export class Transaction extends HashBase {
-    constructor(obj: Transaction = {} as Transaction) {
+export class Tx extends HashBase {
+    constructor(obj: Tx = {} as Tx) {
         let {
             Hash = null,
             Initiator = null,
@@ -126,7 +126,7 @@ export class Transaction extends HashBase {
     }
 
     public Initiator?: string;
-    public Type?: TransactionTypeEnum;
+    public Type?: TxTypeEnum;
     public Signature?: string;
     public Actions?: Array<DataAction & SchemaAction>;
     public LockTargets?: Array<LockTarget>;
@@ -140,15 +140,15 @@ export type ScriptToken = { OpCode: string, Object: string };
 export class HistoryEntry {
     constructor(obj: HistoryEntry = {} as HistoryEntry) {
         let {
-            TransactionHash = null,
+            TxHash = null,
             HistoryLength = -1,
         } = obj;
 
-        this.TransactionHash = TransactionHash;
+        this.TxHash = TxHash;
         this.HistoryLength = HistoryLength;
     }
 
-    public TransactionHash: string;
+    public TxHash: string;
     public HistoryLength: number;
 
 }
@@ -158,7 +158,7 @@ export type ColumnDef = { name: string, tran?: string, history?: number };
 export type RowDef = Array<CellDef>;
 export type TableData = { rows: Array<RowDef>, columns: Array<ColumnDef>, pkname: string, tableName: string, dbid: string }
 export type QueryTableResponse = { data: TableData, cursorId: number, }
-export type QueryCellResponse = { data: TableData, transactions: Array<Transaction> }
+export type QueryCellResponse = { data: TableData, txs: Array<Tx> }
 
 export type DataActionEnum = "InsertDataAction" | "UpdateDataAction" | "DeleteDataAction";
 export type ColumnData = { Name: string, Data: string }
@@ -192,9 +192,9 @@ export type LockTarget = {
 
 export type ChainDbRpcMethod =
     "Status" |
-    "CreateSchemaTransaction" |
-    "CreateDataTransaction" |
-    "CreateLockTransaction" |
+    "CreateSchemaTx" |
+    "CreateDataTx" |
+    "CreateLockTx" |
     "QueryData" |
     "QueryChain" |
     "QueryCell" |
@@ -205,7 +205,7 @@ export type UInt256 = string;
 export class RpcRequest { }
 export class RpcResponse { }
 
-export interface CreateDataTransactionRpcRequest extends RpcRequest {
+export interface CreateDataTxRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     Initiator?: string;
     Signature?: string;
@@ -213,7 +213,7 @@ export interface CreateDataTransactionRpcRequest extends RpcRequest {
     Actions?: DataAction[];
 }
 
-export interface CreateSchemaTransactionRpcRequest extends RpcRequest {
+export interface CreateSchemaTxRpcRequest extends RpcRequest {
     // TODO: should be strong typed
     Initiator?: string;
     Signature?: string;
@@ -267,7 +267,7 @@ export interface BlocksRpcResponse extends RpcResponse {
 //    ContractId: UInt256;
 //}
 
-//export interface CreateTransactionRpcRequest extends RpcRequest {
+//export interface CreateTxRpcRequest extends RpcRequest {
 //    ContractId: UInt256;
 //    Method: string;
 //    // TODO: should be strong typed
@@ -277,15 +277,15 @@ export interface BlocksRpcResponse extends RpcResponse {
 
 //    }
 
-export interface CreateTransactionRpcResponse extends RpcResponse {
-    TransactionId: UInt256;
+export interface CreateTxRpcResponse extends RpcResponse {
+    TxId: UInt256;
 }
 
-//export interface GetTransactionSchemaRpcResponse extends RpcResponse {
+//export interface GetTxSchemaRpcResponse extends RpcResponse {
 //    Schemas: JsonSchema[];
 //}
 
-//export interface GetTransactionSchemaRpcRequest extends RpcRequest {
+//export interface GetTxSchemaRpcRequest extends RpcRequest {
 //    ContractId: UInt256;
 //    }
 
@@ -308,7 +308,7 @@ export interface QueryDataRpcResponse extends RpcResponse {
 }
 
 export interface HistoryEntry {
-    TransactionHash: UInt256;
+    TxHash: UInt256;
     HistoryLength: number;
 }
 
@@ -334,7 +334,7 @@ export interface QueryChainRpcRequest extends RpcRequest {
 
 export interface QueryChainRpcResponse extends RpcResponse {
     Block?: Block;
-    Transaction?: Transaction;
+    Tx?: Tx;
 }
 
 export interface QueryCellRpcRequest extends RpcRequest {
@@ -345,7 +345,7 @@ export interface QueryCellRpcRequest extends RpcRequest {
 }
 
 export interface QueryCellRpcResponse extends RpcResponse {
-    Transactions: UInt256[];
+    Txs: UInt256[];
 
     PrimaryKeyName: string;
     Headers: string[];

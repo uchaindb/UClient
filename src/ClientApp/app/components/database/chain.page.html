@@ -1,11 +1,11 @@
-﻿<ng-container *ngIf="!error && !loading && !block && !transaction">
+﻿<ng-container *ngIf="!error && !loading && !block && !tx">
     <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.chain.general.noInfo.NavTitle' | translate }}"></database-nav>
     <div class="alert alert-warning">
         {{ 'db.chain.general.noInfo.WarningText' | translate }}
         <button class="btn btn-primary btn-sm" (click)="back()">{{ 'db.chain.general.noInfo.BackButtonText' | translate }}</button>
     </div>
 </ng-container>
-<ng-container *ngIf="loading && !block && !transaction">
+<ng-container *ngIf="loading && !block && !tx">
     <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.chain.general.loading.NavTitle' | translate }}"></database-nav>
     <div class="alert alert-info">
         {{ 'db.chain.general.loading.InfoText' | translate }}
@@ -44,8 +44,8 @@
                     <td>{{block.StateRoot | hashbeauty}}</td>
                 </tr>
                 <tr>
-                    <td><strong>{{ 'db.chain.block.TransactionRoot' | translate }}</strong></td>
-                    <td>{{block.TransactionRoot | hashbeauty}}</td>
+                    <td><strong>{{ 'db.chain.block.TxRoot' | translate }}</strong></td>
+                    <td>{{block.TxRoot | hashbeauty}}</td>
                 </tr>
                 <tr>
                     <td><strong>{{ 'db.chain.block.Time' | translate }}</strong></td>
@@ -66,25 +66,25 @@
             </tbody>
         </table>
         <div class="panel-heading">
-            <h3 class="panel-title">{{ 'db.chain.block.TransactionsTitle' | translate }}</h3>
+            <h3 class="panel-title">{{ 'db.chain.block.TxsTitle' | translate }}</h3>
         </div>
         <table class="table">
             <tbody>
-                <tr *ngFor="let tran of block.Transactions">
+                <tr *ngFor="let tran of block.Txs">
                     <td><a [routerLink]="['/database', db.id, 'chain', tran.Hash]">{{tran.Hash | hashbeauty}}</a></td>
                     <td>
                         <ng-container [ngSwitch]="tran.Type">
-                            <ng-template [ngSwitchCase]="'DataTransaction'">
-                                {{ 'db.def.DataTransactionName' | translate }}
-                                {{ 'db.chain.block.ActionTransactionSuffix' | translate: {length: tran.Actions?.length} }}
+                            <ng-template [ngSwitchCase]="'DataTx'">
+                                {{ 'db.def.DataTxName' | translate }}
+                                {{ 'db.chain.block.ActionTxSuffix' | translate: {length: tran.Actions?.length} }}
                             </ng-template>
-                            <ng-template [ngSwitchCase]="'SchemaTransaction'">
-                                {{ 'db.def.SchemaTransactionName' | translate }}
-                                {{ 'db.chain.block.ActionTransactionSuffix' | translate: {length: tran.Actions?.length} }}
+                            <ng-template [ngSwitchCase]="'SchemaTx'">
+                                {{ 'db.def.SchemaTxName' | translate }}
+                                {{ 'db.chain.block.ActionTxSuffix' | translate: {length: tran.Actions?.length} }}
                             </ng-template>
-                            <ng-template [ngSwitchCase]="'LockTransaction'">
-                                {{ 'db.def.LockTransactionName' | translate }}
-                                {{ 'db.chain.block.TargetTransactionSuffix' | translate: {length: tran.LockTargets?.length} }}
+                            <ng-template [ngSwitchCase]="'LockTx'">
+                                {{ 'db.def.LockTxName' | translate }}
+                                {{ 'db.chain.block.TargetTxSuffix' | translate: {length: tran.LockTargets?.length} }}
                             </ng-template>
                         </ng-container>
                     </td>
@@ -95,72 +95,72 @@
             <h3 class="panel-title">{{ 'db.chain.block.DetailTitle' | translate }}</h3>
         </div>
         <div class="panel-body">
-            <database-action [dbid]="db.id" [transactions]="block.Transactions"></database-action>
+            <database-action [dbid]="db.id" [txs]="block.Txs"></database-action>
         </div>
     </div>
 </ng-container>
 
-<ng-container *ngIf="transaction">
-    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainTransaction' | translate: {hash: (transaction.Hash | hashbeauty)} }}"></database-nav>
+<ng-container *ngIf="tx">
+    <database-nav [dbid]="db.id" [dbname]="db.name" current="{{ 'db.nav.ChainTx' | translate: {hash: (tx.Hash | hashbeauty)} }}"></database-nav>
     <div class="panel panel-info">
         <div class="panel-heading">
-            <h3 class="panel-title">{{ 'db.chain.transaction.SummaryTitle' | translate }}</h3>
+            <h3 class="panel-title">{{ 'db.chain.tx.SummaryTitle' | translate }}</h3>
         </div>
         <table class="table">
             <tbody>
                 <tr>
-                    <td><strong>{{ 'db.chain.transaction.Hash' | translate }}</strong></td>
-                    <td><a [routerLink]="['/database', db.id, 'chain', transaction.Hash]">{{transaction.Hash | hashbeauty}}</a></td>
+                    <td><strong>{{ 'db.chain.tx.Hash' | translate }}</strong></td>
+                    <td><a [routerLink]="['/database', db.id, 'chain', tx.Hash]">{{tx.Hash | hashbeauty}}</a></td>
                 </tr>
                 <!--<tr>
-                    <td><strong>{{ 'db.chain.transaction.Time' | translate }}</strong></td>
+                    <td><strong>{{ 'db.chain.tx.Time' | translate }}</strong></td>
                     <td>(TBD)</td>
                 </tr>-->
                 <tr>
-                    <td><strong>{{ 'db.chain.transaction.Type' | translate }}</strong></td>
+                    <td><strong>{{ 'db.chain.tx.Type' | translate }}</strong></td>
                     <td>
-                        <ng-container [ngSwitch]="transaction.Type">
-                            <ng-template [ngSwitchCase]="'DataTransaction'">
-                                {{ 'db.def.DataTransactionName' | translate }}
+                        <ng-container [ngSwitch]="tx.Type">
+                            <ng-template [ngSwitchCase]="'DataTx'">
+                                {{ 'db.def.DataTxName' | translate }}
                             </ng-template>
-                            <ng-template [ngSwitchCase]="'SchemaTransaction'">
-                                {{ 'db.def.SchemaTransactionName' | translate }}
+                            <ng-template [ngSwitchCase]="'SchemaTx'">
+                                {{ 'db.def.SchemaTxName' | translate }}
                             </ng-template>
-                            <ng-template [ngSwitchCase]="'LockTransaction'">
-                                {{ 'db.def.LockTransactionName' | translate }}
+                            <ng-template [ngSwitchCase]="'LockTx'">
+                                {{ 'db.def.LockTxName' | translate }}
                             </ng-template>
                         </ng-container>
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>{{ 'db.chain.transaction.Block' | translate }}</strong></td>
+                    <td><strong>{{ 'db.chain.tx.Block' | translate }}</strong></td>
                     <td>
-                        <a *ngIf="transaction.Block"
-                           [routerLink]="['/database', db.id, 'chain', transaction.Block]">
-                            {{transaction.Block | hashbeauty}}
+                        <a *ngIf="tx.Block"
+                           [routerLink]="['/database', db.id, 'chain', tx.Block]">
+                            {{tx.Block | hashbeauty}}
                         </a>
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>{{ 'db.chain.transaction.WitnessBlock' | translate }}</strong></td>
+                    <td><strong>{{ 'db.chain.tx.WitnessBlock' | translate }}</strong></td>
                     <td>
-                        <a *ngIf="transaction.WitnessBlock"
-                           [routerLink]="['/database', db.id, 'chain', transaction.WitnessBlock]">
-                            {{transaction.WitnessBlock | hashbeauty}}
+                        <a *ngIf="tx.WitnessBlock"
+                           [routerLink]="['/database', db.id, 'chain', tx.WitnessBlock]">
+                            {{tx.WitnessBlock | hashbeauty}}
                         </a>
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>{{ 'db.chain.transaction.Initiator' | translate }}</strong></td>
-                    <td><span title="{{transaction.Initiator}}">{{transaction.Initiator | hashbeauty}}</span></td>
+                    <td><strong>{{ 'db.chain.tx.Initiator' | translate }}</strong></td>
+                    <td><span title="{{tx.Initiator}}">{{tx.Initiator | hashbeauty}}</span></td>
                 </tr>
             </tbody>
         </table>
         <div class="panel-heading">
-            <h3 class="panel-title">{{ 'db.chain.transaction.ActionsTitle' | translate }}</h3>
+            <h3 class="panel-title">{{ 'db.chain.tx.ActionsTitle' | translate }}</h3>
         </div>
         <div class="panel-body">
-            <database-action [dbid]="db.id" [transactions]="[transaction]"></database-action>
+            <database-action [dbid]="db.id" [txs]="[tx]"></database-action>
         </div>
     </div>
 </ng-container>
