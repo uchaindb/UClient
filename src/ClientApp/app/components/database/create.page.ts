@@ -4,7 +4,6 @@ import { ChainDbService } from '../../services/chain-db.service';
 import { Router, ParamMap, ActivatedRoute } from '@angular/router';
 import { AlertService, MessageSeverity, DialogType } from '../../services/alert.service';
 import { NotificationService } from '../../services/notification.service';
-import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
 import { LocalDataSource } from 'ng2-smart-table';
 import { CryptographyService } from '../../services/cryptography.service';
 import { PrivateKeyService } from '../../services/private-key.service';
