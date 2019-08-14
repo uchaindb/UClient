@@ -14,6 +14,7 @@
     "webpack-dev-server": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js"
   },
   "scripts": {
+    "deploy": "gh-pages -d wwwroot",
     "extract": "ngx-translate-extract --input ./ClientApp --output ./ClientApp/assets/locale/zh.json --sort --clean --format namespaced-json --format-indentation \"  \" --marker gT",
     "test": "karma start ClientApp/test/karma.conf.js",
     "serve": "webpack-dev-server --progress --bail --open --hot --content-base wwwroot/ --history-api-fallback",
@@ -72,6 +73,7 @@
     "@types/jasmine": "2.5.47",
     "chai": "3.5.0",
     "elliptic": "^6.4.0",
+    "gh-pages": "^2.1.1",
     "gulp": "^3.9.1",
     "gulp-sass": "^4.0.2",
     "jasmine-core": "2.6.1",
