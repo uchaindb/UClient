@@ -34,7 +34,7 @@
     }
   },
   "app": {
-    "BrandTitle": "优链数据库",
+    "BrandTitle": "优擎区块链数据库",
     "contact": {
       "MailAndSiteSectionTitle": "邮箱 及 网站",
       "WechatSectionTitle": "微信"
@@ -72,7 +72,7 @@
       "DefaultTitle": ""
     },
     "title": {
-      "Default": "优链数据库",
+      "Default": "优擎区块链数据库",
       "Discover": "发现",
       "Login": "登陆",
       "alarm": {
@@ -549,7 +549,7 @@
     },
     "menu": {
       "list": {
-        "About": "关于优链",
+        "About": "关于优擎",
         "Feedback": "联系我们",
         "Logout": "解除登录",
         "OtherTitle": "其他",
