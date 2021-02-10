@@ -32,10 +32,15 @@ export class DiscoverPage implements OnInit {
     }
 
     setArticle(tab: InfoTabType, list?: { [index: string]: Array<ArticleType> }) {
-        if (list != null) this.originList = list;
+        if (list != null) {
+            this.originList = list;
+        }
 
         this.selectedList = tab;
         this.articleList = this.originList[tab];
+        for (var item of this.articleList) {
+            item.title = item.title.replace("优链", "优擎区块链");
+        }
     }
 
     genLink(article: ArticleType) {

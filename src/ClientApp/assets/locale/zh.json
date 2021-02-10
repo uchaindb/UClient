@@ -52,13 +52,13 @@
         "DatabaseTitle": "链库",
         "DiscoverTitle": "发现",
         "LoginTitle": "登陆",
-        "PersonalTitle": "个人"
+        "PersonalTitle": "设置"
       },
       "mobile": {
         "AlarmTitle": "消息",
         "DatabaseTitle": "链库",
         "DiscoverTitle": "发现",
-        "PersonalTitle": "个人"
+        "PersonalTitle": "设置"
       }
     },
     "notification": {
